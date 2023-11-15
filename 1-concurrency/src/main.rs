@@ -98,16 +98,14 @@ fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores
         let file = fs::read(path.as_path())
             .expect("reading file failed");
 
-        if regex.is_match(file.as_slice()) {
+        for each in regex.find_iter(file.as_slice()) {
             let mut result: GrepResult = GrepResult {
                 path: path.clone(),
                 content: file.clone(),
                 ranges: Vec::new(),
                 search_ctr: 0,
             };
-            for each in regex.find_iter(file.as_slice()) {
-                result.ranges.push(each.range());
-            }
+            result.ranges.push(each.range());
             tx.send(result).unwrap();
         }
     }
