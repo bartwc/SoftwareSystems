@@ -40,10 +40,13 @@ fn main() {
         args.paths.iter().map(PathBuf::from).collect()
     };
 
+    // Fetch the number of cores in the system
     let available_parallelism =thread::available_parallelism().expect("failed finding the number of available logical cores").get();
 
+    // Use a channel to transfer the results from different threads to the thread that is responsible to printing them out.
     let (tx, rx) = channel::<GrepResult>();
 
+    // Spawn a thread to print the results out.
     let handel_print_result = thread::spawn(move || {
         let mut search_ctr : usize = 0;
         for mut received in rx {
@@ -53,6 +56,8 @@ fn main() {
         }
     });
 
+    // Spawn a thread to traverse a new path when there are idle cores in the system
+    // When there is no idle core, the traverse continue in the main thread.
     for path in paths {
         if NUM_THREADS.load(SeqCst) < available_parallelism {
             NUM_THREADS.fetch_add(1, SeqCst);
@@ -68,6 +73,7 @@ fn main() {
         }
     }
 
+    // Drop the tx in the main thread to allow the print_result thread to finish
     drop(tx);
     handel_print_result.join().unwrap();
 
@@ -76,6 +82,8 @@ fn main() {
 }
 
 fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores: usize){
+    // Spawn a thread to traverse a new path when there are idle cores in the system
+    // When there is no idle core, the traverse continue in the old thread.
     if path.is_dir() {
         for entry in path.read_dir().expect("read_dir call failed") {
             if let Ok(entry) = entry {
@@ -97,7 +105,7 @@ fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores
     else {
         let file = fs::read(path.as_path())
             .expect("reading file failed");
-
+        // Send the result to the channel when a match is found.
         for each in regex.find_iter(file.as_slice()) {
             let mut result: GrepResult = GrepResult {
                 path: path.clone(),
