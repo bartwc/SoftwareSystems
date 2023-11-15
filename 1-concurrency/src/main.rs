@@ -7,6 +7,7 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 use std::fs;
 // use std::time::Instant;
+
 // The the struct you need to use to print your results.
 pub use crate::grep_result::GrepResult;
 
@@ -25,7 +26,7 @@ struct Args {
 static NUM_THREADS:AtomicUsize = AtomicUsize::new(0);
 
 fn main() {
-    //let now = Instant::now();
+    // let now = Instant::now();
     //Parse arguments, using the clap crate
     let args: Args = Args::parse();
     let regex = Regex::new(&args.regex).unwrap();
