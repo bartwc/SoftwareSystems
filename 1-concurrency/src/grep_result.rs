@@ -1,6 +1,5 @@
 // In your grep_result module
-use std::{fmt::{Display, Formatter}};
-// use std::{path::PathBuf, ops::Range, fmt::{Display, Formatter}};
+use std::{path::PathBuf, ops::Range, fmt::{Display, Formatter}};
 
 /// This structure represents the matches that the tool found in **a single file**.
 /// It implements `Display`, so it can be pretty-printed.
@@ -10,22 +9,22 @@ use std::{fmt::{Display, Formatter}};
 pub struct GrepResult {
     /// the path of the search result
     // pub path: PathBuf, // default
-    pub path: std::path::PathBuf,
+    pub path: PathBuf,
+
     /// the contents of that file
-    // pub content: Vec<u8>,
+    pub content: Vec<u8>,
 
     /// which ranges in the file match the filter.
     /// A file may contain more than one match. Each match is a Range,
     /// which is a start and end byte offset in the content field.
-    // pub ranges: Vec<Range<usize>>,
+    pub ranges: Vec<Range<usize>>,
 
     /// The index of this search result (ie. a counter of how many files have had a match before this
     /// one). Note that this count must always increase as the results are printed.
     pub search_ctr: usize,
+
     pub line: String,
     pub matched: String,
-    pub ranges: Vec<std::ops::Range<usize>>, // Add this line
-    pub content: Vec<u8>, // Add this line
 }
 
 // In your main.rs
