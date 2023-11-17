@@ -36,15 +36,15 @@ fn main() {
     // Use Rayon to parallelize the processing of paths
     if !paths.is_empty() && rayon::current_num_threads() > 0 {
         paths.par_iter().for_each(|path| {
-        if path.is_dir() {
-            if let Err(e) = process_directory(&path, &regex) {
-                eprintln!("Error processing {}: {}", path.display(), e);
+            if path.is_dir() {
+                if let Err(e) = process_directory(&path, &regex) {
+                    eprintln!("Error processing {}: {}", path.display(), e);
+                }
+            } else {
+                if let Err(e) = process_file(&path, &regex) {
+                    eprintln!("Error processing {}: {}", path.display(), e);
+                }
             }
-        } else {
-            if let Err(e) = process_file(&path, &regex) {
-                eprintln!("Error processing {}: {}", path.display(), e);
-            }
-        }
         });
     }
 }
@@ -70,35 +70,33 @@ fn process_directory(dir_path: &Path, regex: &Regex) -> io::Result<()> {
     Ok(())
 }
 
-
 fn process_file(file_path: &Path, regex: &Regex) -> io::Result<()> {
     let file = File::open(file_path)?;
-    let content: Vec<u8> = io::BufReader::new(file).bytes().collect::<Result<_, _>>()?;
+    let mut content = Vec::new();
+    file.take(1024 * 1024 * 10) // Read up to 10 megabytes of content
+        .read_to_end(&mut content)?;
 
-    // Ensure content length and thread count are both greater than zero
-    let chunk_size = content.len() / rayon::current_num_threads().max(1);
-    if chunk_size > 0 {
-        content.par_chunks_exact(chunk_size).for_each(|chunk| {
-            for (search_ctr, line) in chunk.split(|&b| b == b'\n').enumerate() {
+    let content_str = String::from_utf8_lossy(&content);
 
-                let line = String::from_utf8_lossy(line);
+    for (search_ctr, line) in content_str.lines().enumerate() {
+        if regex.is_match(line.as_ref()) {
+            let matches: Vec<_> = regex.find_iter(line.as_bytes()).collect();
+            if let Some(matched) = matches.get(0) {
+                let matched_str = &line[matched.start()..matched.end()];
 
-                if regex.is_match(line.as_bytes()) {
-                    let matched = regex.find(line.as_bytes()).unwrap();
-                    let result = GrepResult {
-                        path: file_path.to_path_buf(),
-                        search_ctr,
-                        line: line.to_string(),
-                        matched: String::from_utf8_lossy(&line.as_bytes()[matched.start()..matched.end()])
-                            .to_string(),
-                        ranges: vec![matched.range()],
-                        content: chunk.to_vec(),  // Pass a reference to the relevant part of the content
-                    };
+                let result = GrepResult {
+                    path: file_path.to_path_buf(),
+                    search_ctr,
+                    line: String::from(line),
+                    matched: String::from(matched_str),
+                    ranges: vec![matched.range()],
+                    content: content.clone(),
+                };
 
-                    println!("{}", result);
-                }
+                println!("{}", result);
             }
-        });
+        }
     }
+
     Ok(())
 }
