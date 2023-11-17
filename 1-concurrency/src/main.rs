@@ -4,6 +4,8 @@ use regex::bytes::Regex;
 use std::fs::{self, File};
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
+use std::io::Write;
 
 // The struct you need to use to print your results.
 pub use crate::grep_result::GrepResult;
@@ -16,7 +18,7 @@ struct Args {
     /// The regex pattern that the user provided
     regex: String,
 
-    /// The paths in which mygrep should search, if empty, in the current directory
+    /// The paths in which grep should search, if empty, in the current directory
     paths: Vec<String>,
 }
 
@@ -34,21 +36,23 @@ fn main() {
 
     // Use Rayon to parallelize the processing of paths
     if !paths.is_empty() && rayon::current_num_threads() > 0 {
+        let output_mutex = Arc::new(Mutex::new(io::stdout()));
+
         paths.par_iter().for_each(|path| {
-            process_path(path, &regex);
+            process_path(path, &regex, &output_mutex);
         });
     }
 }
 
-fn process_path(path: &Path, regex: &Regex) {
+fn process_path(path: &Path, regex: &Regex, output_mutex: &Arc<Mutex<io::Stdout>>) {
     if path.is_dir() {
-        process_directory(path, regex);
+        process_directory(path, regex, output_mutex);
     } else {
-        process_file(path, regex);
+        process_file(path, regex, output_mutex);
     }
 }
 
-fn process_directory(dir_path: &Path, regex: &Regex) {
+fn process_directory(dir_path: &Path, regex: &Regex, output_mutex: &Arc<Mutex<io::Stdout>>) {
     let entries: Vec<_> = fs::read_dir(dir_path)
         .unwrap_or_else(|e| panic!("Error reading directory {}: {}", dir_path.display(), e))
         .collect();
@@ -58,14 +62,14 @@ fn process_directory(dir_path: &Path, regex: &Regex) {
         let path = entry.path();
 
         if path.is_dir() {
-            process_directory(&path, regex);
+            process_directory(&path, regex, output_mutex);
         } else {
-            process_file(&path, regex);
+            process_file(&path, regex, output_mutex);
         }
     });
 }
 
-fn process_file(file_path: &Path, regex: &Regex) {
+fn process_file(file_path: &Path, regex: &Regex, output_mutex: &Arc<Mutex<io::Stdout>>) {
     let file = File::open(file_path)
         .unwrap_or_else(|e| panic!("Error opening file {}: {}", file_path.display(), e));
 
@@ -84,6 +88,8 @@ fn process_file(file_path: &Path, regex: &Regex) {
             matched: "".to_string(), // You can extract the matched substring if needed
         };
 
+        let mut output = output_mutex.lock().unwrap();
         println!("{}", result);
+        output.flush().unwrap(); // Ensure the output is immediately flushed to avoid interleaving
     }
 }
