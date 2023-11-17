@@ -29,7 +29,7 @@ fn main() {
 
     // Get the paths that we should search
     let paths = if args.paths.is_empty() {
-        vec![PathBuf::from(std::env::current_dir().unwrap())]
+        vec![std::env::current_dir().unwrap()]
     } else {
         args.paths.iter().map(PathBuf::from).collect()
     };
