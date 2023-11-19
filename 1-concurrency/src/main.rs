@@ -1,14 +1,13 @@
 use clap::Parser;
 use regex::bytes::Regex;
+use rayon::prelude::*;
 use std::path::PathBuf;
-use std::sync::mpsc::{channel, Sender};
+use std::sync::mpsc::{sync_channel, SyncSender};
 use std::thread;
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering::SeqCst;
 use std::fs;
+use std::fs::DirEntry;
 use std::ops::Range;
 use std::process;
-// use std::time::Instant;
 
 // The the struct you need to use to print your results.
 pub use crate::grep_result::GrepResult;
@@ -25,10 +24,7 @@ struct Args {
     paths: Vec<String>,
 }
 
-static NUM_THREADS: AtomicUsize = AtomicUsize::new(0);
-
 fn main() {
-    // let now = Instant::now();
     //Parse arguments, using the clap crate
     let args: Args = Args::parse();
     let regex = Regex::new(&args.regex).unwrap_or_else(|_| {
@@ -48,70 +44,39 @@ fn main() {
         args.paths.iter().map(PathBuf::from).collect()
     };
 
-    // Fetch the number of cores in the system
-    let available_parallelism = if let Ok(num_cores) = thread::available_parallelism() {
-        num_cores.get()
-    } else {
-        eprintln!("Unable to find available parallelism. The program will continue as single-threaded.");
-        1
-    };
-
     // Use a channel to transfer the results from different threads to the thread that is responsible to printing them out.
-    let (tx, rx) = channel::<GrepResult>();
+    // A bounded channel is used to prevent buffering all the results until the end
+    let (tx, rx) = sync_channel::<GrepResult>(10);
 
     // Spawn a thread to print the results out.
-    let handel_print_result = thread::spawn(move || {
+    let handle_print_result = thread::spawn(move || {
         for (search_ctr, mut received) in rx.iter().enumerate() {
             received.search_ctr = search_ctr;
             println!("{}", received);
         }
     });
 
-    // Spawn a thread to traverse a new path when there are idle cores in the system
-    // When there is no idle core, the traverse continue in the main thread.
-    for path in paths {
-        if NUM_THREADS.load(SeqCst) < available_parallelism {
-            NUM_THREADS.fetch_add(1, SeqCst);
-            let regex = regex.clone();
-            let tx = tx.clone();
-            thread::spawn(move || {
-                traverse_paths(path, regex, tx, available_parallelism);
-                NUM_THREADS.fetch_sub(1, SeqCst);
-            });
-        } else {
-            traverse_paths(path, regex.clone(), tx.clone(), available_parallelism);
-        }
-    }
+    //use a rayon parallel iterator to traverse the directories
+    paths.into_par_iter().for_each(|path| {
+        traverse_paths(path, regex.clone(), tx.clone());
+    });
 
-    // Drop the tx in the main thread to allow the print_result thread to finish
     drop(tx);
-    handel_print_result.join().unwrap_or_else(|_| {
+
+    handle_print_result.join().unwrap_or_else(|_| {
         eprintln!("Error when joining threads");
         process::exit(1);
     });
-
-    // let elapsed_time = now.elapsed();
-    // println!("Running took {} ms.", elapsed_time.as_millis());
 }
 
-fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores: usize) {
-    // Spawn a thread to traverse a new path when there are idle cores in the system
-    // When there is no idle core, the traverse continue in the old thread.
+fn traverse_paths(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>) {
+    //use a rayon parallel iterator to perform a traverse on each sub-directory
     if path.is_dir() {
         if let Ok(entry) = path.read_dir() {
-            for entry in entry.flatten() {
-                if NUM_THREADS.load(SeqCst) < num_cores {
-                    NUM_THREADS.fetch_add(1, SeqCst);
-                    let regex = regex.clone();
-                    let tx = tx.clone();
-                    thread::spawn(move || {
-                        traverse_paths(entry.path(), regex, tx, num_cores);
-                        NUM_THREADS.fetch_sub(1, SeqCst);
-                    });
-                } else {
-                    traverse_paths(entry.path(), regex.clone(), tx.clone(), num_cores);
-                }
-            }
+            let entries: Vec<DirEntry> = entry.flatten().collect();
+            entries.into_par_iter().for_each(|entry| {
+                traverse_paths(entry.path(), regex.clone(), tx.clone());
+            })
         }
     } else {
         let file = fs::read(path.as_path())
