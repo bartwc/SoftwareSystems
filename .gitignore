@@ -1,3 +1,7 @@
 target
 .idea
 .vscode
+
+render.bmp
+backup.rgb
+perf.*
