@@ -25,13 +25,13 @@ struct Args {
     paths: Vec<String>,
 }
 
-static NUM_THREADS:AtomicUsize = AtomicUsize::new(0);
+static NUM_THREADS: AtomicUsize = AtomicUsize::new(0);
 
 fn main() {
     // let now = Instant::now();
     //Parse arguments, using the clap crate
     let args: Args = Args::parse();
-    let regex = Regex::new(&args.regex).unwrap_or_else(|_|{
+    let regex = Regex::new(&args.regex).unwrap_or_else(|_| {
         eprintln!("Invalid regular expression, please try again.");
         process::exit(1)
     });
@@ -39,7 +39,7 @@ fn main() {
     // Get the paths that we should search
     let paths = if args.paths.is_empty() {
         //If no paths were provided, we search the current path
-        vec![std::env::current_dir().unwrap_or_else(|_|{
+        vec![std::env::current_dir().unwrap_or_else(|_| {
             eprintln!("Unable to find current path.");
             process::exit(1);
         })]
@@ -49,7 +49,7 @@ fn main() {
     };
 
     // Fetch the number of cores in the system
-    let available_parallelism = if let Ok(num_cores) = thread::available_parallelism(){
+    let available_parallelism = if let Ok(num_cores) = thread::available_parallelism() {
         num_cores.get()
     } else {
         eprintln!("Unable to find available parallelism. The program will continue as single-threaded.");
@@ -61,11 +61,9 @@ fn main() {
 
     // Spawn a thread to print the results out.
     let handel_print_result = thread::spawn(move || {
-        let mut search_ctr : usize = 0;
-        for mut received in rx {
+        for (search_ctr, mut received) in rx.iter().enumerate() {
             received.search_ctr = search_ctr;
             println!("{}", received);
-            search_ctr=search_ctr+1;
         }
     });
 
@@ -80,15 +78,14 @@ fn main() {
                 traverse_paths(path, regex, tx, available_parallelism);
                 NUM_THREADS.fetch_sub(1, SeqCst);
             });
-        }
-        else {
+        } else {
             traverse_paths(path, regex.clone(), tx.clone(), available_parallelism);
         }
     }
 
     // Drop the tx in the main thread to allow the print_result thread to finish
     drop(tx);
-    handel_print_result.join().unwrap_or_else(|_|{
+    handel_print_result.join().unwrap_or_else(|_| {
         eprintln!("Error when joining threads");
         process::exit(1);
     });
@@ -97,32 +94,28 @@ fn main() {
     // println!("Running took {} ms.", elapsed_time.as_millis());
 }
 
-fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores: usize){
+fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores: usize) {
     // Spawn a thread to traverse a new path when there are idle cores in the system
     // When there is no idle core, the traverse continue in the old thread.
     if path.is_dir() {
-        if let Ok(entry) = path.read_dir(){
-            for entry in entry {
-                if let Ok(entry) = entry {
-                    if NUM_THREADS.load(SeqCst) < num_cores {
-                        NUM_THREADS.fetch_add(1, SeqCst);
-                        let regex = regex.clone();
-                        let tx = tx.clone();
-                        thread::spawn(move || {
-                            traverse_paths(entry.path(), regex, tx, num_cores);
-                            NUM_THREADS.fetch_sub(1, SeqCst);
-                        });
-                    }
-                    else {
-                        traverse_paths(entry.path(), regex.clone(), tx.clone(), num_cores);
-                    }
+        if let Ok(entry) = path.read_dir() {
+            for entry in entry.flatten() {
+                if NUM_THREADS.load(SeqCst) < num_cores {
+                    NUM_THREADS.fetch_add(1, SeqCst);
+                    let regex = regex.clone();
+                    let tx = tx.clone();
+                    thread::spawn(move || {
+                        traverse_paths(entry.path(), regex, tx, num_cores);
+                        NUM_THREADS.fetch_sub(1, SeqCst);
+                    });
+                } else {
+                    traverse_paths(entry.path(), regex.clone(), tx.clone(), num_cores);
                 }
             }
         }
-    }
-    else {
+    } else {
         let file = fs::read(path.as_path())
-            .unwrap_or_else(|err|{
+            .unwrap_or_else(|err| {
                 eprintln!("{}", err);
                 vec![]
             });
@@ -132,14 +125,14 @@ fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores
             vec_match.push(each.range());
         }
         // Send the result to the channel when a match is found.
-        if !vec_match.is_empty(){
+        if !vec_match.is_empty() {
             let result: GrepResult = GrepResult {
                 path: path.clone(),
                 content: file.clone(),
                 ranges: vec_match,
                 search_ctr: 0,
             };
-            tx.send(result).unwrap_or_else(|_|{eprintln!("Error when sending a result to channel");});
+            tx.send(result).unwrap_or_else(|_| { eprintln!("Error when sending a result to channel"); });
         }
     }
 }
