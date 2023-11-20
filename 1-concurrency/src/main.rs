@@ -1,7 +1,7 @@
 use clap::Parser;
 use regex::bytes::Regex;
 use std::path::PathBuf;
-use std::sync::mpsc::{channel, Sender};
+use std::sync::mpsc::{sync_channel, SyncSender};
 use std::thread;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
@@ -57,7 +57,7 @@ fn main() {
     };
 
     // Use a channel to transfer the results from different threads to the thread that is responsible to printing them out.
-    let (tx, rx) = channel::<GrepResult>();
+    let (tx, rx) = sync_channel::<GrepResult>(10);
 
     // Spawn a thread to print the results out.
     let handel_print_result = thread::spawn(move || {
@@ -94,7 +94,7 @@ fn main() {
     // println!("Running took {} ms.", elapsed_time.as_millis());
 }
 
-fn traverse_paths(path: PathBuf, regex: Regex, tx: Sender<GrepResult>, num_cores: usize) {
+fn traverse_paths(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>, num_cores: usize) {
     // Spawn a thread to traverse a new path when there are idle cores in the system
     // When there is no idle core, the traverse continue in the old thread.
     if path.is_dir() {
