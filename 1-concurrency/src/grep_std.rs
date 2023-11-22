@@ -4,12 +4,11 @@ use std::sync::mpsc::{sync_channel, SyncSender};
 use std::thread;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
-use std::fs;
-use std::ops::Range;
 use std::process;
 
 // The the struct you need to use to print your results.
 pub use crate::grep_result::GrepResult;
+use crate::util::{recv_print_result, send_match_in_file};
 
 static NUM_THREADS: AtomicUsize = AtomicUsize::new(0);
 
@@ -27,10 +26,7 @@ pub fn grep_std_only(paths: Vec<PathBuf>, regex: Regex){
 
     // Spawn a thread to print the results out.
     let handel_print_result = thread::spawn(move || {
-        for (search_ctr, mut received) in rx.iter().enumerate() {
-            received.search_ctr = search_ctr;
-            println!("{}", received);
-        }
+        recv_print_result(rx);
     });
 
     // Spawn a thread to traverse a new path when there are idle cores in the system
@@ -76,25 +72,6 @@ fn traverse_paths_std(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>, n
             }
         }
     } else {
-        let file = fs::read(path.as_path())
-            .unwrap_or_else(|err| {
-                eprintln!("{}", err);
-                vec![]
-            });
-
-        let mut vec_match: Vec<Range<usize>> = Vec::new();
-        for each in regex.find_iter(file.as_slice()) {
-            vec_match.push(each.range());
-        }
-        // Send the result to the channel when a match is found.
-        if !vec_match.is_empty() {
-            let result: GrepResult = GrepResult {
-                path: path.clone(),
-                content: file.clone(),
-                ranges: vec_match,
-                search_ctr: 0,
-            };
-            tx.send(result).unwrap_or_else(|_| { eprintln!("Error when sending a result to channel"); });
-        }
+        send_match_in_file(path, regex, tx);
     }
 }

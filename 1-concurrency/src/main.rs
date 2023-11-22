@@ -1,15 +1,11 @@
 use clap::Parser;
 use regex::bytes::Regex;
 use std::path::PathBuf;
-use std::sync::mpsc::{sync_channel, SyncSender};
-use std::thread;
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering::SeqCst;
-use std::fs;
-use std::ops::Range;
 use std::process;
+use crate::grep_rayon::grep_rayon;
 
 use crate::grep_std::grep_std_only;
+use crate::GrepVariant::{GrepRayon, GrepStd};
 
 mod grep_result;
 mod grep_std;
@@ -25,6 +21,14 @@ struct Args {
     /// The paths in which mygrep should search, if empty, in the current directory
     paths: Vec<String>,
 }
+
+#[derive(PartialEq)]
+enum GrepVariant{
+    GrepStd,
+    GrepRayon,
+}
+
+const GREP_CHOICE: GrepVariant = GrepRayon; //choose between the base implementation and the rayon implementation
 
 fn main() {
     // let now = Instant::now();
@@ -47,5 +51,11 @@ fn main() {
         args.paths.iter().map(PathBuf::from).collect()
     };
 
-    grep_std_only(paths, regex);
+    //Invoke different implementations based on the selected value of GREP_CHOICE
+    if GREP_CHOICE == GrepRayon {
+        grep_rayon(paths, regex);
+    }
+    else if GREP_CHOICE == GrepStd {
+        grep_std_only(paths, regex);
+    }
 }
