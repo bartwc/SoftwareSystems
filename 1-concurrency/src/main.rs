@@ -2,8 +2,8 @@ use clap::Parser;
 use regex::bytes::Regex;
 use std::path::PathBuf;
 use std::process;
-use crate::grep_rayon::grep_rayon;
 
+use crate::grep_rayon::grep_rayon;
 use crate::grep_std::grep_std_only;
 use crate::GrepVariant::{GrepRayon, GrepStd};
 
@@ -23,7 +23,7 @@ struct Args {
 }
 
 #[derive(PartialEq)]
-enum GrepVariant{
+enum GrepVariant {
     GrepStd,
     GrepRayon,
 }
@@ -54,8 +54,7 @@ fn main() {
     //Invoke different implementations based on the selected value of GREP_CHOICE
     if GREP_CHOICE == GrepRayon {
         grep_rayon(paths, regex);
-    }
-    else if GREP_CHOICE == GrepStd {
+    } else if GREP_CHOICE == GrepStd {
         grep_std_only(paths, regex);
     }
 }

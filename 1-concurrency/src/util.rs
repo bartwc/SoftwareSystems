@@ -5,13 +5,15 @@ use std::fs;
 use std::ops::Range;
 
 pub use crate::grep_result::GrepResult;
-pub fn recv_print_result(rx: Receiver<GrepResult>){
+
+pub fn recv_print_result(rx: Receiver<GrepResult>) {
     for (search_ctr, mut received) in rx.iter().enumerate() {
         received.search_ctr = search_ctr;
         println!("{}", received);
     }
 }
-pub fn send_match_in_file(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>){
+
+pub fn send_match_in_file(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>) {
     let file = fs::read(path.as_path())
         .unwrap_or_else(|err| {
             eprintln!("{}", err);

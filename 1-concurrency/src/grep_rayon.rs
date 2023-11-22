@@ -10,7 +10,7 @@ use std::process;
 pub use crate::grep_result::GrepResult;
 use crate::util::{recv_print_result, send_match_in_file};
 
-pub fn grep_rayon(paths: Vec<PathBuf>, regex: Regex){
+pub fn grep_rayon(paths: Vec<PathBuf>, regex: Regex) {
     let (tx, rx) = sync_channel::<GrepResult>(10);
 
     // Spawn a thread to print the results out.
@@ -30,6 +30,7 @@ pub fn grep_rayon(paths: Vec<PathBuf>, regex: Regex){
         process::exit(1);
     });
 }
+
 fn traverse_paths_rayon(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>) {
     //use a rayon parallel iterator to perform a traverse on each sub-directory
     if path.is_dir() {

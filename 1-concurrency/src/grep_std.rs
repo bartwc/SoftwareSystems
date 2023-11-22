@@ -12,7 +12,7 @@ use crate::util::{recv_print_result, send_match_in_file};
 
 static NUM_THREADS: AtomicUsize = AtomicUsize::new(0);
 
-pub fn grep_std_only(paths: Vec<PathBuf>, regex: Regex){
+pub fn grep_std_only(paths: Vec<PathBuf>, regex: Regex) {
     // Fetch the number of cores in the system
     let available_parallelism = if let Ok(num_cores) = thread::available_parallelism() {
         num_cores.get()
@@ -52,6 +52,7 @@ pub fn grep_std_only(paths: Vec<PathBuf>, regex: Regex){
         process::exit(1);
     });
 }
+
 fn traverse_paths_std(path: PathBuf, regex: Regex, tx: SyncSender<GrepResult>, num_cores: usize) {
     // Spawn a thread to traverse a new path when there are idle cores in the system
     // When there is no idle core, the traverse continue in the old thread.
