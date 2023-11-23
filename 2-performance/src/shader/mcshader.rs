@@ -12,7 +12,7 @@ impl McShader {
         &self,
         ray: Ray,
         depth: usize,
-        datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+        datastructure: Arc<Mutex<dyn DataStructure>>,
     ) -> Vector {
         let intersection =
             if let Some(intersection) = datastructure.lock().unwrap().intersects(ray) {
@@ -41,7 +41,7 @@ impl McShader {
 }
 
 impl Shader for McShader {
-    fn shade(&self, ray: Ray, datastructure: Arc<Mutex<Box<dyn DataStructure>>>) -> Vector {
+    fn shade(&self, ray: Ray, datastructure: Arc<Mutex<dyn DataStructure>>) -> Vector {
         self.shade_internal(ray, 4, datastructure)
     }
 }

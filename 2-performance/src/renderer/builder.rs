@@ -24,7 +24,7 @@ pub struct RendererBuilderDatastructure {
     pub(self) generator: Arc<dyn Generator>,
     pub(self) raytracer: Arc<dyn RayTracer>,
     pub(self) shader: Arc<dyn Shader>,
-    pub(self) datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+    pub(self) datastructure: Arc<Mutex<dyn DataStructure>>,
 }
 
 impl RendererBuilder {
@@ -53,7 +53,7 @@ impl RendererBuilderRaytracer {
 impl RendererBuilderShader {
     pub fn with_datastructure(
         self,
-        datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+        datastructure: Arc<Mutex<dyn DataStructure>>,
     ) -> RendererBuilderDatastructure {
         RendererBuilderDatastructure {
             generator: self.generator,

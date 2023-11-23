@@ -15,7 +15,7 @@ pub struct Renderer {
     generator: Arc<dyn Generator>,
     raytracer: Arc<dyn RayTracer>,
     shader: Arc<dyn Shader>,
-    datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+    datastructure: Arc<Mutex<dyn DataStructure>>,
 }
 
 impl Renderer {
@@ -23,7 +23,7 @@ impl Renderer {
         generator: Arc<dyn Generator>,
         raytracer: Arc<dyn RayTracer>,
         shader: Arc<dyn Shader>,
-        datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+        datastructure: Arc<Mutex<dyn DataStructure>>,
     ) -> Self {
         Self {
             generator,

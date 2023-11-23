@@ -32,8 +32,8 @@ impl Config {
         };
 
         let raytracer = MSTracer::new(self.raytracer.samples_per_pixel);
-        let datastructure: Mutex<Box<dyn DataStructure>> =
-            Mutex::new(Box::new(KDTreeDataStructure::new(&scene)));
+        let datastructure: Mutex<KDTreeDataStructure> =
+            Mutex::new(KDTreeDataStructure::new(&scene));
 
         let renderer = RendererBuilder::new(generator)
             .with_raytracer(Arc::new(raytracer))
