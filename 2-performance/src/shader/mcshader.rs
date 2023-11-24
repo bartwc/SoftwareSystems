@@ -15,7 +15,7 @@ impl McShader {
         datastructure: Arc<dyn DataStructure>,
     ) -> Vector {
         let intersection =
-            if let Some(intersection) = datastructure.lock().unwrap().intersects(ray) {
+            if let Some(intersection) = datastructure.intersects(ray) {
                 intersection
             } else {
                 return Vector::repeated(0f64);

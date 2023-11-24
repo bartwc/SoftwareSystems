@@ -15,6 +15,7 @@ use crate::util::camera::Camera;
 
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
+use crate::datastructure::DataStructure;
 
 impl Config {
     pub fn run(self) -> Result<(), ConfigError> {
@@ -32,13 +33,13 @@ impl Config {
         };
 
         let raytracer = MSTracer::new(self.raytracer.samples_per_pixel);
-        let datastructure: Mutex<KDTreeDataStructure> =
-            Mutex::new(KDTreeDataStructure::new(&scene));
+        let datastructure: Arc<KDTreeDataStructure> =
+            Arc::new(KDTreeDataStructure::new(&scene));
 
         let renderer = RendererBuilder::new(generator)
             .with_raytracer(Arc::new(raytracer))
             .with_shader(Arc::new(McShader))
-            .with_datastructure(Arc::new(datastructure))
+            .with_datastructure(datastructure.clone())
             .build();
 
         let camera = Camera::new(
