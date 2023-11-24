@@ -3,7 +3,7 @@ use crate::generator::Generator;
 use crate::raytracer::RayTracer;
 use crate::renderer::Renderer;
 use crate::shader::Shader;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
 pub struct RendererBuilder {
     pub(self) generator: Arc<dyn Generator>,
@@ -24,7 +24,7 @@ pub struct RendererBuilderDatastructure {
     pub(self) generator: Arc<dyn Generator>,
     pub(self) raytracer: Arc<dyn RayTracer>,
     pub(self) shader: Arc<dyn Shader>,
-    pub(self) datastructure: Arc<Mutex<dyn DataStructure>>,
+    pub(self) datastructure: Arc<dyn DataStructure>,
 }
 
 impl RendererBuilder {
@@ -53,7 +53,7 @@ impl RendererBuilderRaytracer {
 impl RendererBuilderShader {
     pub fn with_datastructure(
         self,
-        datastructure: Arc<Mutex<dyn DataStructure>>,
+        datastructure: Arc<dyn DataStructure>,
     ) -> RendererBuilderDatastructure {
         RendererBuilderDatastructure {
             generator: self.generator,

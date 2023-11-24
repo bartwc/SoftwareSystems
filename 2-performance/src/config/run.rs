@@ -1,7 +1,7 @@
 use crate::config::error::ConfigError;
 use crate::config::{Config, GeneratorConfig};
 use crate::datastructure::bvh::KDTreeDataStructure;
-use crate::datastructure::DataStructure;
+// use crate::datastructure::DataStructure;
 use crate::generator::basic::BasicGenerator;
 use crate::generator::threaded::ThreadedGenerator;
 use crate::generator::Generator;

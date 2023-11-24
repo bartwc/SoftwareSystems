@@ -3,7 +3,7 @@ use crate::raytracer::RayTracer;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
 use crate::util::outputbuffer::OutputBuffer;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
 mod builder;
 
@@ -15,7 +15,7 @@ pub struct Renderer {
     generator: Arc<dyn Generator>,
     raytracer: Arc<dyn RayTracer>,
     shader: Arc<dyn Shader>,
-    datastructure: Arc<Mutex<dyn DataStructure>>,
+    datastructure: Arc<dyn DataStructure>,
 }
 
 impl Renderer {
@@ -23,7 +23,7 @@ impl Renderer {
         generator: Arc<dyn Generator>,
         raytracer: Arc<dyn RayTracer>,
         shader: Arc<dyn Shader>,
-        datastructure: Arc<Mutex<dyn DataStructure>>,
+        datastructure: Arc<dyn DataStructure>,
     ) -> Self {
         Self {
             generator,

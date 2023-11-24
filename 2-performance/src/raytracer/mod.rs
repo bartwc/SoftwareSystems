@@ -2,7 +2,7 @@ use crate::datastructure::DataStructure;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
 use std::fmt::Debug;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
 use crate::util::vector::Vector;
 
@@ -16,7 +16,7 @@ pub trait RayTracer: Send + Sync + Debug {
         &self,
         x: usize,
         y: usize,
-        datastructure: Arc<Mutex<dyn DataStructure>>,
+        datastructure: Arc<dyn DataStructure>,
         shader: Arc<dyn Shader>,
         camera: &Camera,
     ) -> Vector;

@@ -5,7 +5,7 @@ use crate::util::camera::Camera;
 use crate::util::outputbuffer::OutputBuffer;
 use crate::util::vector::Vector;
 use std::fmt::Debug;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
 pub mod basic;
 pub mod threaded;
@@ -22,7 +22,7 @@ pub trait Generator: Debug {
     fn generate_internal(
         &self,
         raytracer: Arc<dyn RayTracer>,
-        datastructure: Arc<Mutex<dyn DataStructure>>,
+        datastructure: Arc<dyn DataStructure>,
         shader: Arc<dyn Shader>,
         camera: &Camera,
     ) -> OutputBuffer {

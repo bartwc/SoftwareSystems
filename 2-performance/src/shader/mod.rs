@@ -4,7 +4,7 @@ use crate::scene::texturecoordinate::TextureCoordinate;
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
 use std::fmt::Debug;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 
 pub mod mcshader;
 
@@ -13,7 +13,7 @@ pub mod mcshader;
 /// it gets back, it can give a color to a pixel. A shader can query the `datastructure`
 /// multiple times to achieve such things as reflection, refraction, and other effects.
 pub trait Shader: Send + Sync + Debug {
-    fn shade(&self, ray: Ray, datastructure: Arc<Mutex<dyn DataStructure>>) -> Vector;
+    fn shade(&self, ray: Ray, datastructure: Arc<dyn DataStructure>) -> Vector;
 }
 
 pub fn ambient(intersection: &Intersection) -> Vector {
