@@ -53,7 +53,7 @@ impl BoundingBox {
         Self { min, max }
     }
 
-    pub fn from_triangle(triangle: Arc<Triangle>) -> Self {
+    pub fn from_triangle(triangle: Triangle) -> Self {
         Self::EMPTY
             .include_point(triangle.a())
             .include_point(triangle.b())
@@ -71,7 +71,7 @@ impl BoundingBox {
         }
     }
 
-    pub fn from_triangles(triangles: impl Iterator<Item = Arc<Triangle>>) -> Self {
+    pub fn from_triangles(triangles: impl Iterator<Item = Triangle>) -> Self {
         let mut curr = Self::EMPTY;
         for i in triangles {
             curr = curr.merge(&BoundingBox::from_triangle(i));

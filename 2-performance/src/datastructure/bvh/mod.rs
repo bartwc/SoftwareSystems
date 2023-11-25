@@ -28,7 +28,7 @@ impl Debug for KDTreeDataStructure {
     }
 }
 
-fn intersects_triangle(ray: &Ray, triangle: &Arc<Triangle>) -> Option<Intersection> {
+fn intersects_triangle(ray: &Ray, triangle: &Triangle) -> Option<Intersection> {
     let edge1 = triangle.b() - triangle.a();
     let edge2 = triangle.c() - triangle.a();
 
@@ -71,7 +71,7 @@ fn intersects_triangle(ray: &Ray, triangle: &Arc<Triangle>) -> Option<Intersecti
 impl KDTreeDataStructure {
     pub fn new(scene: &Scene) -> Self {
         debug!("Started building KD-Tree");
-        let triangles: Vec<Arc<Triangle>> = scene.triangles().collect();
+        let triangles: Vec<Triangle> = scene.triangles().collect();
         debug!("Cached triangles locally");
 
         let root = BVHNode::new(triangles);

@@ -14,7 +14,7 @@ pub struct Intersection {
     /// The distance from the ray origin to the hitpoint on the triangle.
     pub t: f32,
     /// The triangle that was hit by the ray.
-    pub triangle: Arc<Triangle>,
+    pub triangle: Triangle,
 }
 
 impl Intersection {

@@ -31,7 +31,7 @@ impl Hasher for FastHash {
 pub struct Mesh {
     pub vertices: Vec<Vector>,
     pub normals: Vec<Vector>,
-    pub triangles: OnceCell<Vec<Arc<Triangle>>>,
+    pub triangles: OnceCell<Vec<Triangle>>,
     pub texcoords: Vec<TextureCoordinate>,
 
     pub material: Arc<Material>,
@@ -60,7 +60,7 @@ impl Debug for Scene {
 }
 
 impl Scene {
-    pub fn triangles(&self) -> impl Iterator<Item = Arc<Triangle>> + '_ {
+    pub fn triangles(&self) -> impl Iterator<Item = Triangle> + '_ {
         self.meshes
             .iter()
             .flat_map(move |i| i.triangles.get().unwrap().to_vec())
@@ -176,12 +176,12 @@ impl SceneBuilder {
                 .indices
                 .chunks_exact(3)
                 .map(|i| {
-                    Arc::new(Triangle {
+                    Triangle {
                         a: i[0] as usize,
                         b: i[1] as usize,
                         c: i[2] as usize,
                         mesh: mesh.clone(),
-                    })
+                    }
                 })
                 .collect::<Vec<_>>();
 
