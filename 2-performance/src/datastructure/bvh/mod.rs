@@ -63,8 +63,8 @@ fn intersects_triangle(ray: Ray, triangle: Arc<Triangle>) -> Option<Intersection
     Some(Intersection {
         uv: (u, v),
         t,
-        ray: Box::new(ray),
-        triangle,
+        ray: Box::new(ray.clone()),
+        triangle: triangle.clone(),
     })
 }
 
@@ -80,7 +80,7 @@ impl KDTreeDataStructure {
         Self { root }
     }
 
-    fn intersect_internal(ray: Ray, node: &mut BVHNode) -> Option<Intersection> {
+    fn intersect_internal(ray: Ray, node: &BVHNode) -> Option<Intersection> {
         debug!("intersection {:?} {}", ray, node);
         match node {
             BVHNode::Leaf {
@@ -144,12 +144,12 @@ impl KDTreeDataStructure {
 }
 
 impl DataStructure for KDTreeDataStructure {
-    fn intersects(&mut self, ray: Ray) -> Option<Intersection> {
-        Self::intersect_internal(ray, &mut self.root)
+    fn intersects(&self, ray: Ray) -> Option<Intersection> {
+        Self::intersect_internal(ray.clone(), &self.root)
     }
 }
 
-pub fn intersects_bhv(node: &mut BVHNode, ray: Ray) -> Option<BoxIntersection> {
+pub fn intersects_bhv(node: &BVHNode, ray: Ray) -> Option<BoxIntersection> {
     match node {
         BVHNode::Leaf {
             bounding_box,
@@ -211,7 +211,7 @@ pub fn intersects_boundingbox(boundingbox: BoundingBox, ray: Ray) -> Option<BoxI
 
     Some(BoxIntersection {
         t,
-        ray,
-        boundingbox,
+        ray: ray.clone(),
+        boundingbox: boundingbox.clone(),
     })
 }

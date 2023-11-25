@@ -14,8 +14,7 @@ use crate::shader::mcshader::McShader;
 use crate::util::camera::Camera;
 
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
-use crate::datastructure::DataStructure;
+use std::sync::{Arc};
 
 impl Config {
     pub fn run(self) -> Result<(), ConfigError> {
@@ -24,21 +23,19 @@ impl Config {
         let scene = SceneBuilder::default()
             .texturepath(PathBuf::from(&self.general.texturepath))
             .build_from_tobj((model, mtls))?;
-
-        let generator: Arc<dyn Generator> = match self.generator {
-            GeneratorConfig::Basic => Arc::new(BasicGenerator),
+        let generator: Box<dyn Generator> = match self.generator {
+            GeneratorConfig::Basic => Box::new(BasicGenerator),
             GeneratorConfig::Threaded { threads } => {
-                Arc::new(ThreadedGenerator::new(threads.get_cores()))
+                Box::new(ThreadedGenerator::new(threads.get_cores()))
             }
         };
-
-        let raytracer = MSTracer::new(self.raytracer.samples_per_pixel);
-        let datastructure: Arc<KDTreeDataStructure> =
+        let raytracer = Box::new(MSTracer::new(self.raytracer.samples_per_pixel));
+        let shader = Box::new(McShader);
+        let datastructure =
             Arc::new(KDTreeDataStructure::new(&scene));
-
-        let renderer = RendererBuilder::new(generator)
-            .with_raytracer(Arc::new(raytracer))
-            .with_shader(Arc::new(McShader))
+        let renderer = RendererBuilder::new(generator.as_ref())
+            .with_raytracer(raytracer.as_ref())
+            .with_shader(shader.as_ref())
             .with_datastructure(datastructure.clone())
             .build();
 

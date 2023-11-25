@@ -11,18 +11,18 @@ use crate::generator::Generator;
 pub use builder::RendererBuilder;
 
 #[derive(Debug)]
-pub struct Renderer {
-    generator: Arc<dyn Generator>,
-    raytracer: Arc<dyn RayTracer>,
-    shader: Arc<dyn Shader>,
+pub struct Renderer<'a> {
+    generator: &'a dyn Generator,
+    raytracer: &'a dyn RayTracer,
+    shader: &'a dyn Shader,
     datastructure: Arc<dyn DataStructure>,
 }
 
-impl Renderer {
+impl<'a> Renderer<'a> {
     pub(self) fn new(
-        generator: Arc<dyn Generator>,
-        raytracer: Arc<dyn RayTracer>,
-        shader: Arc<dyn Shader>,
+        generator: &'a dyn Generator,
+        raytracer: &'a dyn RayTracer,
+        shader: &'a dyn Shader,
         datastructure: Arc<dyn DataStructure>,
     ) -> Self {
         Self {

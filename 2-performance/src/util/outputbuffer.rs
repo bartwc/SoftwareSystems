@@ -2,21 +2,21 @@ use crate::util::color::Color;
 use crate::util::vector::Vector;
 use bmp::{px, Image, Pixel};
 use std::fs::File;
-use std::io::{BufWriter, Write};
+use std::io::{BufWriter};
 
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 
 #[derive(Clone)]
 pub struct OutputBuffer {
     buffer: Vec<Vec<Vector>>,
-    backup_location: PathBuf,
+    // backup_location: PathBuf,
 }
 
 impl OutputBuffer {
-    pub fn new(backup_location: impl AsRef<Path>) -> Self {
+    pub fn new(_backup_location: impl AsRef<Path>) -> Self {
         Self {
             buffer: Vec::new(),
-            backup_location: backup_location.as_ref().to_path_buf(),
+            // backup_location: backup_location.as_ref().to_path_buf(),
         }
     }
 
@@ -35,10 +35,10 @@ impl OutputBuffer {
         res
     }
 
-    pub fn from_buffer(buffer: Vec<Vec<Vector>>, backup_location: impl AsRef<Path>) -> Self {
+    pub fn from_buffer(buffer: Vec<Vec<Vector>>, _backup_location: impl AsRef<Path>) -> Self {
         Self {
             buffer,
-            backup_location: backup_location.as_ref().to_path_buf(),
+            // backup_location: backup_location.as_ref().to_path_buf(),
         }
     }
 
@@ -58,26 +58,26 @@ impl OutputBuffer {
 
     pub fn set_at_base(&mut self, x: usize, y: usize, color: Vector, stored_file: &mut File) {
         self.buffer[y][x] = color;
-        let mut buffer  = BufWriter::new(stored_file);
+        let _buffer  = BufWriter::new(stored_file);
         // let mut f = File::create(self.backup_location.clone()).unwrap();
         for _row in &self.buffer {
             for _column in _row {
-                write!(buffer, "{}, {}, {};", color.x, color.y, color.z).unwrap();
+                // write!(buffer, "{}, {}, {};", color.x, color.y, color.z).unwrap();
                 //buffer.flush().unwrap();
             }
-            writeln!(buffer).unwrap();
+            // writeln!(buffer).unwrap();
         }
     }
 
     pub fn set_at_thread(&mut self, x: usize, y: usize, color: Vector, stored_file: &mut File) {
         self.buffer[y][x] = color;
-        let mut buffer  = BufWriter::new(stored_file);
+        let _buffer  = BufWriter::new(stored_file);
         // let mut f = File::create(self.backup_location.clone()).unwrap();
         // for _row in &self.buffer {
         //     for _column in _row {
-        write!(buffer, "{}, {}, {};", color.x, color.y, color.z);
+        // write!(buffer, "{}, {}, {};", color.x, color.y, color.z);
         if x == self.buffer.len() - 1 {
-                writeln!(buffer);
+                // writeln!(buffer);
         }
         //let _ = buffer.flush();
     }

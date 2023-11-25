@@ -13,7 +13,7 @@ pub mod mcshader;
 /// it gets back, it can give a color to a pixel. A shader can query the `datastructure`
 /// multiple times to achieve such things as reflection, refraction, and other effects.
 pub trait Shader: Send + Sync + Debug {
-    fn shade(&self, ray: Ray, datastructure: Arc<dyn DataStructure>) -> Vector;
+    fn shade<'a> (&self, ray: Ray, datastructure: Arc<dyn DataStructure>, intersection: &Option<Intersection>) -> Vector;
 }
 
 pub fn ambient(intersection: &Intersection) -> Vector {
@@ -52,8 +52,8 @@ pub fn map_uv(intersection: &Intersection) -> TextureCoordinate {
     let texb = intersection.triangle.texture_b();
     let texc = intersection.triangle.texture_c();
 
-    let e1 = texc - texa;
-    let e2 = texb - texa;
+    let e1 = &texc - &texa;
+    let e2 = &texb - &texa;
 
     texa.to_owned() + (e1 * intersection.uv.1) + (e2 * intersection.uv.0)
 }
