@@ -2,7 +2,7 @@ use crate::datastructure::DataStructure;
 use crate::raytracer::RayTracer;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
-// use std::io::{stdout, Write};
+use std::io::{stdout, Write};
 use std::sync::{Arc};
 
 use crate::util::vector::Vector;
@@ -35,7 +35,7 @@ impl RayTracer for MSTracer {
             out += shader.shade(&ray, datastructure.clone(), &intersection)/ self.samples_per_pixel as f32 ;
         }
         print!("\r{x}, {y} ");
-        // stdout().flush().unwrap();
+        stdout().flush().unwrap();
 
         out
     }
