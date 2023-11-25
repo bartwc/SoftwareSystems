@@ -39,7 +39,7 @@ fn intersects_triangle(ray: &Ray, triangle: &Arc<Triangle>) -> Option<Intersecti
         return None;
     }
 
-    let f = 1f64 / a;
+    let f = 1f32 / a;
 
     let s = ray.origin - triangle.a();
     let u = f * s.dot(h);
@@ -47,11 +47,11 @@ fn intersects_triangle(ray: &Ray, triangle: &Arc<Triangle>) -> Option<Intersecti
     let q = s.cross(edge1);
     let v = f * ray.direction.dot(q);
 
-    if u < 0f64 || u > 1f64 {
+    if u < 0f32 || u > 1f32 {
         return None;
     }
 
-    if v < 0f64 || u + v > 1f64 {
+    if v < 0f32 || u + v > 1f32 {
         return None;
     }
 

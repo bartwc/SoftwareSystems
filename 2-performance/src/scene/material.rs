@@ -36,14 +36,14 @@ pub struct Material {
     /// Specular color of the material
     pub specular: Vector,
     /// Material shininess attribute
-    pub shininess: f64,
+    pub shininess: f32,
     /// Dissolve attribute is the alpha term for the material. Referred to as dissolve since that's
     /// what the MTL file format docs refer to it as
-    pub dissolve: f64,
+    pub dissolve: f32,
     /// Optical density also known as index of refraction. Called optical_density in the MTL specc.
     /// Takes on a value between 0.001 and 10.0. 1.0 means light does not bend as it passed through
     /// the object.
-    pub optical_density: f64,
+    pub optical_density: f32,
     /// Name of the ambient texture file for the material. No path is pre-pended to the texture
     /// file names specified in the MTL file
     pub ambient_texture: Option<Texture>,
@@ -80,10 +80,10 @@ impl Material {
             .unknown_param
             .get("Ke")
             .unwrap_or(&default_emittance);
-        let emittancevec: Vec<f64> = stremittance
+        let emittancevec: Vec<f32> = stremittance
             .split(" ")
             .map(|i| i.parse())
-            .collect::<Result<Vec<f64>, _>>()
+            .collect::<Result<Vec<f32>, _>>()
             .unwrap_or(vec![0., 0., 0.]);
 
         let emittance = if emittancevec.len() != 3 {
@@ -102,9 +102,9 @@ impl Material {
             ambient: Vector::from_arr(material.ambient),
             diffuse: Vector::from_arr(material.diffuse),
             specular: Vector::from_arr(material.specular),
-            shininess: material.shininess as f64,
-            dissolve: material.dissolve as f64,
-            optical_density: material.optical_density as f64,
+            shininess: material.shininess as f32,
+            dissolve: material.dissolve as f32,
+            optical_density: material.optical_density as f32,
             ambient_texture: textureatlas.get_texture(&material.ambient_texture),
             diffuse_texture: textureatlas.get_texture(&material.diffuse_texture),
             specular_texture: textureatlas.get_texture(&material.specular_texture),

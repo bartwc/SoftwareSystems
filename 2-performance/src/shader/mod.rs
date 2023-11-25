@@ -92,8 +92,8 @@ pub fn specular(
     let triangle = intersection.triangle.clone();
 
     let light_dir = (light_pos - hit_pos).unit();
-    let reflec = 2f64 * (triangle.normal().dot(light_dir)) * triangle.normal() - light_dir;
-    let spec = 0f64.max((cam_pos - hit_pos).unit().dot(reflec));
+    let reflec = 2f32 * (triangle.normal().dot(light_dir)) * triangle.normal() - light_dir;
+    let spec = 0f32.max((cam_pos - hit_pos).unit().dot(reflec));
 
     spec.powf(triangle.material().shininess) * triangle.material().specular * texture
 }

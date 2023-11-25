@@ -103,7 +103,7 @@ impl BVHNode {
             leftset: Vec<Arc<Triangle>>,
             rightset: Vec<Arc<Triangle>>,
 
-            totalcost: f64,
+            totalcost: f32,
         }
 
         let mut smallest: Option<State> = None;

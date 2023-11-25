@@ -1,12 +1,12 @@
 use crate::scene::triangle::Triangle;
 use crate::util::vector::Vector;
-use std::f64;
+use std::f32;
 use std::sync::Arc;
 
 pub enum Axis {
-    X(f64),
-    Y(f64),
-    Z(f64),
+    X(f32),
+    Y(f32),
+    Z(f32),
 }
 
 impl Axis {
@@ -17,13 +17,13 @@ impl Axis {
     ) -> Vec<(BoundingBox, BoundingBox)> {
         match self {
             Axis::X(length) => (0..steps)
-                .map(|i| bounding_box.split_at(Axis::X((1. / steps as f64 * length) * i as f64)))
+                .map(|i| bounding_box.split_at(Axis::X((1. / steps as f32 * length) * i as f32)))
                 .collect(),
             Axis::Y(length) => (0..steps)
-                .map(|i| bounding_box.split_at(Axis::Y((1. / steps as f64 * length) * i as f64)))
+                .map(|i| bounding_box.split_at(Axis::Y((1. / steps as f32 * length) * i as f32)))
                 .collect(),
             Axis::Z(length) => (0..steps)
-                .map(|i| bounding_box.split_at(Axis::Z((1. / steps as f64 * length) * i as f64)))
+                .map(|i| bounding_box.split_at(Axis::Z((1. / steps as f32 * length) * i as f32)))
                 .collect(),
         }
     }
@@ -38,14 +38,14 @@ pub struct BoundingBox {
 impl BoundingBox {
     pub const EMPTY: BoundingBox = BoundingBox {
         min: Vector {
-            x: f64::INFINITY,
-            y: f64::INFINITY,
-            z: f64::INFINITY,
+            x: f32::INFINITY,
+            y: f32::INFINITY,
+            z: f32::INFINITY,
         },
         max: Vector {
-            x: f64::NEG_INFINITY,
-            y: f64::NEG_INFINITY,
-            z: f64::NEG_INFINITY,
+            x: f32::NEG_INFINITY,
+            y: f32::NEG_INFINITY,
+            z: f32::NEG_INFINITY,
         },
     };
 
@@ -88,7 +88,7 @@ impl BoundingBox {
         Vector::new(x, y, z)
     }
 
-    pub fn surface_area(&self) -> f64 {
+    pub fn surface_area(&self) -> f32 {
         let size = self.size();
         let surface_top = size.x * size.z;
         let surface_front = size.x * size.y;
@@ -97,8 +97,8 @@ impl BoundingBox {
         2. * (surface_top + surface_front + surface_side)
     }
 
-    pub fn cost(&self, numtriangles: usize) -> f64 {
-        self.surface_area() * numtriangles as f64
+    pub fn cost(&self, numtriangles: usize) -> f32 {
+        self.surface_area() * numtriangles as f32
     }
 
     pub fn contains(&self, triangle: &Triangle) -> bool {

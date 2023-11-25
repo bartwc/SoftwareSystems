@@ -27,12 +27,12 @@ impl RayTracer for MSTracer {
         shader: &'a dyn Shader,
         camera: &Camera,
     ) -> Vector {
-        let mut out = Vector::repeated(0f64);
-        let ray = camera.generate_ray(x as f64, y as f64);
+        let mut out = Vector::repeated(0f32);
+        let ray = camera.generate_ray(x as f32, y as f32);
         // let ray_clone = ray.clone();
         let intersection = datastructure.intersects(&ray);
         for _ in 0..self.samples_per_pixel {
-            out += shader.shade(&ray, datastructure.clone(), &intersection)/ self.samples_per_pixel as f64 ;
+            out += shader.shade(&ray, datastructure.clone(), &intersection)/ self.samples_per_pixel as f32 ;
         }
         print!("\r{x}, {y} ");
         // stdout().flush().unwrap();

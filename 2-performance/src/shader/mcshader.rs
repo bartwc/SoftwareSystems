@@ -28,13 +28,13 @@ impl McShader {
                 let indirect_light = self.shade_internal(&bounce_ray, depth - 1, datastructure_clone, &intersection_test);
                 indirect_light * diffuse(intersection_ref, hit_pos, hit_pos + bounce_direction)
             } else {
-                Vector::repeated(0f64)
+                Vector::repeated(0f32)
             };
 
             return indirect * 2. + part_emi;
         }
         else {
-            return Vector::repeated(0f64);
+            return Vector::repeated(0f32);
         }
     }
 }

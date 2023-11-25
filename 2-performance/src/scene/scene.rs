@@ -146,17 +146,17 @@ impl SceneBuilder {
                 .mesh
                 .positions
                 .chunks_exact(3)
-                .map(|i| Vector::new(i[0] as f64, i[1] as f64, i[2] as f64));
+                .map(|i| Vector::new(i[0] as f32, i[1] as f32, i[2] as f32));
             let normals = model
                 .mesh
                 .normals
                 .chunks_exact(3)
-                .map(|i| Vector::new(i[0] as f64, i[1] as f64, i[2] as f64));
+                .map(|i| Vector::new(i[0] as f32, i[1] as f32, i[2] as f32));
             let texcoords = model
                 .mesh
                 .texcoords
                 .chunks_exact(2)
-                .map(|i| TextureCoordinate::new(i[0] as f64, i[1] as f64));
+                .map(|i| TextureCoordinate::new(i[0] as f32, i[1] as f32));
 
             let material = match model.mesh.material_id {
                 Some(id) => materials[id].clone(),

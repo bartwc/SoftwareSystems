@@ -1,7 +1,7 @@
 use crate::scene::triangle::Triangle;
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
-use std::f64::EPSILON;
+use std::f32::EPSILON;
 use std::sync::Arc;
 
 #[derive(Debug)]
@@ -10,9 +10,9 @@ pub struct Intersection {
     /// The original ray that was used to get this intersection.
     pub ray: Box<Ray>,
     /// the uv (barycentric) coordinates of the hitpoint on the triangle.
-    pub uv: (f64, f64),
+    pub uv: (f32, f32),
     /// The distance from the ray origin to the hitpoint on the triangle.
-    pub t: f64,
+    pub t: f32,
     /// The triangle that was hit by the ray.
     pub triangle: Arc<Triangle>,
 }

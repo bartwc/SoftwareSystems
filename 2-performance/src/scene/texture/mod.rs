@@ -57,15 +57,15 @@ impl Texture {
     }
 
     pub fn at(&self, coord: TextureCoordinate) -> Vector {
-        let x = (coord.u * self.size.0 as f64) as u32;
-        let y = (self.size.1 - (coord.v * self.size.1 as f64) as usize) as u32;
+        let x = (coord.u * self.size.0 as f32) as u32;
+        let y = (self.size.1 - (coord.v * self.size.1 as f32) as usize) as u32;
 
         let rgb = self.image.get_pixel(x, y);
 
         Vector::new(
-            rgb.0[0] as f64 / 255.,
-            rgb.0[1] as f64 / 255.,
-            rgb.0[2] as f64 / 255.,
+            rgb.0[0] as f32 / 255.,
+            rgb.0[1] as f32 / 255.,
+            rgb.0[2] as f32 / 255.,
         )
     }
 }
