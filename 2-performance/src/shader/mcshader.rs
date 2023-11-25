@@ -2,7 +2,7 @@ use crate::datastructure::DataStructure;
 use crate::shader::{diffuse, emittance, Shader};
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc};
 use crate::datastructure::intersection::Intersection;
 
 #[derive(Debug)]
@@ -11,7 +11,7 @@ pub struct McShader;
 impl McShader {
     pub fn shade_internal<'a>(
         &self,
-        ray: &Ray,
+        _ray: &Ray,
         depth: usize,
         datastructure: Arc<dyn DataStructure>,
         intersection: &Option<Intersection>,
