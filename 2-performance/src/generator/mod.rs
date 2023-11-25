@@ -27,7 +27,7 @@ pub trait Generator: Debug {
         camera: &Camera,
     ) -> OutputBuffer {
         self.generate(camera, &|x, y| {
-            raytracer.raytrace(x, y, datastructure.clone(), shader.clone(), camera)
+            raytracer.raytrace(x, y, datastructure.clone(), shader, camera) // shader.clone() does nothing
         })
     }
 

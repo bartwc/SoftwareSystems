@@ -35,9 +35,9 @@ impl<'a> Renderer<'a> {
 
     pub fn render(&self, camera: &Camera) -> OutputBuffer {
         self.generator.generate_internal(
-            self.raytracer.clone(),
+            self.raytracer, // raytracer.clone() does nothing
             self.datastructure.clone(),
-            self.shader.clone(),
+            self.shader, // shader.clone() does nothing
             camera,
         )
     }
