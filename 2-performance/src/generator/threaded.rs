@@ -49,8 +49,9 @@ impl Generator for ThreadedGenerator {
                         }
 
                         for x in 0..camera.width {
+                            let callback_result = callback(x, y);
                             let mut guard = local_output.lock().unwrap();
-                            guard.set_at_thread(x, y, callback(x, y), &mut file);
+                            guard.set_at_thread(x, y, callback_result, &mut file);
                         }
 
                         info!("Finished row {}", y);
