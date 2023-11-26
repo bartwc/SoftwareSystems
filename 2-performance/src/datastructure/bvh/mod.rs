@@ -63,7 +63,7 @@ fn intersects_triangle(ray: &Ray, triangle: &Triangle) -> Option<Intersection> {
     Some(Intersection {
         uv: (u, v),
         t,
-        ray: Box::new(ray.clone()),
+        ray: ray.clone(),
         triangle: triangle.clone(),
     })
 }
