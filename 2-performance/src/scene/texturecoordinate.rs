@@ -2,12 +2,12 @@ use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Copy, Clone)]
 pub struct TextureCoordinate {
-    pub u: f64,
-    pub v: f64,
+    pub u: f32,
+    pub v: f32,
 }
 
 impl TextureCoordinate {
-    pub fn new(u: f64, v: f64) -> Self {
+    pub fn new(u: f32, v: f32) -> Self {
         Self { u, v }
     }
 }
@@ -56,10 +56,10 @@ impl Mul for TextureCoordinate {
     }
 }
 
-impl Mul<f64> for TextureCoordinate {
+impl Mul<f32> for TextureCoordinate {
     type Output = TextureCoordinate;
 
-    fn mul(self, rhs: f64) -> Self::Output {
+    fn mul(self, rhs: f32) -> Self::Output {
         Self {
             u: self.u * rhs,
             v: self.v * rhs,

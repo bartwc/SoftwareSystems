@@ -4,6 +4,6 @@ use crate::util::ray::Ray;
 #[derive(Debug)]
 pub struct BoxIntersection {
     pub ray: Ray,
-    pub t: f64,
+    pub t: f32,
     pub boundingbox: BoundingBox,
 }

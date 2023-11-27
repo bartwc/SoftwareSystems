@@ -66,7 +66,7 @@ impl Triangle {
         self.mesh.texcoords[self.c]
     }
 
-    pub fn area(&self) -> f64 {
+    pub fn area(&self) -> f32 {
         let side1 = (self.c() - self.a()).length();
         let side2 = (self.c() - self.b()).length();
         let side3 = (self.b() - self.a()).length();
