@@ -52,8 +52,8 @@ pub fn map_uv(intersection: &Intersection) -> TextureCoordinate {
     let texb = intersection.triangle.texture_b();
     let texc = intersection.triangle.texture_c();
 
-    let e1 = &texc - &texa;
-    let e2 = &texb - &texa;
+    let e1 = texc - texa;
+    let e2 = texb - texa;
 
     texa.to_owned() + (e1 * intersection.uv.1) + (e2 * intersection.uv.0)
 }
