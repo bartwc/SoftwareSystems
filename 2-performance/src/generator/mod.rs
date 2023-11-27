@@ -22,7 +22,7 @@ pub trait Generator: Debug {
     fn generate_internal<'a>(
         &self,
         raytracer: &'a dyn RayTracer,
-        datastructure: &dyn DataStructure,
+        datastructure: &'a dyn DataStructure,
         shader: &'a dyn Shader,
         camera: &Camera,
     ) -> OutputBuffer {

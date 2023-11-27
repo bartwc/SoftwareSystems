@@ -13,7 +13,7 @@ impl McShader {
         &self,
         _ray: &Ray,
         depth: usize,
-        datastructure: &dyn DataStructure,
+        datastructure: &'a dyn DataStructure,
         intersection: &Option<Intersection>,
     ) -> Vector {
         if let Some(intersection_ref) = intersection {
@@ -40,7 +40,7 @@ impl McShader {
 }
 
 impl Shader for McShader {
-    fn shade<'a> (&self, ray: &Ray, datastructure: &dyn DataStructure, intersection: &Option<Intersection>) -> Vector {
+    fn shade<'a> (&self, ray: &Ray, datastructure: &'a dyn DataStructure, intersection: &Option<Intersection>) -> Vector {
         self.shade_internal(ray, 4, datastructure, intersection)
     }
 }
