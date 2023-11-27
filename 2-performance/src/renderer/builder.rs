@@ -4,6 +4,7 @@ use crate::raytracer::RayTracer;
 use crate::renderer::Renderer;
 use crate::shader::Shader;
 use std::sync::{Arc};
+use crate::datastructure::bvh::KDTreeDataStructure;
 
 pub struct RendererBuilder<'a> {
     pub(self) generator: &'a dyn Generator,
@@ -24,7 +25,7 @@ pub struct RendererBuilderDatastructure<'a> {
     pub(self) generator: &'a dyn Generator,
     pub(self) raytracer: &'a dyn RayTracer,
     pub(self) shader: &'a dyn Shader,
-    pub(self) datastructure: Arc<dyn DataStructure>,
+    pub(self) datastructure: &'a dyn DataStructure,
 }
 
 impl<'a> RendererBuilder<'a> {
@@ -53,7 +54,7 @@ impl<'a> RendererBuilderRaytracer<'a> {
 impl<'a> RendererBuilderShader<'a> {
     pub fn with_datastructure(
         self,
-        datastructure: Arc<dyn DataStructure>,
+        datastructure: &'a dyn DataStructure,
     ) -> RendererBuilderDatastructure<'a> {
         RendererBuilderDatastructure {
             generator: self.generator,

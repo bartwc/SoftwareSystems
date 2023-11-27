@@ -32,11 +32,11 @@ impl Config {
         let raytracer = Box::new(MSTracer::new(self.raytracer.samples_per_pixel));
         let shader = Box::new(McShader);
         let datastructure =
-            Arc::new(KDTreeDataStructure::new(&scene));
+            Box::new(KDTreeDataStructure::new(&scene));
         let renderer = RendererBuilder::new(generator.as_ref())
             .with_raytracer(raytracer.as_ref())
             .with_shader(shader.as_ref())
-            .with_datastructure(datastructure.clone())
+            .with_datastructure(datastructure.as_ref())
             .build();
 
         let camera = Camera::new(

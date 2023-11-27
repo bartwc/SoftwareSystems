@@ -22,12 +22,12 @@ pub trait Generator: Debug {
     fn generate_internal<'a>(
         &self,
         raytracer: &'a dyn RayTracer,
-        datastructure: Arc<dyn DataStructure>,
+        datastructure: &dyn DataStructure,
         shader: &'a dyn Shader,
         camera: &Camera,
     ) -> OutputBuffer {
         self.generate(camera, &|x, y| {
-            raytracer.raytrace(x, y, datastructure.clone(), shader, camera) // shader.clone() does nothing
+            raytracer.raytrace(x, y, datastructure, shader, camera) // shader.clone() does nothing
         })
     }
 

@@ -15,7 +15,7 @@ pub struct Renderer<'a> {
     generator: &'a dyn Generator,
     raytracer: &'a dyn RayTracer,
     shader: &'a dyn Shader,
-    datastructure: Arc<dyn DataStructure>,
+    datastructure: &'a dyn DataStructure,
 }
 
 impl<'a> Renderer<'a> {
@@ -23,7 +23,7 @@ impl<'a> Renderer<'a> {
         generator: &'a dyn Generator,
         raytracer: &'a dyn RayTracer,
         shader: &'a dyn Shader,
-        datastructure: Arc<dyn DataStructure>,
+        datastructure: &'a dyn DataStructure,
     ) -> Self {
         Self {
             generator,
@@ -36,7 +36,7 @@ impl<'a> Renderer<'a> {
     pub fn render(&self, camera: &Camera) -> OutputBuffer {
         self.generator.generate_internal(
             self.raytracer, // raytracer.clone() does nothing
-            self.datastructure.clone(),
+            self.datastructure,
             self.shader, // shader.clone() does nothing
             camera,
         )

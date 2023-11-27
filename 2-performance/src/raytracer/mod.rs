@@ -16,7 +16,7 @@ pub trait RayTracer: Send + Sync + Debug {
         &self,
         x: usize,
         y: usize,
-        datastructure: Arc<dyn DataStructure>,
+        datastructure: &dyn DataStructure,
         shader: &'a dyn Shader,
         camera: &Camera,
     ) -> Vector;
