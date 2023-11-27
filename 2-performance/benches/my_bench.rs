@@ -6,7 +6,7 @@ fn bench(c: &mut Criterion) {
     // Configure Criterion.rs to detect smaller differences and increase sample size to improve
     // precision and counteract the resulting noise.
     group.significance_level(0.1).sample_size(10);
-    group.bench_function("my-function", |b| b.iter(|| main_tb()));
+    group.bench_function("my-function", |b| b.iter(main_tb));
     group.finish();
 }
 
