@@ -3,7 +3,7 @@ use crate::raytracer::RayTracer;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
 use crate::util::outputbuffer::OutputBuffer;
-use std::sync::{Arc};
+
 
 mod builder;
 

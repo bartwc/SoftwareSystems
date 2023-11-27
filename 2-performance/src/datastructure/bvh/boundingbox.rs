@@ -1,7 +1,7 @@
 use crate::scene::triangle::Triangle;
 use crate::util::vector::Vector;
 use std::f32;
-use std::sync::Arc;
+
 
 pub enum Axis {
     X(f32),

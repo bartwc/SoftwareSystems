@@ -5,7 +5,7 @@ use crate::util::camera::Camera;
 use crate::util::outputbuffer::OutputBuffer;
 use crate::util::vector::Vector;
 use std::fmt::Debug;
-use std::sync::{Arc};
+
 
 pub mod basic;
 pub mod threaded;

@@ -2,18 +2,18 @@ use crate::datastructure::DataStructure;
 use crate::shader::{diffuse, emittance, Shader};
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
-use std::sync::{Arc};
+
 use crate::datastructure::intersection::Intersection;
 
 #[derive(Debug)]
 pub struct McShader;
 
 impl McShader {
-    pub fn shade_internal<'a>(
+    pub fn shade_internal(
         &self,
         _ray: &Ray,
         depth: usize,
-        datastructure: &'a dyn DataStructure,
+        datastructure: &dyn DataStructure,
         intersection: &Option<Intersection>,
     ) -> Vector {
         if let Some(intersection_ref) = intersection {
@@ -31,16 +31,16 @@ impl McShader {
                 Vector::repeated(0f32)
             };
 
-            return indirect * 2. + part_emi;
+            indirect * 2. + part_emi
         }
         else {
-            return Vector::repeated(0f32);
+            Vector::repeated(0f32)
         }
     }
 }
 
 impl Shader for McShader {
-    fn shade<'a> (&self, ray: &Ray, datastructure: &'a dyn DataStructure, intersection: &Option<Intersection>) -> Vector {
+    fn shade (&self, ray: &Ray, datastructure: &dyn DataStructure, intersection: &Option<Intersection>) -> Vector {
         self.shade_internal(ray, 4, datastructure, intersection)
     }
 }

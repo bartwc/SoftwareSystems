@@ -37,8 +37,8 @@ impl Camera {
     }
 
     pub fn generate_ray(&self, x: f32, y: f32) -> Ray {
-        let xdir = (2f32 * x as f32 * self.inf_width - 1f32) * self.angle * self.aspect_ratio;
-        let ydir = (1f32 - 2f32 * y as f32 * self.inf_height) * self.angle;
+        let xdir = (2f32 * x * self.inf_width - 1f32) * self.angle * self.aspect_ratio;
+        let ydir = (1f32 - 2f32 * y * self.inf_height) * self.angle;
 
         let raydir = Vector::new(xdir, ydir, -1f32)
             .rotated(Vector::new(0., 0., 1.))

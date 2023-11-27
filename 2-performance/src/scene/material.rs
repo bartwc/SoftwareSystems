@@ -81,7 +81,7 @@ impl Material {
             .get("Ke")
             .unwrap_or(&default_emittance);
         let emittancevec: Vec<f32> = stremittance
-            .split(" ")
+            .split(' ')
             .map(|i| i.parse())
             .collect::<Result<Vec<f32>, _>>()
             .unwrap_or(vec![0., 0., 0.]);
@@ -102,9 +102,9 @@ impl Material {
             ambient: Vector::from_arr(material.ambient),
             diffuse: Vector::from_arr(material.diffuse),
             specular: Vector::from_arr(material.specular),
-            shininess: material.shininess as f32,
-            dissolve: material.dissolve as f32,
-            optical_density: material.optical_density as f32,
+            shininess: material.shininess,
+            dissolve: material.dissolve,
+            optical_density: material.optical_density,
             ambient_texture: textureatlas.get_texture(&material.ambient_texture),
             diffuse_texture: textureatlas.get_texture(&material.diffuse_texture),
             specular_texture: textureatlas.get_texture(&material.specular_texture),
@@ -113,7 +113,7 @@ impl Material {
             illumination_model: material.illumination_model,
 
             emittance,
-            emittance_texture: textureatlas.get_texture(&emittance_texture_name),
+            emittance_texture: textureatlas.get_texture(emittance_texture_name),
         }
     }
 }

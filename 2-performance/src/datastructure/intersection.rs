@@ -2,7 +2,7 @@ use crate::scene::triangle::Triangle;
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
 use std::f32::EPSILON;
-use std::sync::Arc;
+
 
 #[derive(Debug)]
 /// Represents the intersection point between a ray and a triangle.

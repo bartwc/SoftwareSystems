@@ -14,7 +14,7 @@ use crate::shader::mcshader::McShader;
 use crate::util::camera::Camera;
 
 use std::path::PathBuf;
-use std::sync::{Arc};
+
 
 impl Config {
     pub fn run(self) -> Result<(), ConfigError> {

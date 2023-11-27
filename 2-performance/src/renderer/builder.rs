@@ -3,8 +3,8 @@ use crate::generator::Generator;
 use crate::raytracer::RayTracer;
 use crate::renderer::Renderer;
 use crate::shader::Shader;
-use std::sync::{Arc};
-use crate::datastructure::bvh::KDTreeDataStructure;
+
+
 
 pub struct RendererBuilder<'a> {
     pub(self) generator: &'a dyn Generator,

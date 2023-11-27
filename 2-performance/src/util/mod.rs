@@ -1,5 +1,5 @@
 use rand::rngs::ThreadRng;
-use rand::Rng;
+
 
 pub mod camera;
 pub mod color;

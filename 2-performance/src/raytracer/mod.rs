@@ -2,7 +2,7 @@ use crate::datastructure::DataStructure;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
 use std::fmt::Debug;
-use std::sync::{Arc};
+
 
 use crate::util::vector::Vector;
 

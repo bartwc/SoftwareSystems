@@ -4,7 +4,7 @@ use crate::util::vector::Vector;
 use core::fmt;
 use log::debug;
 use std::fmt::{Display, Formatter};
-use std::sync::Arc;
+
 
 pub enum BVHNode {
     Leaf {
@@ -82,7 +82,7 @@ impl BVHNode {
         bounding_box: BoundingBox,
         depth: usize,
     ) -> Self {
-        if triangles.len() == 0 {
+        if triangles.is_empty() {
             return BVHNode::Leaf {
                 bounding_box: BoundingBox::EMPTY,
                 triangles,

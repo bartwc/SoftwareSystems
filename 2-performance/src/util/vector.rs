@@ -35,7 +35,7 @@ impl Vector {
     }
 
     pub fn from_arr([a, b, c]: [f32; 3]) -> Self {
-        Self::new(a as f32, b as f32, c as f32)
+        Self::new(a, b, c)
     }
 
     pub fn iszero(&self) -> bool {
@@ -158,12 +158,12 @@ impl Vector {
     }
 }
 
-impl Into<Color> for Vector {
-    fn into(self) -> Color {
+impl From<Vector> for Color {
+    fn from(val: Vector) -> Self {
         Color {
-            r: (self.x.clamp01() * 255.) as u8,
-            g: (self.y.clamp01() * 255.) as u8,
-            b: (self.z.clamp01() * 255.) as u8,
+            r: (val.x.clamp01() * 255.) as u8,
+            g: (val.y.clamp01() * 255.) as u8,
+            b: (val.z.clamp01() * 255.) as u8,
         }
     }
 }

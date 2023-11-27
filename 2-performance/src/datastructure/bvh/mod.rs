@@ -12,7 +12,7 @@ use log::debug;
 use crate::util::consts::INTERSECTION_EPSILON;
 use core::fmt;
 use std::fmt::{Debug, Formatter};
-use std::sync::Arc;
+
 
 mod boundingbox;
 mod boxintersection;
@@ -47,7 +47,7 @@ fn intersects_triangle(ray: &Ray, triangle: &Triangle) -> Option<Intersection> {
     let q = s.cross(edge1);
     let v = f * ray.direction.dot(q);
 
-    if u < 0f32 || u > 1f32 {
+    if !(0f32..=1f32).contains(&u) {
         return None;
     }
 
@@ -63,7 +63,7 @@ fn intersects_triangle(ray: &Ray, triangle: &Triangle) -> Option<Intersection> {
     Some(Intersection {
         uv: (u, v),
         t,
-        ray: ray.clone(),
+        ray: *ray,
         triangle: triangle.clone(),
     })
 }
@@ -87,12 +87,12 @@ impl KDTreeDataStructure {
                 bounding_box,
                 triangles,
             } => {
-                if intersects_boundingbox(bounding_box, &ray).is_some() {
+                if intersects_boundingbox(bounding_box, ray).is_some() {
                     let mut min = None;
 
                     for triangle in triangles {
                         if let Some(intersection) =
-                            intersects_triangle(&ray, &triangle)
+                            intersects_triangle(ray, triangle)
                         {
                             min = match min {
                                 None => Some(intersection),
@@ -111,24 +111,24 @@ impl KDTreeDataStructure {
                 left,
                 right,
             } => {
-                let dist_l = intersects_bhv(left, &ray);
-                let dist_r = intersects_bhv(right, &ray);
+                let dist_l = intersects_bhv(left, ray);
+                let dist_r = intersects_bhv(right, ray);
 
                 match (dist_l, dist_r) {
                     (None, None) => None,
-                    (Some(_), None) => Self::intersect_internal(&ray, left),
-                    (None, Some(_)) => Self::intersect_internal(&ray, right),
+                    (Some(_), None) => Self::intersect_internal(ray, left),
+                    (None, Some(_)) => Self::intersect_internal(ray, right),
                     (Some(left_intersection), Some(right_intersection)) => {
                         if left_intersection.t < right_intersection.t {
-                            let hit = Self::intersect_internal(&ray, left);
+                            let hit = Self::intersect_internal(ray, left);
                             if let Some(intersection) = hit {
                                 if left.includes_point(&intersection.hit_pos()) {
                                     return Some(intersection);
                                 }
                             }
-                            Self::intersect_internal(&ray, right)
+                            Self::intersect_internal(ray, right)
                         } else {
-                            let hit = Self::intersect_internal(&ray, right);
+                            let hit = Self::intersect_internal(ray, right);
                             if let Some(intersection) = hit {
                                 if right.includes_point(&intersection.hit_pos()) {
                                     return Some(intersection);
@@ -145,7 +145,7 @@ impl KDTreeDataStructure {
 
 impl DataStructure for KDTreeDataStructure {
     fn intersects(&self, ray: &Ray) -> Option<Intersection> {
-        Self::intersect_internal(&ray, &self.root)
+        Self::intersect_internal(ray, &self.root)
     }
 }
 
@@ -154,12 +154,12 @@ pub fn intersects_bhv(node: &BVHNode, ray: &Ray) -> Option<BoxIntersection> {
         BVHNode::Leaf {
             bounding_box,
             triangles: _,
-        } => intersects_boundingbox(bounding_box, &ray),
+        } => intersects_boundingbox(bounding_box, ray),
         BVHNode::Node {
             bounding_box,
             left: _,
             right: _,
-        } => intersects_boundingbox(bounding_box, &ray),
+        } => intersects_boundingbox(bounding_box, ray),
     }
 }
 
@@ -211,7 +211,7 @@ pub fn intersects_boundingbox(boundingbox: &BoundingBox, ray: &Ray) -> Option<Bo
 
     Some(BoxIntersection {
         t,
-        ray: ray.clone(),
+        ray: *ray,
         boundingbox: boundingbox.clone(),
     })
 }
