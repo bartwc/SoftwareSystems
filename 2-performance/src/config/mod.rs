@@ -40,7 +40,7 @@ pub enum GeneratorConfig {
 pub struct GeneralConfig {
     /// Very small float value.
     /// Two floats that are closer together than this value will be equal.
-    epsilon: f64,
+    epsilon: f32,
 
     /// Filename of the scene that will render
     scenename: String,
@@ -66,7 +66,7 @@ pub struct CameraConfig {
     height: usize,
 
     /// The field of view of the camera
-    fov: f64,
+    fov: f32,
 }
 
 impl Config {

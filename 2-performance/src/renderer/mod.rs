@@ -3,7 +3,7 @@ use crate::raytracer::RayTracer;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
 use crate::util::outputbuffer::OutputBuffer;
-use std::sync::{Arc, Mutex};
+
 
 mod builder;
 
@@ -11,19 +11,19 @@ use crate::generator::Generator;
 pub use builder::RendererBuilder;
 
 #[derive(Debug)]
-pub struct Renderer {
-    generator: Arc<dyn Generator>,
-    raytracer: Arc<dyn RayTracer>,
-    shader: Arc<dyn Shader>,
-    datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+pub struct Renderer<'a> {
+    generator: &'a dyn Generator,
+    raytracer: &'a dyn RayTracer,
+    shader: &'a dyn Shader,
+    datastructure: &'a dyn DataStructure,
 }
 
-impl Renderer {
+impl<'a> Renderer<'a> {
     pub(self) fn new(
-        generator: Arc<dyn Generator>,
-        raytracer: Arc<dyn RayTracer>,
-        shader: Arc<dyn Shader>,
-        datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
+        generator: &'a dyn Generator,
+        raytracer: &'a dyn RayTracer,
+        shader: &'a dyn Shader,
+        datastructure: &'a dyn DataStructure,
     ) -> Self {
         Self {
             generator,
@@ -35,9 +35,9 @@ impl Renderer {
 
     pub fn render(&self, camera: &Camera) -> OutputBuffer {
         self.generator.generate_internal(
-            self.raytracer.clone(),
-            self.datastructure.clone(),
-            self.shader.clone(),
+            self.raytracer, // raytracer.clone() does nothing
+            self.datastructure,
+            self.shader, // shader.clone() does nothing
             camera,
         )
     }

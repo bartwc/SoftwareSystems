@@ -2,8 +2,8 @@ use crate::datastructure::DataStructure;
 use crate::raytracer::RayTracer;
 use crate::shader::Shader;
 use crate::util::camera::Camera;
-use std::io::{stdout, Write};
-use std::sync::{Arc, Mutex};
+// use std::io::{stdout, Write};
+
 
 use crate::util::vector::Vector;
 
@@ -19,22 +19,23 @@ impl MSTracer {
 }
 
 impl RayTracer for MSTracer {
-    fn raytrace<'r>(
+    fn raytrace<'a>(
         &self,
         x: usize,
         y: usize,
-        datastructure: Arc<Mutex<Box<dyn DataStructure>>>,
-        shader: Arc<dyn Shader>,
+        datastructure: &'a dyn DataStructure,
+        shader: &'a dyn Shader,
         camera: &Camera,
     ) -> Vector {
-        let mut out = Vector::repeated(0f64);
+        let mut out = Vector::repeated(0f32);
+        let ray = camera.generate_ray(x as f32, y as f32);
+        // let ray_clone = ray.clone();
+        let intersection = datastructure.intersects(&ray);
         for _ in 0..self.samples_per_pixel {
-            let ray = camera.generate_ray(x as f64, y as f64);
-            out += shader.shade(ray, datastructure.clone()) / self.samples_per_pixel as f64;
-
-            print!("\r{x}, {y} ");
-            stdout().flush().unwrap();
+            out += shader.shade(&ray, datastructure, &intersection)/ self.samples_per_pixel as f32 ;
         }
+        // print!("\r{x}, {y} ");
+        // stdout().flush().unwrap();
 
         out
     }

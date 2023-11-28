@@ -4,7 +4,7 @@ use crate::scene::texturecoordinate::TextureCoordinate;
 use crate::util::ray::Ray;
 use crate::util::vector::Vector;
 use std::fmt::Debug;
-use std::sync::{Arc, Mutex};
+
 
 pub mod mcshader;
 
@@ -13,7 +13,7 @@ pub mod mcshader;
 /// it gets back, it can give a color to a pixel. A shader can query the `datastructure`
 /// multiple times to achieve such things as reflection, refraction, and other effects.
 pub trait Shader: Send + Sync + Debug {
-    fn shade(&self, ray: Box<Ray>, datastructure: Arc<Mutex<Box<dyn DataStructure>>>) -> Vector;
+    fn shade (&self, ray: &Ray, datastructure: & dyn DataStructure, intersection: &Option<Intersection>) -> Vector;
 }
 
 pub fn ambient(intersection: &Intersection) -> Vector {
@@ -92,8 +92,8 @@ pub fn specular(
     let triangle = intersection.triangle.clone();
 
     let light_dir = (light_pos - hit_pos).unit();
-    let reflec = 2f64 * (triangle.normal().dot(light_dir)) * triangle.normal() - light_dir;
-    let spec = 0f64.max((cam_pos - hit_pos).unit().dot(reflec));
+    let reflec = 2f32 * (triangle.normal().dot(light_dir)) * triangle.normal() - light_dir;
+    let spec = 0f32.max((cam_pos - hit_pos).unit().dot(reflec));
 
     spec.powf(triangle.material().shininess) * triangle.material().specular * texture
 }

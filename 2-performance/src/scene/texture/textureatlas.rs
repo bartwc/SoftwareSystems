@@ -7,6 +7,12 @@ pub struct TextureAtlasBuilder {
     atlas: HashMap<String, Texture>,
 }
 
+impl Default for TextureAtlasBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TextureAtlasBuilder {
     pub fn new() -> Self {
         Self {
