@@ -1,6 +1,6 @@
-[target.thumbv7m-none-eabi]
+[target.thumbv7m-none-eabi]  # for cross compiler
 runner = "cargo run --target x86_64-unknown-linux-gnu -p embedded-assignment-runner --"
-
+# cargo run will run the runner
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
 rustflags = [
     # Previously, the linker arguments --nmagic and -Tlink.x were set here.
