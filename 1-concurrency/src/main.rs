@@ -58,3 +58,5 @@ fn main() {
         grep_std_only(paths, regex);
     }
 }
+
+// cargo run -- [mM]icrodevice ./examples/example1/
