@@ -15,7 +15,7 @@ unsafe fn DefaultHandler(_irqn: i16) {}
 
 #[panic_handler]
 fn panic_handler(pi: &PanicInfo) -> ! {
-    hprintln!("{}", pi);
+    hprintln!("{}", pi); // semi-hosting (communicate to the outside world)
     halt()
 }
 

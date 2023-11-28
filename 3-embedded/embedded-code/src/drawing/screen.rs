@@ -14,17 +14,17 @@ impl<'p> Screen<'p> {
 
     pub fn new(ssi: &'p mut SSI0, gpio: &'p mut GPIO_PORTC) -> Self {
         // 1. Ensure that the SSE bit in the SSICR1 register is disabled before making any configuration changes.
-        ssi.cr1.write(|w| w.ssi_cr1_sse().clear_bit());
+        ssi.cr1.write(|w| w.ssi_cr1_sse().clear_bit()); // write to the control device register and need to clear it
 
         // 2. Select whether the SSI is a master or slave:
         //     a. For master operations, set the SSICR1 register to 0x0000.0000.
         //     b. For slave mode (output enabled), set the SSICR1 register to 0x0000.0004.
         //     c. For slave mode (output disabled), set the SSICR1 register to 0x0000.000C.
-        ssi.cr1.write(|w| w.ssi_cr1_ms().clear_bit());
+        ssi.cr1.write(|w| w.ssi_cr1_ms().clear_bit()); // clear another bit
 
         // 3. Configure the clock prescale divisor by writing the SSICPSR register.
         // SAFETY: according to the docs, 2 is a valid value for this register
-        ssi.cpsr.write(|w| unsafe { w.ssi_cpsr_cpsdvsr().bits(2) });
+        ssi.cpsr.write(|w| unsafe { w.ssi_cpsr_cpsdvsr().bits(2) }); // 2 is checked to overcome unsafe
 
         // 4. Write the SSICR0 register with the following configuration:
         //     ■ Serial clock rate (SCR)
@@ -57,7 +57,7 @@ impl<'p> Screen<'p> {
         while self.ssi.sr.read().ssi_sr_bsy().bit_is_set() {}
     }
 
-    fn change_mode(&mut self, mode: Mode) {
+    fn change_mode(&mut self, mode: Mode) { // write based on mode
         // SAFETY: these two values registers can have any 7 bit value.
         // the exact values correspond with the ones qemu expects here
         // which we checked by reading qemu's source code.
@@ -81,7 +81,7 @@ impl<'p> Screen<'p> {
         self.write_ssi(max as u16);
     }
 
-    pub fn draw_pixel(&mut self, x: u8, y: u8, brightness: Brightness) {
+    pub fn draw_pixel(&mut self, x: u8, y: u8, brightness: Brightness) { // write a pixel is actually safe with many checks ie assert
         assert!(x < 128, "x larger than width");
         assert!(y < 64, "y larger than height");
 
