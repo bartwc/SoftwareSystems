@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
+#[derive(Default)]
 pub enum ThreadCount {
     /// use all cores
     #[serde(rename = "all")]
+    #[default]
     All,
 
     /// Number of threads to be used
@@ -27,8 +29,4 @@ impl ThreadCount {
     }
 }
 
-impl Default for ThreadCount {
-    fn default() -> Self {
-        ThreadCount::All
-    }
-}
+

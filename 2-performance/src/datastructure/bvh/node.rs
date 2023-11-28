@@ -4,12 +4,12 @@ use crate::util::vector::Vector;
 use core::fmt;
 use log::debug;
 use std::fmt::{Display, Formatter};
-use std::sync::Arc;
+
 
 pub enum BVHNode {
     Leaf {
         bounding_box: BoundingBox,
-        triangles: Vec<Arc<Triangle>>,
+        triangles: Vec<Triangle>,
     },
     Node {
         bounding_box: BoundingBox,
@@ -50,7 +50,7 @@ impl BVHNode {
         Ok(())
     }
 
-    pub fn new(triangles: Vec<Arc<Triangle>>) -> Self {
+    pub fn new(triangles: Vec<Triangle>) -> Self {
         debug!("Creating new KD Tree with {} triangles", triangles.len());
 
         let bb = BoundingBox::from_triangles(triangles.iter().cloned());
@@ -60,8 +60,8 @@ impl BVHNode {
 
     fn divide_triangles_over_boundingboxes(
         (leftbox, rightbox): (&BoundingBox, &BoundingBox),
-        triangles: &Vec<Arc<Triangle>>,
-    ) -> (Vec<Arc<Triangle>>, Vec<Arc<Triangle>>) {
+        triangles: &Vec<Triangle>,
+    ) -> (Vec<Triangle>, Vec<Triangle>) {
         let mut leftset = Vec::with_capacity(65536);
         let mut rightset = Vec::with_capacity(65536);
 
@@ -78,11 +78,11 @@ impl BVHNode {
     }
 
     fn new_internal(
-        triangles: Vec<Arc<Triangle>>,
+        triangles: Vec<Triangle>,
         bounding_box: BoundingBox,
         depth: usize,
     ) -> Self {
-        if triangles.len() == 0 {
+        if triangles.is_empty() {
             return BVHNode::Leaf {
                 bounding_box: BoundingBox::EMPTY,
                 triangles,
@@ -100,8 +100,8 @@ impl BVHNode {
         struct State {
             leftbox: BoundingBox,
             rightbox: BoundingBox,
-            leftset: Vec<Arc<Triangle>>,
-            rightset: Vec<Arc<Triangle>>,
+            leftset: Vec<Triangle>,
+            rightset: Vec<Triangle>,
 
             totalcost: f32,
         }
