@@ -36,14 +36,8 @@ impl Uart {
     }
 
     pub fn read(&mut self) -> Option<u8> {
-        if self.uart.fr.read().uart_fr_rxfe().bit_is_clear() {
-            Some(self.uart.dr.read().uart_dr_data().bits())
-        }
-        else {
-            None
-        }
-
-
+        while self.uart.fr.read().uart_fr_rxfe().bit_is_set(){} //busy waiting when there is no byte to read
+        Some(self.uart.dr.read().uart_dr_data().bits())
     }
 }
 
