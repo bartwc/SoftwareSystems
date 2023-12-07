@@ -1,9 +1,13 @@
 use core::fmt::Write;
 use tudelft_lm3s6965_pac::interrupt;
 use tudelft_lm3s6965_pac::UART0;
+//use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
+//use crate::mutex::Mutex;
 
 pub struct Uart {
-    uart: UART0
+    // read_buffer: ConstGenericRingBuffer<u8, 256>,
+    // write_buffer: ConstGenericRingBuffer<u8, 256>,
+    uart: UART0,
 }
 
 impl Uart {
@@ -50,5 +54,5 @@ impl Write for Uart {
 
 #[interrupt]
 unsafe fn UART0() {
-    todo!()
+
 }
