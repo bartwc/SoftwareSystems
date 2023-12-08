@@ -1,8 +1,7 @@
 use core::fmt::Write;
 use tudelft_lm3s6965_pac::interrupt;
 use tudelft_lm3s6965_pac::UART0;
-//use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
-//use crate::mutex::Mutex;
+use crate::mutex::Mutex;
 
 pub struct Uart {
     // read_buffer: ConstGenericRingBuffer<u8, 256>,
@@ -40,8 +39,12 @@ impl Uart {
     }
 
     pub fn read(&mut self) -> Option<u8> {
-        while self.uart.fr.read().uart_fr_rxfe().bit_is_set(){} //busy waiting when there is no byte to read
-        Some(self.uart.dr.read().uart_dr_data().bits())
+        if self.uart.fr.read().uart_fr_rxfe().bit_is_clear(){
+            Some(self.uart.dr.read().uart_dr_data().bits())
+        }
+        else{
+            None
+        }
     }
 }
 

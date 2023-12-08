@@ -19,6 +19,7 @@ mod drawing;
 mod exceptions;
 mod uart;
 mod mutex;
+mod ringbuffer;
 
 // #[global_allocator]
 // static HEAP: Heap = Heap::empty();
