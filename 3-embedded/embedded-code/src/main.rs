@@ -25,9 +25,9 @@ mod ringbuffer;
 // static HEAP: Heap = Heap::empty();
 
 static GLOBAL_UART: Mutex<Option<Uart>> = Mutex::new(None);
+
 #[entry]
 fn main() -> ! {
-
     // {
     //     use core::mem::MaybeUninit;
     //     const HEAP_SIZE: usize = 1024;
@@ -48,12 +48,12 @@ fn main() -> ! {
     // initialize the UART.
     let uart = Uart::new(dp.UART0);
 
-    GLOBAL_UART.update(|mut uart_inside|{
+    GLOBAL_UART.update(|mut uart_inside| {
         *uart_inside = Some(uart);
     });
 
     // and write something to be received by the runner
-    GLOBAL_UART.update(|u|{
+    GLOBAL_UART.update(|u| {
         writeln!(u.as_mut().unwrap(), "Hello, World!").unwrap();
     });
     //writeln!(&mut uart, "Hello, World!").unwrap();
@@ -62,7 +62,7 @@ fn main() -> ! {
     // uart receives trigger an interrupt which push to some kind of
     // buffer so this read operation works)
     loop {
-        GLOBAL_UART.update(|u|{
+        GLOBAL_UART.update(|u| {
             while let Some(i) = u.as_mut().unwrap().read() {
                 hprint!("0x{:x}", i);
             }

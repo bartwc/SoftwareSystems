@@ -1,15 +1,15 @@
-
 const SIZE_BUFFER: usize = 256;
-pub struct RingBuffer{
-    data : [u8;SIZE_BUFFER],
-    num_elements : usize,
-    position_front : usize
+
+pub struct RingBuffer {
+    data: [u8; SIZE_BUFFER],
+    num_elements: usize,
+    position_front: usize,
 }
 
 impl RingBuffer {
     pub fn new() -> Self {
-        Self{
-            data: [0;SIZE_BUFFER],
+        Self {
+            data: [0; SIZE_BUFFER],
             num_elements: 0,
             position_front: 0,
         }
@@ -18,8 +18,7 @@ impl RingBuffer {
     pub fn pop_byte(&mut self) -> Option<u8> {
         if self.num_elements <= 0 {
             None
-        }
-        else {
+        } else {
             let element = self.data[self.position_front];
             if self.position_front >= (SIZE_BUFFER - 1)
             {
@@ -32,7 +31,7 @@ impl RingBuffer {
         }
     }
 
-    pub fn push_byte(&mut self, byte_to_push: u8) -> Result<(),()> {
+    pub fn push_byte(&mut self, byte_to_push: u8) -> Result<(), ()> {
         if self.num_elements >= SIZE_BUFFER {
             Err(())
         } else {

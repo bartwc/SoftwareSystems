@@ -11,7 +11,7 @@ pub struct Uart {
 
 impl Uart {
     pub fn new(uart: UART0) -> Self {
-        uart.ctl.write(|w|w.uart_ctl_uarten().clear_bit());
+        uart.ctl.write(|w| w.uart_ctl_uarten().clear_bit());
         uart.ibrd.write(|w| unsafe {
             w.uart_ibrd_divint().bits(10)
         });
@@ -24,9 +24,9 @@ impl Uart {
         uart.lcrh.write(|w| unsafe {
             w.bits(0x00000060)
         });
-        uart.ctl.write(|w|w.uart_ctl_uarten().set_bit());
+        uart.ctl.write(|w| w.uart_ctl_uarten().set_bit());
 
-        Uart {uart}
+        Uart { uart }
     }
 
     pub fn write(&mut self, value: &[u8]) {
@@ -39,10 +39,9 @@ impl Uart {
     }
 
     pub fn read(&mut self) -> Option<u8> {
-        if self.uart.fr.read().uart_fr_rxfe().bit_is_clear(){
+        if self.uart.fr.read().uart_fr_rxfe().bit_is_clear() {
             Some(self.uart.dr.read().uart_dr_data().bits())
-        }
-        else{
+        } else {
             None
         }
     }
@@ -56,6 +55,4 @@ impl Write for Uart {
 }
 
 #[interrupt]
-unsafe fn UART0() {
-
-}
+unsafe fn UART0() {}
