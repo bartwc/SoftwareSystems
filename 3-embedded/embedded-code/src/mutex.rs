@@ -8,7 +8,7 @@ pub struct Mutex<T> {
 unsafe impl<T> Sync for Mutex<T> {}
 impl<T> Mutex<T> {
     // make a new mutex
-    pub fn new(data: T) -> Self {
+    pub const fn new(data: T) -> Self {
         Mutex{ data: UnsafeCell::new(data) }
     }
 

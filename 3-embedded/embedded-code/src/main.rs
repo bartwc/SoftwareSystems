@@ -13,15 +13,26 @@ use drawing::font::ZERO;
 use drawing::screen::Screen;
 use rt::entry;
 use tudelft_lm3s6965_pac::Peripherals;
+use crate::mutex::Mutex;
 
 mod drawing;
 mod exceptions;
 mod uart;
-
 mod mutex;
 
+// #[global_allocator]
+// static HEAP: Heap = Heap::empty();
+
+static GLOBAL_UART: Mutex<Option<Uart>> = Mutex::new(None);
 #[entry]
 fn main() -> ! {
+
+    // {
+    //     use core::mem::MaybeUninit;
+    //     const HEAP_SIZE: usize = 1024;
+    //     static mut HEAP_MEM: [MaybeUninit<u8>; HEAP_SIZE] = [MaybeUninit::uninit(); HEAP_SIZE];
+    //     unsafe { HEAP.init(HEAP_MEM.as_ptr() as usize, HEAP_SIZE) }
+    // }
     // hprintln is kind of like cheating. On real hardware this is (usually)
     // not possible, but because we are running inside an emulator, we can
     // actually talk to the emulator and print to the stdout fo the emulator.
@@ -34,19 +45,27 @@ fn main() -> ! {
     screen.clear(Brightness::WHITE);
 
     // initialize the UART.
-    let mut uart = Uart::new(dp.UART0);
+    let uart = Uart::new(dp.UART0);
+
+    GLOBAL_UART.update(|mut uart_inside|{
+        *uart_inside = Some(uart);
+    });
 
     // and write something to be received by the runner
-    writeln!(&mut uart, "Hello, World!").unwrap();
+    GLOBAL_UART.update(|u|{
+        writeln!(u.as_mut().unwrap(), "Hello, World!").unwrap();
+    });
+    //writeln!(&mut uart, "Hello, World!").unwrap();
 
     // while true, see if we received new bytes (you should make it so
     // uart receives trigger an interrupt which push to some kind of
     // buffer so this read operation works)
     loop {
-        while let Some(i) = uart.read() {
-            hprint!("0x{:x}", i);
-        }
-
+        GLOBAL_UART.update(|u|{
+            while let Some(i) = u.as_mut().unwrap().read() {
+                hprint!("0x{:x}", i);
+            }
+        });
         // wait for interrupts, before looping again to save cycles.
         unsafe { asm!("wfi") }
     }
