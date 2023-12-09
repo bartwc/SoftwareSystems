@@ -24,7 +24,7 @@ impl Uart {
         uart.lcrh.write(|w| unsafe {
             w.bits(0x00000060)
         });
-        uart.im.write(|w|{
+        uart.im.write(|w| {
             w.uart_im_rxim().set_bit()
         });
         // uart.im.write(|w|{
@@ -33,46 +33,43 @@ impl Uart {
         NVIC::unpend(Interrupt::UART0);
         // Unmask enables interrupt. It is unsafe because it may break critical sections.
         // It is sound because the initialisation of uart is not within a critical section.
-        unsafe {NVIC::unmask(Interrupt::UART0)};
+        unsafe { NVIC::unmask(Interrupt::UART0) };
 
         uart.ctl.write(|w| w.uart_ctl_uarten().set_bit());
 
         Uart {
             read_buffer: RingBuffer::new(),
             write_buffer: RingBuffer::new(),
-            uart
+            uart,
         }
     }
 
-    pub fn write(&mut self, value: u8) {
+    // pub fn write(&mut self, value: &[u8]) {
+    //     for byte in value{
+    //
+    //     }
+    // }
 
+
+    pub fn write_byte(&mut self, value: u8) {
         if self.write_buffer.space_remaining() >= 1 {
             let write_result = self.write_buffer.push_byte(value);
-            if write_result == Err(()){
+            if write_result == Err(()) {
                 hprint!("write buffer full");
             }
-        }
-        else
-        {
+        } else {
             hprint!("write buffer full");
         }
         self.write_to_uart();
     }
 
     fn write_to_uart(&mut self) {
-        let mut num_attempts = 0;
         while self.write_buffer.num_bytes() >= 1 {
             if self.uart.fr.read().uart_fr_txff().bit_is_clear() {
                 let byte = self.write_buffer.pop_byte().unwrap();
-                self.uart.dr.write(|w|unsafe {
+                self.uart.dr.write(|w| unsafe {
                     w.uart_dr_data().bits(byte)
                 })
-            } else {
-                // if there is more than 100 failed attempts to write to uart, we just wait until next round.
-                if num_attempts >= 100{
-                    break;
-                }
-                num_attempts = num_attempts + 1;
             }
         }
     }
@@ -83,43 +80,38 @@ impl Uart {
         // } else {
         //     None
         // }
-        GLOBAL_UART.update(|uart|{
-            if uart.as_mut().unwrap().read_buffer.num_bytes() == 0 {
-                None
-            } else {
-                uart.as_mut().unwrap().read_buffer.pop_byte()
-            }
-        })
+        if self.read_buffer.num_bytes() == 0 {
+            None
+        } else {
+            self.read_buffer.pop_byte()
+        }
     }
 }
 
 impl Write for Uart {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        for byte in s.as_bytes(){
-            //hprint!("write_str");
-            self.write(*byte);
+        for byte in s.as_bytes() {
+            self.write_byte(*byte);
         }
-        // self.write(s.as_bytes());
         Ok(())
     }
 }
 
 #[interrupt]
 unsafe fn UART0() {
-    GLOBAL_UART.update(|uart|{
-        if uart.as_mut().unwrap().uart.mis.read().uart_mis_rxmis().bit_is_set(){
+    GLOBAL_UART.update(|uart| {
+        if uart.as_mut().unwrap().uart.mis.read().uart_mis_rxmis().bit_is_set() {
             //hprint!("handler rx");
-            uart.as_mut().unwrap().uart.icr.write(|w|{
+            uart.as_mut().unwrap().uart.icr.write(|w| {
                 w.uart_icr_rxic().set_bit()
             });
-            if uart.as_mut().unwrap().read_buffer.space_remaining() > 0{
+            if uart.as_mut().unwrap().read_buffer.space_remaining() > 0 {
                 let byte = uart.as_mut().unwrap().uart.dr.read().uart_dr_data().bits();
                 let result_push = uart.as_mut().unwrap().read_buffer.push_byte(byte);
-                if result_push == Err(()){
+                if result_push == Err(()) {
                     hprint!("read buffer full");
                 }
-            }
-            else {
+            } else {
                 hprint!("read buffer full");
             }
         }
