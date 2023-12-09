@@ -21,9 +21,6 @@ impl Uart {
         uart.fbrd.write(|w| unsafe {
             w.uart_fbrd_divfrac().bits(54)
         });
-        uart.lcrh.write(|w|{
-            w.uart_lcrh_fen().clear_bit()
-        });
         uart.lcrh.write(|w| unsafe {
             w.bits(0x00000060)
         });
@@ -89,4 +86,5 @@ unsafe fn UART0() {
             hprint!("read buffer full");
         }
     });
+    //hprint!("handler")
 }

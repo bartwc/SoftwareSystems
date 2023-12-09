@@ -57,7 +57,7 @@ fn main() -> ! {
     // uart receives trigger an interrupt which push to some kind of
     // buffer so this read operation works)
     loop {
-        for _ in 0..10000 {
+        for _ in 0..255 {
             GLOBAL_UART.update(|u| {
                 while let Some(i) = u.as_mut().unwrap().read() {
                     hprint!("0x{:x}", i);
