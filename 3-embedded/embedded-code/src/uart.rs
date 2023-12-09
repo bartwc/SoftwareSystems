@@ -1,11 +1,14 @@
 use core::fmt::Write;
-use tudelft_lm3s6965_pac::interrupt;
+use core::ops::Deref;
+use cortex_m_semihosting::hprint;
+use tudelft_lm3s6965_pac::{interrupt, Interrupt, NVIC};
 use tudelft_lm3s6965_pac::UART0;
-use crate::mutex::Mutex;
+use crate::GLOBAL_UART;
+use crate::ringbuffer::RingBuffer;
 
 pub struct Uart {
-    // read_buffer: ConstGenericRingBuffer<u8, 256>,
-    // write_buffer: ConstGenericRingBuffer<u8, 256>,
+    read_buffer: RingBuffer,
+    write_buffer: RingBuffer,
     uart: UART0,
 }
 
@@ -18,15 +21,26 @@ impl Uart {
         uart.fbrd.write(|w| unsafe {
             w.uart_fbrd_divfrac().bits(54)
         });
-        // uart.lcrh.write(|w|{
-        //     w.uart_lcrh_fen().clear_bit()
-        // });
+        uart.lcrh.write(|w|{
+            w.uart_lcrh_fen().clear_bit()
+        });
         uart.lcrh.write(|w| unsafe {
             w.bits(0x00000060)
         });
+        uart.im.write(|w|{
+            w.uart_im_rxim().set_bit()
+        });
+        // Unmask enables interrupt. It is unsafe because it may break critical sections.
+        // It is sound because the initialisation of uart is not within a critical section.
+        unsafe {NVIC::unmask(Interrupt::UART0)};
+
         uart.ctl.write(|w| w.uart_ctl_uarten().set_bit());
 
-        Uart { uart }
+        Uart {
+            read_buffer: RingBuffer::new(),
+            write_buffer: RingBuffer::new(),
+            uart
+        }
     }
 
     pub fn write(&mut self, value: &[u8]) {
@@ -39,11 +53,18 @@ impl Uart {
     }
 
     pub fn read(&mut self) -> Option<u8> {
-        if self.uart.fr.read().uart_fr_rxfe().bit_is_clear() {
-            Some(self.uart.dr.read().uart_dr_data().bits())
-        } else {
-            None
-        }
+        // if self.uart.fr.read().uart_fr_rxfe().bit_is_clear() {
+        //     Some(self.uart.dr.read().uart_dr_data().bits())
+        // } else {
+        //     None
+        // }
+        GLOBAL_UART.update(|uart|{
+            if uart.as_mut().unwrap().read_buffer.num_bytes() == 0 {
+                None
+            } else {
+                uart.as_mut().unwrap().read_buffer.pop_byte()
+            }
+        })
     }
 }
 
@@ -55,4 +76,17 @@ impl Write for Uart {
 }
 
 #[interrupt]
-unsafe fn UART0() {}
+unsafe fn UART0() {
+    GLOBAL_UART.update(|uart|{
+        uart.as_mut().unwrap().uart.icr.write(|w|{
+            w.uart_icr_rxic().set_bit()
+        });
+        if uart.as_mut().unwrap().read_buffer.space_remaining() > 0{
+            let byte = uart.as_mut().unwrap().uart.dr.read().uart_dr_data().bits();
+            uart.as_mut().unwrap().read_buffer.push_byte(byte);
+        }
+        else {
+            hprint!("read buffer full");
+        }
+    });
+}

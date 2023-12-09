@@ -45,4 +45,12 @@ impl RingBuffer {
             Ok(())
         }
     }
+
+    pub fn space_remaining(&mut self) -> usize {
+        SIZE_BUFFER - self.num_elements
+    }
+
+    pub fn num_bytes(&mut self) -> usize {
+        self.num_elements
+    }
 }

@@ -5,14 +5,15 @@ extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
 
 use crate::uart::Uart;
-use core::arch::asm;
+//use core::arch::asm;
 use core::fmt::Write;
+use cortex_m::asm;
 use cortex_m_semihosting::{hprint, hprintln};
 use drawing::brightness::Brightness;
 use drawing::font::ZERO;
 use drawing::screen::Screen;
 use rt::entry;
-use tudelft_lm3s6965_pac::Peripherals;
+use tudelft_lm3s6965_pac::{Peripherals};
 use crate::mutex::Mutex;
 
 mod drawing;
@@ -21,19 +22,10 @@ mod uart;
 mod mutex;
 mod ringbuffer;
 
-// #[global_allocator]
-// static HEAP: Heap = Heap::empty();
-
 static GLOBAL_UART: Mutex<Option<Uart>> = Mutex::new(None);
 
 #[entry]
 fn main() -> ! {
-    // {
-    //     use core::mem::MaybeUninit;
-    //     const HEAP_SIZE: usize = 1024;
-    //     static mut HEAP_MEM: [MaybeUninit<u8>; HEAP_SIZE] = [MaybeUninit::uninit(); HEAP_SIZE];
-    //     unsafe { HEAP.init(HEAP_MEM.as_ptr() as usize, HEAP_SIZE) }
-    // }
     // hprintln is kind of like cheating. On real hardware this is (usually)
     // not possible, but because we are running inside an emulator, we can
     // actually talk to the emulator and print to the stdout fo the emulator.
@@ -46,6 +38,9 @@ fn main() -> ! {
     screen.clear(Brightness::WHITE);
 
     // initialize the UART.
+    dp.SYSCTL.dcgc1.write(|w|{
+        w.sysctl_dcgc1_uart0().set_bit()
+    });
     let uart = Uart::new(dp.UART0);
 
     GLOBAL_UART.update(|mut uart_inside| {
@@ -62,12 +57,16 @@ fn main() -> ! {
     // uart receives trigger an interrupt which push to some kind of
     // buffer so this read operation works)
     loop {
-        GLOBAL_UART.update(|u| {
-            while let Some(i) = u.as_mut().unwrap().read() {
-                hprint!("0x{:x}", i);
-            }
-        });
+        for _ in 0..10000 {
+            GLOBAL_UART.update(|u| {
+                while let Some(i) = u.as_mut().unwrap().read() {
+                    hprint!("0x{:x}", i);
+                }
+            });
+        }
         // wait for interrupts, before looping again to save cycles.
-        unsafe { asm!("wfi") }
+        // when the system is awake, run 10000 iterations before waiting for interrupts.
+        //unsafe { asm!("wfi") }
+        asm::wfi();
     }
 }
