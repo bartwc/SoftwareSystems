@@ -1,5 +1,4 @@
 use core::fmt::Write;
-use core::ops::Deref;
 use cortex_m_semihosting::hprint;
 use tudelft_lm3s6965_pac::{interrupt, Interrupt, NVIC};
 use tudelft_lm3s6965_pac::UART0;
@@ -16,12 +15,18 @@ impl Uart {
     pub fn new(uart: UART0) -> Self {
         uart.ctl.write(|w| w.uart_ctl_uarten().clear_bit());
         uart.ibrd.write(|w| unsafe {
+            // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
+            // It is sound because the uart_ibrd_divint field is safe to write to when we set the baud rate and initialise the uart driver.
             w.uart_ibrd_divint().bits(10)
         });
         uart.fbrd.write(|w| unsafe {
+            // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
+            // It is sound because the uart_fbrd_divfrac field is safe to write to when we set the baud rate and initialise the uart driver.
             w.uart_fbrd_divfrac().bits(54)
         });
         uart.lcrh.write(|w| unsafe {
+            // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
+            // It is sound because the lcrh register is safe to write to when we initialise the uart driver for the first time.
             w.bits(0x00000060)
         });
         uart.im.write(|w| {
@@ -44,11 +49,23 @@ impl Uart {
         }
     }
 
-    // pub fn write(&mut self, value: &[u8]) {
-    //     for byte in value{
-    //
-    //     }
-    // }
+    pub fn write(&mut self, value: &[u8]) {
+        for byte in value{
+            if self.write_buffer.space_remaining() >= 1 {
+                let write_result = self.write_buffer.push_byte(*byte);
+                if write_result == Err(()) {
+                    hprint!("write buffer full");
+                }
+            } else {
+                self.write_to_uart();
+                let write_result = self.write_buffer.push_byte(*byte);
+                if write_result == Err(()) {
+                    hprint!("write buffer full");
+                }
+            }
+        }
+        self.write_to_uart();
+    }
 
 
     pub fn write_byte(&mut self, value: u8) {
@@ -58,7 +75,11 @@ impl Uart {
                 hprint!("write buffer full");
             }
         } else {
-            hprint!("write buffer full");
+            self.write_to_uart();
+            let write_result = self.write_buffer.push_byte(value);
+            if write_result == Err(()) {
+                hprint!("write buffer full");
+            }
         }
         self.write_to_uart();
     }
@@ -68,6 +89,9 @@ impl Uart {
             if self.uart.fr.read().uart_fr_txff().bit_is_clear() {
                 let byte = self.write_buffer.pop_byte().unwrap();
                 self.uart.dr.write(|w| unsafe {
+                    // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
+                    // It is sound because we have checked in line 89 that the uart tx fifo queue or register is not full, and we can safely
+                    // write the data into the register for transmission.
                     w.uart_dr_data().bits(byte)
                 })
             }
@@ -90,9 +114,7 @@ impl Uart {
 
 impl Write for Uart {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        for byte in s.as_bytes() {
-            self.write_byte(*byte);
-        }
+        self.write(s.as_bytes());
         Ok(())
     }
 }
