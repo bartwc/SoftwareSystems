@@ -4,7 +4,7 @@ use std::io::{self};
 
 use tudelft_arm_qemu_runner::Runner;
 
-use crate::Function::{UP, LEFT, DOWN, RIGHT, TRANSMIT, RECEIVE};
+use crate::Function::{UP, LEFT, DOWN, RIGHT, TRANSMIT, CLEAR, RECEIVE};
 
 /// ASCII Table - 256 characters represented by 8 Bits (1 Byte)
 /// Require Sufficient Bytes to Execute Forward, Backward, Left, Right Movement
@@ -75,8 +75,9 @@ fn main() -> color_eyre::Result<()> {
                                 -a:             Move - Left\n
                                 -s:             Move - Down\n
                                 -d:             Move - Right\n
-                                -t:             Transmit a Serial Message\n
-                                -r:             Receive a Serial Message\n
+                                -t:             Transmit Message to Change Page View\n
+                                -r:             Receive Total Number of Steps\n
+                                -c:             Clear Step Count to Zero\n
                                 -quit:          Quit Program\n
 
                     Message:    Your Intended Message\n
@@ -105,6 +106,9 @@ fn main() -> color_eyre::Result<()> {
 
                     "-t" => {
                         output = UartProtocol::transmit(&mut buf, TRANSMIT, String::from(tasks[1]), 0);
+                    },
+                    "-c" => {
+                        output = UartProtocol::transmit(&mut buf, CLEAR, String::from(tasks[1]), 0);
                     },
                     "-r" => {
                         match tasks[1].trim().parse::<u8>() {

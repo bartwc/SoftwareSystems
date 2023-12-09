@@ -49,7 +49,7 @@ impl Uart {
         }
     }
 
-    pub fn write(&mut self, value: &[u8]) {
+    pub fn write(&mut self, value: &[u8]) { // Required for Protocol - Embedded Push Array (of Bytes) into Buffer
         for byte in value{
             if self.write_buffer.space_remaining() >= 1 {
                 let write_result = self.write_buffer.push_byte(*byte);
@@ -64,11 +64,11 @@ impl Uart {
                 }
             }
         }
-        self.write_to_uart();
+        self.write_to_uart(); // Flush Buffer into PC
     }
 
 
-    pub fn write_byte(&mut self, value: u8) {
+    pub fn write_byte(&mut self, value: u8) { // Required for Protocol - Embedded Push Byte into Buffer
         if self.write_buffer.space_remaining() >= 1 {
             let write_result = self.write_buffer.push_byte(value);
             if write_result == Err(()) {
@@ -81,7 +81,7 @@ impl Uart {
                 hprint!("write buffer full");
             }
         }
-        self.write_to_uart();
+        self.write_to_uart(); // Flush Buffer into PC
     }
 
     fn write_to_uart(&mut self) {
@@ -98,12 +98,7 @@ impl Uart {
         }
     }
 
-    pub fn read(&mut self) -> Option<u8> {
-        // if self.uart.fr.read().uart_fr_rxfe().bit_is_clear() {
-        //     Some(self.uart.dr.read().uart_dr_data().bits())
-        // } else {
-        //     None
-        // }
+    pub fn read(&mut self) -> Option<u8> { // Required for Protocol - Retrieves Info From PC with Intermediate Buffer
         if self.read_buffer.num_bytes() == 0 {
             None
         } else {
