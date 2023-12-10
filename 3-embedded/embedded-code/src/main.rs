@@ -10,7 +10,6 @@ use core::fmt::Write;
 use cortex_m::asm;
 use cortex_m_semihosting::{hprint, hprintln};
 use drawing::brightness::Brightness;
-use drawing::font::ZERO;
 use drawing::screen::Screen;
 use rt::entry;
 use tudelft_lm3s6965_pac::{Peripherals};
@@ -36,7 +35,7 @@ fn main() -> ! {
     // initialize the screen for drawing
     let mut screen = Screen::new(&mut dp.SSI0, &mut dp.GPIO_PORTC);
     screen.clear(Brightness::WHITE);
-
+    screen.draw_unsigned_int(119, 1, Brightness::BLACK, 1234567890);
     // initialize the UART.
     dp.SYSCTL.dcgc1.write(|w|{
         w.sysctl_dcgc1_uart0().set_bit()

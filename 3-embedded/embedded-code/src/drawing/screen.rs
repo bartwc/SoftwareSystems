@@ -1,5 +1,5 @@
 use crate::drawing::brightness::Brightness;
-use crate::drawing::font::Character;
+use crate::drawing::font::NUMBERS;
 use tudelft_lm3s6965_pac::{GPIO_PORTC, SSI0};
 
 pub struct Screen<'p> {
@@ -102,6 +102,37 @@ impl<'p> Screen<'p> {
 
         let value = *current;
         self.write_ssi(value as u16);
+    }
+
+    pub fn draw_unsigned_int(&mut self, x: u8, y: u8, brightness: Brightness, number: usize) {
+        let mut number_left = number;
+        let mut single_digit: u8;
+        let mut x= x;
+
+        if number_left == 0 {
+            self.draw_digit(x, y, brightness, 0);
+        }
+        while number_left > 0 {
+            single_digit = (number_left % 10) as u8;
+            self.draw_digit(x, y, brightness, single_digit);
+            number_left = number_left / 10;
+            x = x - 9;
+        }
+    }
+
+    fn draw_digit(&mut self, x: u8, y: u8, brightness: Brightness, digit: u8) {
+        let mut x_i: u8 = 0;
+        let mut y_i: u8 = 0;
+        while y_i <= 15 {
+            x_i = 0;
+            while x_i <= 7  {
+                if NUMBERS[digit as usize][y_i as usize][x_i as usize] {
+                    self.draw_pixel(x + x_i, y + y_i, brightness);
+                }
+                x_i = x_i + 1;
+            }
+            y_i = y_i + 1;
+        }
     }
 
     pub fn clear(&mut self, brightness: Brightness) {
