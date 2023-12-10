@@ -13,6 +13,7 @@ use drawing::brightness::Brightness;
 use drawing::screen::Screen;
 use rt::entry;
 use tudelft_lm3s6965_pac::{Peripherals};
+use crate::drawing::screen::Direction::{RIGHT, UP};
 use crate::mutex::Mutex;
 
 mod drawing;
@@ -35,7 +36,31 @@ fn main() -> ! {
     // initialize the screen for drawing
     let mut screen = Screen::new(&mut dp.SSI0, &mut dp.GPIO_PORTC);
     screen.clear(Brightness::WHITE);
-    screen.draw_unsigned_int(119, 1, Brightness::BLACK, 1234567890);
+    screen.define_starting_point(20, 50);
+    screen.show_positions();
+    asm::delay(4294967295);
+    screen.show_step_count();
+    asm::delay(4294967295);
+    screen.take_step(RIGHT);
+    screen.show_positions();
+    asm::delay(4294967295);
+    screen.show_step_count();
+    asm::delay(4294967295);
+    screen.take_step(UP);
+    screen.show_positions();
+    asm::delay(4294967295);
+    screen.show_step_count();
+    asm::delay(4294967295);
+    screen.reset_steps();
+    screen.show_positions();
+    asm::delay(4294967295);
+    screen.show_step_count();
+    asm::delay(4294967295);
+    screen.take_step(UP);
+    screen.show_positions();
+    asm::delay(4294967295);
+    screen.show_step_count();
+    asm::delay(4294967295);
     // initialize the UART.
     dp.SYSCTL.dcgc1.write(|w|{
         w.sysctl_dcgc1_uart0().set_bit()

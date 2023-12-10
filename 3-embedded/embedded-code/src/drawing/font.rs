@@ -203,5 +203,5 @@ pub const NUMBERS: [Character; 10] = [
     SIX,
     SEPT,
     HUIT,
-    NEUF
+    NEUF,
 ];
