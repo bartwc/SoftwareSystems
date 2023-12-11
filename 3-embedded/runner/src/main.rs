@@ -79,10 +79,6 @@ fn main() -> color_eyre::Result<()> {
                                 -r:             Receive Total Number of Steps\n
                                 -c:             Clear Step Count to Zero\n
                                 -quit:          Quit Program\n
-
-                    Message:    Your Intended Message\n
-
-                    ID:         ID of Intended Message\n
                      ");
                 continue;
             }

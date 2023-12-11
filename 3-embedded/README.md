@@ -38,4 +38,38 @@ In this section, some choices are left up to you. You can be a bit creative here
     * A single step being taken, and the corresponding dx/dy movement.
     * A help page (for us) so we know what to type
     * A command to request the current total number of steps recorded by the Stellaris board
-    * A reset command, that resets the state of the Stellaris board to its initial state, so 0 steps taken
+    * A reset command, that resets the state of the Stellaris board to its initial state, so 0 steps taken.
+
+## Help to Run Terminal
+Run ```cargo run -- release``` to run program.
+```
+ -----------------------------------------------------------------
+ |   Hi User! Key In Request to Initialize! Enter -help for Help |
+ -----------------------------------------------------------------
+```
+Run -help for full list of available requests.
+```
+Category    [request]       [task]\n
+Commands:   -help:          Display help\n
+            -w:             Move - Up\n
+            -a:             Move - Left\n
+            -s:             Move - Down\n
+            -d:             Move - Right\n
+            -t:             Transmit Message to Change Page View\n
+            -r:             Receive Total Number of Steps\n
+            -c:             Clear Step Count to Zero\n
+            -quit:          Quit Program\n
+```
+Run -quit to end the instance of the program.
+```
+ -----------------------------------------------------------------
+|             Bye User!  *** Program Has Quit ***                |
+------------------------------------------------------------------
+```
+
+## Authors
+[@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
+[@Barry Tee Wei Cong (5662834, btee)]()
+
+## Acknowledgments
+* [Assignment 3 - Embedded Systems](https://cese.pages.ewi.tudelft.nl/software-systems/part-1/assignments/es.html)
