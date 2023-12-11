@@ -50,6 +50,7 @@ impl Uart {
             */
             w.bits(0x00000060)
         });
+
         uart.im.write(|w| {
             w.uart_im_rxim().set_bit()
             // w.uart_im_peim().set_bit();
@@ -63,23 +64,11 @@ impl Uart {
 
         //NVIC::unpend(Interrupt::UART0);
 
-        /*
-        It is unsafe when unmask enables interrupt because
-        it may break masked-based critical sections.
-        It is sound because the initialisation of uart is
-        not within a critical section.
-        SAFETY: According to https://docs.rs/cortex-m/0.6.7/cortex_m/peripheral/struct.NVIC.html#method.unmask
-        unsafe feature is not accessed as utilisation of
-        unmask enables interrupt is not within masked-based critical section
-        */
+
 
 
         uart.im.write(|w| {
             w.uart_im_rxim().set_bit()
-            // w.uart_im_peim().set_bit();
-            // w.uart_im_oeim().set_bit();
-            // w.uart_im_feim().set_bit();
-            // w.uart_im_beim().set_bit()
         });
         uart.ctl.write(|w| w.uart_ctl_uarten().set_bit());
 

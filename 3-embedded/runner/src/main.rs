@@ -21,12 +21,16 @@ fn main() -> color_eyre::Result<()> {
     // runner.stream.write_all(serialise(456765456).as_slice())?;
     // runner.stream.write_all(serialise(456765456).as_slice())?;
     // runner.stream.write_all(serialise(456765456).as_slice())?;
-
+    sleep(Duration::from_millis(500));
     let a :u32 = 456765456;
     let serialised = serialise(a);
     runner.stream.write_all(serialised.as_slice())?;
-    runner.stream.write_all(serialised.as_slice())?;
-    loop {}
+    loop {
+        //sleep(Duration::from_millis(500));
+        let a :u32 = 456765456;
+        let serialised = serialise(a);
+        runner.stream.write_all(serialised.as_slice())?;
+    }
     loop {
         sleep(Duration::from_millis(5));
         runner.stream.write_all(serialise(456765456).as_slice())?;

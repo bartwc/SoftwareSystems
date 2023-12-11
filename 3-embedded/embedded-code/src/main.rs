@@ -4,7 +4,7 @@
 extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
 #[global_allocator]
-static ALLOCATOR: emballoc::Allocator<1024> = emballoc::Allocator::new();
+static ALLOCATOR: emballoc::Allocator<10240> = emballoc::Allocator::new();
 
 extern crate alloc;
 
@@ -57,6 +57,16 @@ fn main() -> ! {
     GLOBAL_UART.update(|mut uart_inside| {
         *uart_inside = Some(uart);
     });
+
+    /*
+        It is unsafe when unmask enables interrupt because
+        it may break masked-based critical sections.
+        It is sound because the initialisation of uart is
+        not within a critical section.
+        SAFETY: According to https://docs.rs/cortex-m/0.6.7/cortex_m/peripheral/struct.NVIC.html#method.unmask
+        unsafe feature is not accessed as utilisation of
+        unmask enables interrupt is not within masked-based critical section
+        */
     unsafe { NVIC::unmask(Interrupt::UART0) };
 
     let a :u32 = 456765456;
@@ -65,9 +75,9 @@ fn main() -> ! {
     // GLOBAL_UART.update(|u| {
     //     u.as_mut().unwrap().write(serialised.as_slice())
     // });
-    GLOBAL_UART.update(|u| {
-        u.as_mut().unwrap().write(serialised.as_slice())
-    });
+    // GLOBAL_UART.update(|u| {
+    //     u.as_mut().unwrap().write(serialised.as_slice())
+    // });
 
     // and write something to be received by the runner
     // GLOBAL_UART.update(|u| {
@@ -83,23 +93,23 @@ fn main() -> ! {
     let mut rx_data: u32 = 0;
     loop {
 
-        for _ in 0..2000000 {asm::delay(1);}
 
-            asm::delay(200);
+
+            //asm::delay(200);
             GLOBAL_UART.update(|u| {
-                let byte = u.as_mut().unwrap().read();
-                if u.as_mut().unwrap().uart.fr.read().uart_fr_rxfe().bit_is_set(){
-                    hprint!("fifo empty");
-                }
-                if u.as_mut().unwrap().uart.fr.read().uart_fr_rxff().bit_is_set(){
-                    hprint!("fifo full");
-                }
+                let mut byte = u.as_mut().unwrap().read();
+                // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxfe().bit_is_set(){
+                //     hprint!("fifo empty");
+                // }
+                // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxff().bit_is_set(){
+                //     hprint!("fifo full");
+                // }
                 while byte != None {
                     //hprint!(" board fail 1");
-                    let byte = byte.unwrap();
-                    //hprint!("0x{:x}", byte);
-                    rx_vec.push(byte);
-                    if byte == 0x00{
+                    let byte_inner = byte.unwrap();
+                    //hprint!("0x{:x}", byte_inner);
+                    rx_vec.push(byte_inner);
+                    if byte_inner == 0x00{
                         let data = deserialise(rx_vec.as_mut_slice());
                         if data != None {
                             rx_data = data.unwrap();
@@ -107,20 +117,23 @@ fn main() -> ! {
                             break
                         }
                         else {
+                            hprint!("message failed");
                             rx_vec.clear();
                             break;
                         }
                     }
+                    byte = u.as_mut().unwrap().read();
                 }
+                //rx_vec.clear();
             });
 
-            //asm::wfi();
+            asm::wfi();
             if rx_data == 456765456{
                 hprint!(" board OK ");
             }
             else
             {
-                hprint!(" board fail 0");
+                //hprint!(" board fail 0");
             }
 
         // wait for interrupts, before looping again to save cycles.
