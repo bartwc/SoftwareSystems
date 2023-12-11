@@ -1,6 +1,7 @@
 use crate::drawing::brightness::Brightness;
 use crate::drawing::font::NUMBERS;
 use tudelft_lm3s6965_pac::{GPIO_PORTC, SSI0};
+use common_lib::Direction;
 
 pub struct Screen<'p> {
     ssi: &'p mut SSI0,
@@ -12,13 +13,6 @@ pub struct Screen<'p> {
     origin_y: u8,
     origin_x: u8,
     map: [[bool; Screen::WIDTH as usize]; Screen::HEIGHT as usize],
-}
-
-pub enum Direction {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
 }
 
 impl<'p> Screen<'p> {
@@ -162,10 +156,10 @@ impl<'p> Screen<'p> {
 
     pub fn take_step(&mut self, direction: Direction) {
         match direction {
-            Direction::LEFT => if self.origin_x as i16 + self.dx >= 0 { self.dx =  self.dx - 1},
-            Direction::RIGHT => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx =  self.dx + 1},
-            Direction::DOWN => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy =  self.dy + 1},
-            Direction::UP => if self.origin_y as i16 + self.dy >= 0 { self.dy =  self.dy - 1},
+            Direction::Left => if self.origin_x as i16 + self.dx >= 0 { self.dx =  self.dx - 1},
+            Direction::Right => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx =  self.dx + 1},
+            Direction::Down => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy =  self.dy + 1},
+            Direction::Up => if self.origin_y as i16 + self.dy >= 0 { self.dy =  self.dy - 1},
         }
         let x = self.origin_x as i16 + self.dx;
         let y = self.origin_y as i16 + self.dy;

@@ -8,3 +8,4 @@ tudelft-arm-qemu-runner = { version="0.2" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features=["fmt"] }
 color-eyre = "0.6.2"
+common_lib = { path = "../common_lib"}

@@ -2,6 +2,7 @@ use std::env::args;
 use std::io::{stdout, Read, Write};
 
 use tudelft_arm_qemu_runner::Runner;
+use common_lib::{deserialise, serialise};
 
 fn main() -> color_eyre::Result<()> {
     tracing_subscriber::fmt::init();
@@ -9,19 +10,41 @@ fn main() -> color_eyre::Result<()> {
 
     let binary = args().nth(1).unwrap();
     let mut runner: Runner = Runner::new(&binary, false)?;
-
-    // receive up to 4 bytes
-    let mut buf = [0u8; 4];
+    let mut recv_data = Vec::<u8>::new();
+    // receive up to 256 bytes
+    let mut buf = [0u8; 256];
     loop {
         let num_received = runner.stream.read(&mut buf)?;
         // get the portion we actually received
-        let received = &buf[0..num_received];
+        let received = & mut buf[0..num_received];
+
+        for single_byte in received.iter().as_slice() {
+            recv_data.push(*single_byte);
+            if *single_byte == 0x00 {
+                if let Some(rec) = deserialise(recv_data.as_mut_slice()){
+                    if rec == 456765456 {
+                        print!(" OK "); stdout().lock().flush().unwrap();
+                    }
+                    else {
+                        print!(" fail1 "); stdout().lock().flush().unwrap();
+                    }
+                }
+                else {
+                    print!(" fail2 "); stdout().lock().flush().unwrap();
+                }
+                recv_data.clear();
+            }
+        }
         // print it (without newline)
-        print!("{}", String::from_utf8_lossy(received));
+
+
         // flush to show what's printed without having to print a newline
         stdout().lock().flush().unwrap();
 
         // send back the bytes to the Stellaris board
-        runner.stream.write_all(received)?;
+        runner.stream.write_all(serialise(456765456).as_slice())?;
+        runner.stream.write_all(serialise(456765456).as_slice())?;
+        runner.stream.write_all(serialise(456765456).as_slice())?;
+        runner.stream.write_all(serialise(456765456).as_slice())?;
     }
 }
