@@ -22,7 +22,13 @@ fn main() -> color_eyre::Result<()> {
     // runner.stream.write_all(serialise(456765456).as_slice())?;
     // runner.stream.write_all(serialise(456765456).as_slice())?;
 
+    let a :u32 = 456765456;
+    let serialised = serialise(a);
+    runner.stream.write_all(serialised.as_slice())?;
+    runner.stream.write_all(serialised.as_slice())?;
+    loop {}
     loop {
+        sleep(Duration::from_millis(5));
         runner.stream.write_all(serialise(456765456).as_slice())?;
 
         let num_received = runner.stream.read(&mut buf)?;
@@ -32,6 +38,7 @@ fn main() -> color_eyre::Result<()> {
         for single_byte in received.iter().as_slice() {
             recv_data.push(*single_byte);
             if *single_byte == 0x00 {
+                runner.stream.write_all(recv_data.as_slice())?;
                 if let Some(rec) = deserialise(recv_data.as_mut_slice()){
                     if rec == 456765456 {
                         print!(" OK "); stdout().lock().flush().unwrap();
@@ -54,8 +61,8 @@ fn main() -> color_eyre::Result<()> {
 
         // send back the bytes to the Stellaris board
         // runner.stream.write_all(serialise(456765456).as_slice())?;
-        // runner.stream.write_all(serialise(456765456).as_slice())?;
-        // runner.stream.write_all(serialise(456765456).as_slice())?;
-        // runner.stream.write_all(serialise(456765456).as_slice())?;
+        let a :u32 = 456765456;
+        let serialised = serialise(a);
+        runner.stream.write_all(serialised.as_slice())?;
     }
 }

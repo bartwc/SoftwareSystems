@@ -7,7 +7,7 @@ You must provide buffering such that long messages can be sent and received.
     - If the buffer fills up, the program must not crash.
 */
 
-const SIZE_BUFFER: usize = 1024;
+const SIZE_BUFFER: usize = 256;
 
 pub struct RingBuffer {
     data: [u8; SIZE_BUFFER],

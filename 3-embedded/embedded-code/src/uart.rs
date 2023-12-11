@@ -8,7 +8,7 @@ use crate::ringbuffer::RingBuffer;
 pub struct Uart {
     read_buffer: RingBuffer,
     write_buffer: RingBuffer,
-    uart: UART0,
+    pub(crate) uart: UART0,
 }
 
 impl Uart {
@@ -52,11 +52,16 @@ impl Uart {
         });
         uart.im.write(|w| {
             w.uart_im_rxim().set_bit()
+            // w.uart_im_peim().set_bit();
+            // w.uart_im_oeim().set_bit();
+            // w.uart_im_feim().set_bit();
+            // w.uart_im_beim().set_bit()
         });
         // uart.im.write(|w|{
         //     w.uart_im_txim().set_bit()
         // });
-        NVIC::unpend(Interrupt::UART0);
+
+        //NVIC::unpend(Interrupt::UART0);
 
         /*
         It is unsafe when unmask enables interrupt because
@@ -67,8 +72,15 @@ impl Uart {
         unsafe feature is not accessed as utilisation of
         unmask enables interrupt is not within masked-based critical section
         */
-        unsafe { NVIC::unmask(Interrupt::UART0) };
 
+
+        uart.im.write(|w| {
+            w.uart_im_rxim().set_bit()
+            // w.uart_im_peim().set_bit();
+            // w.uart_im_oeim().set_bit();
+            // w.uart_im_feim().set_bit();
+            // w.uart_im_beim().set_bit()
+        });
         uart.ctl.write(|w| w.uart_ctl_uarten().set_bit());
 
         Uart {
@@ -150,7 +162,7 @@ impl Write for Uart {
 #[interrupt]
 unsafe fn UART0() {
     // todo_(completed)
-    hprint!("handler");
+    //hprint!("handler");
     GLOBAL_UART.update(|uart| {
         if uart.as_mut().unwrap().uart.mis.read().uart_mis_rxmis().bit_is_set() {
             //hprint!("handler rx");
@@ -168,5 +180,5 @@ unsafe fn UART0() {
             }
         }
     });
-    hprint!("handler")
+    //hprint!("handler")
 }

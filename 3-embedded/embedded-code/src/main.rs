@@ -4,7 +4,7 @@
 extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
 #[global_allocator]
-static ALLOCATOR: emballoc::Allocator<2048> = emballoc::Allocator::new();
+static ALLOCATOR: emballoc::Allocator<1024> = emballoc::Allocator::new();
 
 extern crate alloc;
 
@@ -17,7 +17,7 @@ use cortex_m_semihosting::{hprint, hprintln};
 use drawing::brightness::Brightness;
 use drawing::screen::Screen;
 use rt::entry;
-use tudelft_lm3s6965_pac::{Peripherals};
+use tudelft_lm3s6965_pac::{Interrupt, NVIC, Peripherals};
 use common_lib::Direction::{Up, Down, Left, Right};
 use alloc::vec::Vec;
 use serde::{Serialize, Deserialize};
@@ -57,6 +57,7 @@ fn main() -> ! {
     GLOBAL_UART.update(|mut uart_inside| {
         *uart_inside = Some(uart);
     });
+    unsafe { NVIC::unmask(Interrupt::UART0) };
 
     let a :u32 = 456765456;
     let serialised = serialise(a);
@@ -64,9 +65,9 @@ fn main() -> ! {
     // GLOBAL_UART.update(|u| {
     //     u.as_mut().unwrap().write(serialised.as_slice())
     // });
-    // GLOBAL_UART.update(|u| {
-    //     u.as_mut().unwrap().write(serialised.as_slice())
-    // });
+    GLOBAL_UART.update(|u| {
+        u.as_mut().unwrap().write(serialised.as_slice())
+    });
 
     // and write something to be received by the runner
     // GLOBAL_UART.update(|u| {
@@ -81,40 +82,51 @@ fn main() -> ! {
     let mut rx_vec = Vec::new();
     let mut rx_data: u32 = 0;
     loop {
-        for _ in 0..200 {
+
+        for _ in 0..2000000 {asm::delay(1);}
+
+            asm::delay(200);
             GLOBAL_UART.update(|u| {
-                while let i = u.as_mut().unwrap().read() {
-                    if let Some(byte) = i{
-                        rx_vec.push(byte);
-                        if byte == 0x00{
-                            if let Some(data) = deserialise(rx_vec.as_mut_slice()){
-                                rx_data = data;
-                                rx_vec.clear();
-                                break
-                            }
-                            else {
-                                rx_vec.clear();
-                            }
+                let byte = u.as_mut().unwrap().read();
+                if u.as_mut().unwrap().uart.fr.read().uart_fr_rxfe().bit_is_set(){
+                    hprint!("fifo empty");
+                }
+                if u.as_mut().unwrap().uart.fr.read().uart_fr_rxff().bit_is_set(){
+                    hprint!("fifo full");
+                }
+                while byte != None {
+                    //hprint!(" board fail 1");
+                    let byte = byte.unwrap();
+                    //hprint!("0x{:x}", byte);
+                    rx_vec.push(byte);
+                    if byte == 0x00{
+                        let data = deserialise(rx_vec.as_mut_slice());
+                        if data != None {
+                            rx_data = data.unwrap();
+                            rx_vec.clear();
+                            break
                         }
-                    }
-                    else {
-                        break
+                        else {
+                            rx_vec.clear();
+                            break;
+                        }
                     }
                 }
             });
+
             //asm::wfi();
             if rx_data == 456765456{
                 hprint!(" board OK ");
             }
             else
             {
-                hprint!(" board fail ");
+                hprint!(" board fail 0");
             }
-        }
+
         // wait for interrupts, before looping again to save cycles.
         // when the system is awake, run 10000 iterations before waiting for interrupts.
         // unsafe { asm!("wfi") }
-        asm::wfi();
+        //asm::wfi();
     }
 }
 
