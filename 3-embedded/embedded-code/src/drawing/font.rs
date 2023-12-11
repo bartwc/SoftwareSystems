@@ -197,13 +197,13 @@ pub const NEUF: Character = [
 pub const NUMBERS: [Character; 10] = [
     ZERO,
     // TODO_(completed)
-    UN,
-    DEUX,
-    TROIS,
-    QUATRE,
-    CINQ,
-    SIX,
-    SEPT,
-    HUIT,
-    NEUF,
+    UN,     // ONE
+    DEUX,   // TWO
+    TROIS,  // THREE
+    QUATRE, // FOUR
+    CINQ,   // FIVE
+    SIX,    // SIX
+    SEPT,   // SEVEN
+    HUIT,   // EIGHT
+    NEUF,   // NINE
 ];
