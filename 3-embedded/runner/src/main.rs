@@ -1,5 +1,7 @@
 use std::env::args;
 use std::io::{stdout, Read, Write};
+use std::thread::sleep;
+use std::time::Duration;
 
 use tudelft_arm_qemu_runner::Runner;
 use common_lib::{deserialise, serialise};
@@ -13,7 +15,16 @@ fn main() -> color_eyre::Result<()> {
     let mut recv_data = Vec::<u8>::new();
     // receive up to 256 bytes
     let mut buf = [0u8; 256];
+
+    // sleep(Duration::from_millis(100));
+    // runner.stream.write_all(serialise(456765456).as_slice())?;
+    // runner.stream.write_all(serialise(456765456).as_slice())?;
+    // runner.stream.write_all(serialise(456765456).as_slice())?;
+    // runner.stream.write_all(serialise(456765456).as_slice())?;
+
     loop {
+        runner.stream.write_all(serialise(456765456).as_slice())?;
+
         let num_received = runner.stream.read(&mut buf)?;
         // get the portion we actually received
         let received = & mut buf[0..num_received];
@@ -42,9 +53,9 @@ fn main() -> color_eyre::Result<()> {
         stdout().lock().flush().unwrap();
 
         // send back the bytes to the Stellaris board
-        runner.stream.write_all(serialise(456765456).as_slice())?;
-        runner.stream.write_all(serialise(456765456).as_slice())?;
-        runner.stream.write_all(serialise(456765456).as_slice())?;
-        runner.stream.write_all(serialise(456765456).as_slice())?;
+        // runner.stream.write_all(serialise(456765456).as_slice())?;
+        // runner.stream.write_all(serialise(456765456).as_slice())?;
+        // runner.stream.write_all(serialise(456765456).as_slice())?;
+        // runner.stream.write_all(serialise(456765456).as_slice())?;
     }
 }

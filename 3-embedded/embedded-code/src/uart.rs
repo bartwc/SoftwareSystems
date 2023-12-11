@@ -150,6 +150,7 @@ impl Write for Uart {
 #[interrupt]
 unsafe fn UART0() {
     // todo_(completed)
+    hprint!("handler");
     GLOBAL_UART.update(|uart| {
         if uart.as_mut().unwrap().uart.mis.read().uart_mis_rxmis().bit_is_set() {
             //hprint!("handler rx");
@@ -167,5 +168,5 @@ unsafe fn UART0() {
             }
         }
     });
-    //hprint!("handler")
+    hprint!("handler")
 }

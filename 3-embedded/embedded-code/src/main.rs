@@ -61,12 +61,12 @@ fn main() -> ! {
     let a :u32 = 456765456;
     let serialised = serialise(a);
 
-    GLOBAL_UART.update(|u| {
-        u.as_mut().unwrap().write(serialised.as_slice())
-    });
-    GLOBAL_UART.update(|u| {
-        u.as_mut().unwrap().write(serialised.as_slice())
-    });
+    // GLOBAL_UART.update(|u| {
+    //     u.as_mut().unwrap().write(serialised.as_slice())
+    // });
+    // GLOBAL_UART.update(|u| {
+    //     u.as_mut().unwrap().write(serialised.as_slice())
+    // });
 
     // and write something to be received by the runner
     // GLOBAL_UART.update(|u| {
@@ -97,8 +97,12 @@ fn main() -> ! {
                             }
                         }
                     }
+                    else {
+                        break
+                    }
                 }
             });
+            //asm::wfi();
             if rx_data == 456765456{
                 hprint!(" board OK ");
             }
@@ -110,7 +114,7 @@ fn main() -> ! {
         // wait for interrupts, before looping again to save cycles.
         // when the system is awake, run 10000 iterations before waiting for interrupts.
         // unsafe { asm!("wfi") }
-        //asm::wfi();
+        asm::wfi();
     }
 }
 
