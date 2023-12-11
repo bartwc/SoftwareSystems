@@ -1,3 +1,12 @@
+/*
+ringbuffer.rs - Address Assignment 3 Part 1 - UART
+
+Requirement - Point 3
+You must provide buffering such that long messages can be sent and received.
+The buffer must be fixed-size, and must be sized appropriately for the messages that are sent over them.
+If the buffer fills up, the program must not crash.
+*/
+
 const SIZE_BUFFER: usize = 256;
 
 pub struct RingBuffer {
