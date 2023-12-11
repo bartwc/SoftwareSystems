@@ -13,6 +13,7 @@ pub struct Uart {
 
 impl Uart {
     pub fn new(uart: UART0) -> Self {
+        // todo_(completed)
         uart.ctl.write(|w| w.uart_ctl_uarten().clear_bit());
         uart.ibrd.write(|w| unsafe {
             // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
@@ -20,11 +21,13 @@ impl Uart {
             w.uart_ibrd_divint().bits(10)
         });
         uart.fbrd.write(|w| unsafe {
+            // todo_(completed)
             // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
             // It is sound because the uart_fbrd_divfrac field is safe to write to when we set the baud rate and initialise the uart driver.
             w.uart_fbrd_divfrac().bits(54)
         });
         uart.lcrh.write(|w| unsafe {
+            // todo_(completed)
             // It is unsafe because it writes raw bits to a register field, and there is no guarantee that the field is safe to write to.
             // It is sound because the lcrh register is safe to write to when we initialise the uart driver for the first time.
             w.bits(0x00000060)
@@ -116,6 +119,7 @@ impl Write for Uart {
 
 #[interrupt]
 unsafe fn UART0() {
+    // todo_(completed)
     GLOBAL_UART.update(|uart| {
         if uart.as_mut().unwrap().uart.mis.read().uart_mis_rxmis().bit_is_set() {
             //hprint!("handler rx");

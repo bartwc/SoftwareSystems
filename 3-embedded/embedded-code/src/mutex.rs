@@ -15,6 +15,8 @@ use core::cell::UnsafeCell;
 use cortex_m::interrupt::free;
 
 pub struct Mutex<T> {
+    // todo_(completed)
+    // phantom: PhantomData<T>
     data: UnsafeCell<T>,
 }
 
@@ -24,6 +26,7 @@ impl<T> Mutex<T> {
     /// Make a new Mutex. UnsafeCell is a cell type that provides interior mutability through
     /// unsafe operations. It means any data inside an UnsafeCell can be mutated at any time.
     pub const fn new(data: T) -> Self {
+        // todo_(completed)
         Mutex { data: UnsafeCell::new(data) }
     }
 
@@ -43,6 +46,7 @@ impl<T> Mutex<T> {
     /// removes any possible Option or Result wrapping around that reference,
     /// assuming the value is not None or an Err.
     pub fn update<U>(&self, v: impl FnOnce(&mut T) -> U) -> U {
+        // todo_(completed)
         free(|_| {
             // The soundness of the code is ensured by mutual exclusion.
             // As the interrupt is turned off, no context switching will happen, and
