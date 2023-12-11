@@ -1,6 +1,7 @@
 pub type Character = [[bool; 8]; 16];
 
-// TODO: this is one way to get a simple font in your program.
+//       TODO_(completed):
+//       this is one way to get a simple font in your program.
 //       finish this if you want to use it properly. Also add
 //       functions to screen.rs to draw a `Character`
 pub const ZERO: Character = [
@@ -195,13 +196,14 @@ pub const NEUF: Character = [
 
 pub const NUMBERS: [Character; 10] = [
     ZERO,
-    UN,
-    DEUX,
-    TROIS,
-    QUATRE,
-    CINQ,
-    SIX,
-    SEPT,
-    HUIT,
-    NEUF,
+    // TODO_(completed)
+    UN,     // ONE
+    DEUX,   // TWO
+    TROIS,  // THREE
+    QUATRE, // FOUR
+    CINQ,   // FIVE
+    SIX,    // SIX
+    SEPT,   // SEVEN
+    HUIT,   // EIGHT
+    NEUF,   // NINE
 ];
