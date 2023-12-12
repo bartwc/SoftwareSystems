@@ -96,7 +96,15 @@ fn main() -> ! {
         let msg = get_message();
 
         match msg.payload {
-            PayLoad::TakeStep(_) => {}
+            PayLoad::TakeStep(direction) => {
+                screen.take_step(direction);
+                if is_map_view {
+                    screen.show_positions();
+                }
+                else {
+                    screen.show_step_count();
+                }
+            }
             PayLoad::ChangeView => {
                 if is_map_view {
                     screen.show_step_count();
@@ -107,7 +115,10 @@ fn main() -> ! {
                     is_map_view = true;
                 }
             }
-            PayLoad::Clear => {}
+            PayLoad::Clear => {
+                is_map_view = true;
+                screen.reset_steps();
+            }
             PayLoad::Ack => {}
             PayLoad::Init => {}
         }

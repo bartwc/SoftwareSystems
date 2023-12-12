@@ -6,6 +6,7 @@ use std::time::Duration;
 
 use tudelft_arm_qemu_runner::Runner;
 use common_lib::{DataFrame, deserialise, PayLoad, serialise};
+use common_lib::Direction::{Down, Left, Right, Up};
 
 fn main()  {
     tracing_subscriber::fmt::init();
@@ -30,14 +31,14 @@ fn main()  {
 
     let mut is_first = true;
     loop {
-        if is_first == true {
+        if is_first {
             println!("
-            ----------------------------------------------------------------\n
-            |   Hi User! Key In Request or enter -help for Help |\n
-            ----------------------------------------------------------------\n
+            ------------------------------------------------------\n
+            |  Hi User! Key In Request or enter -help for Help!  |\n
+            ------------------------------------------------------\n
             ");
             //stdout().lock().flush().unwrap();
-            is_first == false;
+            is_first = false;
         }
 
         // Step 1 - Obtain Request from User
@@ -51,7 +52,7 @@ fn main()  {
 
 
         match user_request.as_str().trim() {
-            "-help" => {
+            "-help" | "help" | "-h" | "h" => {
                 println!("
                     Category    [command]       [message] or [ID]\n
                     Commands:   -help:          Display help\n
@@ -66,34 +67,59 @@ fn main()  {
                      ");
                 //stdout().lock().flush().unwrap();
             }
-            "-quit" => {
+            "-quit" | "quit" | "-q" | "q" => {
                 break
             }
             _ => {
                 match tasks[0] {
-                    "-w" => {
-
+                    "-w" | "w" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::TakeStep(Up),
+                            sequence_nr: 0,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-a" => {
-
+                    "-a" | "a" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::TakeStep(Left),
+                            sequence_nr: 0,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-s" => {
-
+                    "-s" | "s" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::TakeStep(Down),
+                            sequence_nr: 0,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-d" => {
-
+                    "-d" | "d" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::TakeStep(Right),
+                            sequence_nr: 0,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
 
-                    "-t" => {
-                        let a = DataFrame{
+                    "-t" | "t" => {
+                        let msg = DataFrame{
                             payload: PayLoad::ChangeView,
                             sequence_nr: 0,
                         };
-                        let serialised = serialise(a);
+                        let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-c" => {
-
+                    "-c" | "c" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::Clear,
+                            sequence_nr: 0,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
                     "-r" => {
 
