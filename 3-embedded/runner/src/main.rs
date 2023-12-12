@@ -14,9 +14,7 @@ fn main()  {
 
     let binary = args().nth(1).unwrap();
     let mut runner: Runner = Runner::new(&binary, false).unwrap();
-    let mut recv_data = Vec::<u8>::new();
-    // receive up to 256 bytes
-    let mut buf = [0u8; 256];
+
 
     // sleep(Duration::from_millis(10));
     // let a :u32 = 456765456;
@@ -60,7 +58,7 @@ fn main()  {
                                 -a:             Move - Left\n
                                 -s:             Move - Down\n
                                 -d:             Move - Right\n
-                                -t:             Transmit Message to Change Page View\n
+                                -t:             To Change Page View\n
                                 -r:             Receive Total Number of Steps\n
                                 -c:             Clear Step Count to Zero\n
                                 -quit:          Quit Program\n
@@ -75,7 +73,6 @@ fn main()  {
                     "-w" | "w" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Up),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -83,7 +80,6 @@ fn main()  {
                     "-a" | "a" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Left),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -91,7 +87,6 @@ fn main()  {
                     "-s" | "s" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Down),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -99,7 +94,6 @@ fn main()  {
                     "-d" | "d" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Right),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -108,7 +102,6 @@ fn main()  {
                     "-t" | "t" => {
                         let msg = DataFrame{
                             payload: PayLoad::ChangeView,
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -116,13 +109,46 @@ fn main()  {
                     "-c" | "c" => {
                         let msg = DataFrame{
                             payload: PayLoad::Clear,
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-r" => {
+                    "-r" | "r" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::StepCountRequest,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
 
+                        // wait for the message to get back.
+                        sleep(Duration::from_millis(5));
+
+                        let mut recv_data = Vec::<u8>::new();
+                        // receive up to 16 bytes
+                        let mut buf = [0u8; 16];
+                        let num_received = runner.stream.read(&mut buf).unwrap();
+                        // get the portion we actually received
+                        let received = & mut buf[0..num_received];
+                        let mut tried = false;
+                        for single_byte in received.iter().as_slice() {
+                            recv_data.push(*single_byte);
+                            if *single_byte == 0x00 {
+                                if let Some(data_frame) = deserialise(recv_data.as_mut_slice()){
+                                    if let PayLoad::StepCount(stepcount) = data_frame.payload {
+                                        println!("The current step count is: {}", stepcount);
+                                    }
+                                    else { println!("Error getting step count. Try again."); }
+                                }
+                                else { println!("Error getting step count. Try again."); }
+                                recv_data.clear();
+                                if tried == true {
+                                    break;
+                                }
+                                else {
+                                    tried = true;
+                                }
+                            }
+                        }
                     },
                     _ => {
                         println!("Invalid Tasks. Enter -help for help!");

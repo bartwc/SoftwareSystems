@@ -22,14 +22,13 @@ pub enum PayLoad {
     TakeStep(Direction),
     ChangeView,
     Clear,
-    Ack,
-    Init,
+    StepCountRequest,
+    StepCount(u32),
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct DataFrame {
     pub payload: PayLoad,
-    pub sequence_nr: u32,
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]

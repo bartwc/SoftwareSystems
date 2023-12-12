@@ -30,21 +30,23 @@ impl<T> Mutex<T> {
         Mutex { data: UnsafeCell::new(data) }
     }
 
-    /// "locks" the mutex, and runs v as a critical section
-    /// impl FnOnce(&mut T) -> U: This method signature denotes a function v that takes
-    /// a mutable reference to a type T and returns a value of type U.
+    /*
+    "locks" the mutex, and runs v as a critical section
+    impl FnOnce(&mut T) -> U: This method signature denotes a function v that takes
+    a mutable reference to a type T and returns a value of type U.
 
-    /// free(|_| {...}): This function is often used in the context of embedded systems
-    /// programming with Rust. It accepts a closure. Inside this function, interrupts
-    /// are typically disabled, ensuring mutual exclusion - preventing race conditions
-    /// and ensuring the integrity of data during concurrent operations.
+    free(|_| {...}): This function is often used in the context of embedded systems
+    programming with Rust. It accepts a closure. Inside this function, interrupts
+    are typically disabled, ensuring mutual exclusion - preventing race conditions
+    and ensuring the integrity of data during concurrent operations.
 
-    /// unsafe { self.data.get().as_mut().unwrap() }: This code is making use of Rust's
-    /// Unsafe functionality to perform an operation which the Rust compiler cannot
-    /// guarantee safety. get() function is assumed to get a raw pointer to the data,
-    /// as_mut() attempts to convert that pointer to a mutable reference, and unwrap()
-    /// removes any possible Option or Result wrapping around that reference,
-    /// assuming the value is not None or an Err.
+    unsafe { self.data.get().as_mut().unwrap() }: This code is making use of Rust's
+    Unsafe functionality to perform an operation which the Rust compiler cannot
+    guarantee safety. get() function is assumed to get a raw pointer to the data,
+    as_mut() attempts to convert that pointer to a mutable reference, and unwrap()
+    removes any possible Option or Result wrapping around that reference,
+    assuming the value is not None or an Err.
+     */
     pub fn update<U>(&self, v: impl FnOnce(&mut T) -> U) -> U {
         // todo_(completed)
         free(|_| {

@@ -9,21 +9,21 @@ static ALLOCATOR: emballoc::Allocator<2048> = emballoc::Allocator::new();
 
 extern crate alloc;
 
-use alloc::boxed::Box;
+
 use crate::uart::Uart;
 //use core::arch::asm;
-use core::fmt::Write;
-use cortex_m::asm;
-use cortex_m_semihosting::{hprint, hprintln};
+
+
+use cortex_m_semihosting::{hprintln};
 use drawing::brightness::Brightness;
 use drawing::screen::Screen;
 use rt::entry;
 use tudelft_lm3s6965_pac::{Interrupt, NVIC, Peripherals};
-use common_lib::Direction::{Up, Down, Left, Right};
+
 use alloc::vec::Vec;
-use serde::{Serialize, Deserialize};
-use crc::{Crc, CRC_32_ISCSI};
-use postcard::{from_bytes_cobs, from_bytes_crc32, to_allocvec_cobs, to_allocvec_crc32};
+
+
+
 use common_lib::{DataFrame, deserialise, PayLoad, serialise};
 
 use crate::mutex::Mutex;
@@ -56,7 +56,7 @@ fn main() -> ! {
     });
     let uart = Uart::new(dp.UART0);
 
-    GLOBAL_UART.update(|mut uart_inside| {
+    GLOBAL_UART.update(|uart_inside| {
         *uart_inside = Some(uart);
     });
 
@@ -119,8 +119,15 @@ fn main() -> ! {
                 is_map_view = true;
                 screen.reset_steps();
             }
-            PayLoad::Ack => {}
-            PayLoad::Init => {}
+
+            PayLoad::StepCountRequest => {
+                let step_count = screen.get_step_count();
+                let message = DataFrame{
+                    payload: PayLoad::StepCount(step_count),
+                };
+                send_message(serialise(message).as_slice());
+            }
+            PayLoad::StepCount(_) => {}
         }
     }
 }
@@ -130,9 +137,9 @@ pub fn get_message() -> DataFrame {
     let mut rx_vec = Vec::new();
     //let mut rx_data: u32 = 0;
     let mut byte: Option<u8> = None;
-    let mut return_val;
+    let return_val;
 
-    while byte == None {
+    while byte.is_none() {
         GLOBAL_UART.update(|u| {
             byte = u.as_mut().unwrap().read();
         });
@@ -150,7 +157,7 @@ pub fn get_message() -> DataFrame {
         rx_vec.push(byte_inner);
         if byte_inner == 0x00 {
             let data = deserialise(rx_vec.as_mut_slice());
-            if data != None {
+            if data.is_some() {
                 return_val = data.unwrap();
                 rx_vec.clear();
                 break;
@@ -161,7 +168,7 @@ pub fn get_message() -> DataFrame {
             }
         }
         byte = None;
-        while byte == None {
+        while byte.is_none() {
             GLOBAL_UART.update(|u| {
                 byte = u.as_mut().unwrap().read();
             });
