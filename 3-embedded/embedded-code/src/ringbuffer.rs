@@ -52,7 +52,7 @@ impl RingBuffer {
             } else { // 256 causes reset to 0
                 self.data[position_back - SIZE_BUFFER] = byte_to_push;
             }
-            self.num_elements = self.num_elements + 1;
+            self.num_elements += 1;
             Ok(())
         }
     }
@@ -83,9 +83,9 @@ impl RingBuffer {
             {
                 self.position_front = 0;
             } else {
-                self.position_front = self.position_front + 1;
+                self.position_front += 1;
             }
-            self.num_elements = self.num_elements - 1;
+            self.num_elements -= 1;
             Some(element)
         }
     }

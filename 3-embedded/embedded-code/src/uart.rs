@@ -1,6 +1,6 @@
 use core::fmt::Write;
 use cortex_m_semihosting::hprint;
-use tudelft_lm3s6965_pac::{interrupt, Interrupt, NVIC};
+use tudelft_lm3s6965_pac::{interrupt};
 use tudelft_lm3s6965_pac::UART0;
 use crate::GLOBAL_UART;
 use crate::ringbuffer::RingBuffer;
@@ -160,7 +160,7 @@ unsafe fn UART0() {
             });
             if uart.as_mut().unwrap().read_buffer.space_remaining() > 0 {
                 let byte = uart.as_mut().unwrap().uart.dr.read().uart_dr_data().bits();
-                let result_push = uart.as_mut().unwrap().read_buffer.push_byte(byte);
+                let _result_push = uart.as_mut().unwrap().read_buffer.push_byte(byte);
                 if uart.as_mut().unwrap().read_buffer.space_remaining() == 0 {
                     //hprint!("read buffer full");
                     uart.as_mut().unwrap().read_buffer.clear();

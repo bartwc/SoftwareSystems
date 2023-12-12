@@ -168,8 +168,8 @@ impl<'p> Screen<'p> {
         while number_left > 0 {
             single_digit = (number_left % 10) as u8;
             self.draw_digit(x, y, brightness, single_digit);
-            number_left = number_left / 10;
-            x = x - 10;
+            number_left /= 10;
+            x -= 10;
         }
     }
 
@@ -195,9 +195,9 @@ impl<'p> Screen<'p> {
                 if NUMBERS[digit as usize][y_i as usize][x_i as usize] {
                     self.draw_pixel(x + x_i, y + y_i, brightness);
                 }
-                x_i = x_i + 1;
+                x_i += 1;
             }
-            y_i = y_i + 1;
+            y_i += 1;
         }
     }
 
@@ -234,14 +234,14 @@ impl<'p> Screen<'p> {
      */
     pub fn take_step(&mut self, direction: Direction) {
         match direction {
-            Direction::Left => if self.origin_x as i16 + self.dx >= 0 { self.dx =  self.dx - 1},
-            Direction::Right => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx =  self.dx + 1},
-            Direction::Down => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy =  self.dy + 1},
-            Direction::Up => if self.origin_y as i16 + self.dy >= 0 { self.dy =  self.dy - 1},
+            Direction::Left => if self.origin_x as i16 + self.dx >= 0 { self.dx -= 1},
+            Direction::Right => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx += 1},
+            Direction::Down => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy += 1},
+            Direction::Up => if self.origin_y as i16 + self.dy >= 0 { self.dy -= 1},
         }
         let x = self.origin_x as i16 + self.dx;
         let y = self.origin_y as i16 + self.dy;
-        self.step_count = self.step_count + 1;
+        self.step_count += 1;
         self.map[y as usize][x as usize] = true;
     }
 
@@ -262,15 +262,15 @@ impl<'p> Screen<'p> {
         self.clear(Brightness::WHITE);
         let mut x: u8 = 0;
         let mut y: u8 = 0;
-        while y <= Screen::HEIGHT - 1 {
+        while y < Screen::HEIGHT {
             x = 0;
-            while x <= Screen::WIDTH - 1 {
+            while x < Screen::WIDTH {
                 if self.map[y as usize][x as usize] {
                     self.draw_pixel(x, y, Brightness::BLACK);
                 }
-                x = x + 1;
+                x += 1;
             }
-            y = y + 1;
+            y += 1;
         }
     }
 
