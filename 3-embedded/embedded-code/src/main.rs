@@ -61,14 +61,14 @@ fn main() -> ! {
     });
 
     /*
-        It is unsafe when unmask enables interrupt because
-        it may break masked-based critical sections.
-        It is sound because the initialisation of uart is
-        not within a critical section.
-        SAFETY: According to https://docs.rs/cortex-m/0.6.7/cortex_m/peripheral/struct.NVIC.html#method.unmask
-        unsafe feature is not accessed as utilisation of
-        unmask enables interrupt is not within masked-based critical section
-        */
+    It is unsafe when unmask enables interrupt because
+    it may break masked-based critical sections.
+    It is sound because the initialisation of uart is
+    not within a critical section.
+    SAFETY: According to https://docs.rs/cortex-m/0.6.7/cortex_m/peripheral/struct.NVIC.html#method.unmask
+    unsafe feature is not accessed as utilisation of
+    unmask enables interrupt is not within masked-based critical section
+    */
     unsafe { NVIC::unmask(Interrupt::UART0) };
 
 
