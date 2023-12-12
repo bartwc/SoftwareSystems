@@ -187,7 +187,7 @@ impl<'p> Screen<'p> {
     15 rows.
      */
     fn draw_digit(&mut self, x: u8, y: u8, brightness: Brightness, digit: u8) {
-        let mut x_i: u8 = 0;
+        let mut x_i: u8;
         let mut y_i: u8 = 0;
         while y_i <= 15 {
             x_i = 0;
@@ -260,7 +260,7 @@ impl<'p> Screen<'p> {
      */
     pub fn show_positions(&mut self) {
         self.clear(Brightness::WHITE);
-        let mut x: u8 = 0;
+        let mut x: u8;
         let mut y: u8 = 0;
         while y < Screen::HEIGHT {
             x = 0;

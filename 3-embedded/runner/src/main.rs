@@ -1,6 +1,6 @@
 use std::env::args;
 use std::io;
-use std::io::{stdout, Read, Write};
+use std::io::{Read, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -45,7 +45,7 @@ fn main()  {
         stdin.read_line(&mut user_request).expect("Invalid Request");
 
         // Step 2 - Parse Command From User
-        let tasks = user_request.as_str().trim().split(" ").collect::<std::vec::Vec<&str>>();
+        let tasks = user_request.as_str().trim().split(" ").collect::<Vec<&str>>();
 
 
 

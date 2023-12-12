@@ -98,21 +98,21 @@ impl Uart {
     }
 
 
-    pub fn write_byte(&mut self, value: u8) { // Required for Protocol - Embedded Push Byte into Buffer
-        if self.write_buffer.space_remaining() >= 1 {
-            let write_result = self.write_buffer.push_byte(value);
-            if write_result == Err(()) {
-                hprint!("write buffer full");
-            }
-        } else {
-            self.write_to_uart();
-            let write_result = self.write_buffer.push_byte(value);
-            if write_result == Err(()) {
-                hprint!("write buffer full");
-            }
-        }
-        self.write_to_uart(); // Flush Buffer into PC
-    }
+    // pub fn write_byte(&mut self, value: u8) { // Required for Protocol - Embedded Push Byte into Buffer
+    //     if self.write_buffer.space_remaining() >= 1 {
+    //         let write_result = self.write_buffer.push_byte(value);
+    //         if write_result == Err(()) {
+    //             hprint!("write buffer full");
+    //         }
+    //     } else {
+    //         self.write_to_uart();
+    //         let write_result = self.write_buffer.push_byte(value);
+    //         if write_result == Err(()) {
+    //             hprint!("write buffer full");
+    //         }
+    //     }
+    //     self.write_to_uart(); // Flush Buffer into PC
+    // }
 
     fn write_to_uart(&mut self) {
         while self.write_buffer.num_bytes() >= 1 {
