@@ -29,7 +29,6 @@ pub enum PayLoad {
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct DataFrame {
     pub payload: PayLoad,
-    pub sequence_nr: u32,
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]

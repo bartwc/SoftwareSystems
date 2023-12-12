@@ -75,7 +75,6 @@ fn main()  {
                     "-w" | "w" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Up),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -83,7 +82,6 @@ fn main()  {
                     "-a" | "a" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Left),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -91,7 +89,6 @@ fn main()  {
                     "-s" | "s" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Down),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -99,7 +96,6 @@ fn main()  {
                     "-d" | "d" => {
                         let msg = DataFrame{
                             payload: PayLoad::TakeStep(Right),
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -108,7 +104,6 @@ fn main()  {
                     "-t" | "t" => {
                         let msg = DataFrame{
                             payload: PayLoad::ChangeView,
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
@@ -116,7 +111,6 @@ fn main()  {
                     "-c" | "c" => {
                         let msg = DataFrame{
                             payload: PayLoad::Clear,
-                            sequence_nr: 0,
                         };
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
