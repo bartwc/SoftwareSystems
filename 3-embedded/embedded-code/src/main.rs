@@ -49,6 +49,7 @@ fn main() -> ! {
     let mut screen = Screen::new(&mut dp.SSI0, &mut dp.GPIO_PORTC);
     screen.clear(Brightness::WHITE);
     screen.define_starting_point(20, 50);
+    screen.show_positions();
     // initialize the UART.
     dp.SYSCTL.dcgc1.write(|w| {
         w.sysctl_dcgc1_uart0().set_bit()
@@ -90,26 +91,26 @@ fn main() -> ! {
 
     // let mut rx_vec = Vec::new();
     // let mut rx_data: u32 = 0;
+    let mut is_map_view = true;
     loop {
-        let a = DataFrame{
-            payload: PayLoad::ChangeView,
-            sequence_nr: 456765456,
-        };
-        let serialised = serialise(a);
+        let msg = get_message();
 
-        send_message(serialised.as_slice());
-
-
-        //rx_vec.clear();
-
-
-
-        if get_message().sequence_nr == 456765456 {
-            hprint!(" board OK ");
-        } else {
-            //hprint!(" board fail 0");
+        match msg.payload {
+            PayLoad::TakeStep(_) => {}
+            PayLoad::ChangeView => {
+                if is_map_view {
+                    screen.show_step_count();
+                    is_map_view = false;
+                }
+                else {
+                    screen.show_positions();
+                    is_map_view = true;
+                }
+            }
+            PayLoad::Clear => {}
+            PayLoad::Ack => {}
+            PayLoad::Init => {}
         }
-        //asm::wfi();
     }
 }
 
