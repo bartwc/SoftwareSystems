@@ -4,7 +4,7 @@ use std::thread::sleep;
 use std::time::Duration;
 
 use tudelft_arm_qemu_runner::Runner;
-use common_lib::{deserialise, serialise};
+use common_lib::{DataFrame, deserialise, PayLoad, serialise};
 
 fn main() -> color_eyre::Result<()> {
     tracing_subscriber::fmt::init();
@@ -16,14 +16,14 @@ fn main() -> color_eyre::Result<()> {
     // receive up to 256 bytes
     let mut buf = [0u8; 256];
 
-    sleep(Duration::from_millis(10));
-    let a :u32 = 456765456;
-    let serialised = serialise(a);
-    runner.stream.write_all(serialised.as_slice())?;
-
-    runner.stream.write_all(serialised.as_slice())?;
-
-    runner.stream.write_all(serialised.as_slice())?;
+    // sleep(Duration::from_millis(10));
+    // let a :u32 = 456765456;
+    // let serialised = serialise(a);
+    // runner.stream.write_all(serialised.as_slice())?;
+    //
+    // runner.stream.write_all(serialised.as_slice())?;
+    //
+    // runner.stream.write_all(serialised.as_slice())?;
 
 
 
@@ -37,9 +37,9 @@ fn main() -> color_eyre::Result<()> {
         for single_byte in received.iter().as_slice() {
             recv_data.push(*single_byte);
             if *single_byte == 0x00 {
-                runner.stream.write_all(recv_data.as_slice())?;
+                //runner.stream.write_all(recv_data.as_slice())?;
                 if let Some(data) = deserialise(recv_data.as_mut_slice()){
-                    if data == 456765456 {
+                    if data.sequence_nr == 456765456 {
                         print!(" OK "); stdout().lock().flush().unwrap();
                     }
                 }
@@ -54,7 +54,10 @@ fn main() -> color_eyre::Result<()> {
 
         // send back the bytes to the Stellaris board
         // runner.stream.write_all(serialise(456765456).as_slice())?;
-        let a :u32 = 456765456;
+        let a = DataFrame{
+            payload: PayLoad::ChangeView,
+            sequence_nr: 456765456,
+        };
         let serialised = serialise(a);
         runner.stream.write_all(serialised.as_slice())?;
     }

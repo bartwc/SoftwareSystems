@@ -28,17 +28,17 @@ pub enum PayLoad {
 
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct DataFrame {
-    payload: PayLoad,
-    sequence_nr: u32,
+    pub payload: PayLoad,
+    pub sequence_nr: u32,
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct Packet {
-    dataframe: u32,
+    dataframe: DataFrame,
     checksum: u32
 }
 
-pub fn serialise(data_frame: u32) -> Vec<u8> {
+pub fn serialise(data_frame: DataFrame) -> Vec<u8> {
     let crc = Crc::<u32>::new(&CRC_32_ISCSI);
     let checksum_data = crc.checksum(to_allocvec(&data_frame).unwrap().as_slice());
     let packet_to_send = Packet{
@@ -48,7 +48,7 @@ pub fn serialise(data_frame: u32) -> Vec<u8> {
     to_allocvec_cobs(&packet_to_send).unwrap()
 }
 
-pub fn deserialise(byte_slice: & mut [u8]) -> Option<u32> {
+pub fn deserialise(byte_slice: & mut [u8]) -> Option<DataFrame> {
     let crc = Crc::<u32>::new(&CRC_32_ISCSI);
     if let Ok(packet) = from_bytes_cobs::<Packet>(byte_slice) {
         let checksum_data = crc.checksum(to_allocvec(&(packet.dataframe)).unwrap().as_slice());

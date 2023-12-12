@@ -24,7 +24,7 @@ use alloc::vec::Vec;
 use serde::{Serialize, Deserialize};
 use crc::{Crc, CRC_32_ISCSI};
 use postcard::{from_bytes_cobs, from_bytes_crc32, to_allocvec_cobs, to_allocvec_crc32};
-use common_lib::{deserialise, serialise};
+use common_lib::{DataFrame, deserialise, PayLoad, serialise};
 
 use crate::mutex::Mutex;
 
@@ -70,8 +70,6 @@ fn main() -> ! {
         */
     unsafe { NVIC::unmask(Interrupt::UART0) };
 
-    let a: u32 = 456765456;
-    let serialised = serialise(a);
 
     // GLOBAL_UART.update(|u| {
     //     u.as_mut().unwrap().write(serialised.as_slice())
@@ -93,7 +91,10 @@ fn main() -> ! {
     // let mut rx_vec = Vec::new();
     // let mut rx_data: u32 = 0;
     loop {
-        let a: u32 = 456765456;
+        let a = DataFrame{
+            payload: PayLoad::ChangeView,
+            sequence_nr: 456765456,
+        };
         let serialised = serialise(a);
 
         send_message(serialised.as_slice());
@@ -103,7 +104,7 @@ fn main() -> ! {
 
 
 
-        if get_message() == 456765456 {
+        if get_message().sequence_nr == 456765456 {
             hprint!(" board OK ");
         } else {
             //hprint!(" board fail 0");
@@ -113,11 +114,11 @@ fn main() -> ! {
 }
 
 
-pub fn get_message() -> u32 {
+pub fn get_message() -> DataFrame {
     let mut rx_vec = Vec::new();
     //let mut rx_data: u32 = 0;
     let mut byte: Option<u8> = None;
-    let mut return_val: u32;
+    let mut return_val;
 
     while byte == None {
         GLOBAL_UART.update(|u| {
