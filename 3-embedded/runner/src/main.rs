@@ -38,16 +38,10 @@ fn main() -> color_eyre::Result<()> {
             recv_data.push(*single_byte);
             if *single_byte == 0x00 {
                 runner.stream.write_all(recv_data.as_slice())?;
-                if let Some(rec) = deserialise(recv_data.as_mut_slice()){
-                    if rec == 456765456 {
+                if let Some(data) = deserialise(recv_data.as_mut_slice()){
+                    if data == 456765456 {
                         print!(" OK "); stdout().lock().flush().unwrap();
                     }
-                    else {
-                        print!(" fail1 "); stdout().lock().flush().unwrap();
-                    }
-                }
-                else {
-                    print!(" fail2 "); stdout().lock().flush().unwrap();
                 }
                 recv_data.clear();
             }
