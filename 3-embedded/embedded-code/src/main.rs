@@ -116,8 +116,13 @@ fn main() -> ! {
                 }
             }
             PayLoad::Clear => {
-                is_map_view = true;
                 screen.reset_steps();
+                if is_map_view {
+                    screen.show_positions();
+                }
+                else {
+                    screen.show_step_count();
+                }
             }
 
             PayLoad::StepCountRequest => {
