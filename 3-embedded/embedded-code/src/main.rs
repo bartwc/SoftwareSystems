@@ -3,6 +3,7 @@
 
 extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
+
 #[global_allocator]
 static ALLOCATOR: emballoc::Allocator<2048> = emballoc::Allocator::new();
 
@@ -49,7 +50,7 @@ fn main() -> ! {
     screen.clear(Brightness::WHITE);
     screen.define_starting_point(20, 50);
     // initialize the UART.
-    dp.SYSCTL.dcgc1.write(|w|{
+    dp.SYSCTL.dcgc1.write(|w| {
         w.sysctl_dcgc1_uart0().set_bit()
     });
     let uart = Uart::new(dp.UART0);
@@ -69,7 +70,7 @@ fn main() -> ! {
         */
     unsafe { NVIC::unmask(Interrupt::UART0) };
 
-    let a :u32 = 456765456;
+    let a: u32 = 456765456;
     let serialised = serialise(a);
 
     // GLOBAL_UART.update(|u| {
@@ -89,76 +90,71 @@ fn main() -> ! {
     // uart receives trigger an interrupt which push to some kind of
     // buffer so this read operation works)
 
-    let mut rx_vec = Vec::new();
-    let mut rx_data: u32 = 0;
+    // let mut rx_vec = Vec::new();
+    // let mut rx_data: u32 = 0;
     loop {
-        let a :u32 = 456765456;
+        let a: u32 = 456765456;
         let serialised = serialise(a);
 
-        GLOBAL_UART.update(|u| {
-            u.as_mut().unwrap().write(serialised.as_slice())
-        });
+        // GLOBAL_UART.update(|u| {
+        //     u.as_mut().unwrap().write(serialised.as_slice())
+        // });
+
+
+        //rx_vec.clear();
 
 
 
-            //asm::delay(200);
-            GLOBAL_UART.update(|u| {
-                let mut byte = u.as_mut().unwrap().read();
-                // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxfe().bit_is_set(){
-                //     hprint!("fifo empty");
-                // }
-                // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxff().bit_is_set(){
-                //     hprint!("fifo full");
-                // }
-                while byte != None {
-                    //hprint!(" board fail 1");
-                    let byte_inner = byte.unwrap();
-                    //hprint!("0x{:x}", byte_inner);
-                    rx_vec.push(byte_inner);
-                    if byte_inner == 0x00{
-                        let data = deserialise(rx_vec.as_mut_slice());
-                        if data != None {
-                            rx_data = data.unwrap();
-                            rx_vec.clear();
-                            break
-                        }
-                        else {
-                            hprint!("message failed");
-                            rx_vec.clear();
-                            break;
-                        }
-                    }
-                    byte = u.as_mut().unwrap().read();
-                }
-                //rx_vec.clear();
-            });
-
-            asm::wfi();
-            if rx_data == 456765456{
-                hprint!(" board OK ");
-            }
-            else
-            {
-                //hprint!(" board fail 0");
-            }
-
-        // wait for interrupts, before looping again to save cycles.
-        // when the system is awake, run 10000 iterations before waiting for interrupts.
-        // unsafe { asm!("wfi") }
-        //asm::wfi();
+        if get_message() == 456765456 {
+            hprint!(" board OK ");
+        } else {
+            //hprint!(" board fail 0");
+        }
+        asm::wfi();
     }
 }
 
 
+pub fn get_message() -> u32 {
+    let mut rx_vec = Vec::new();
+    //let mut rx_data: u32 = 0;
+    let mut byte: Option<u8> = None;
+    let mut return_val: u32;
 
-// pub fn deserialise(byte_slice: & mut [u8])  {
-//     let crc = Crc::<u32>::new(&CRC_32_ISCSI);
-//     // if let Ok(decoded) = from_bytes_cobs(byte_slice){
-//     //     from_bytes_crc32(&decoded, crc.digest())
-//     // }else {
-//     //     Err(())
-//     // }
-//     let decoded: u32 = from_bytes_cobs(byte_slice).unwrap();
-//     //let checked: u32 = from_bytes_crc32(&decoded, crc.digest()).unwrap();
-//     hprint!("{:}", decoded);
-// }
+    while byte == None {
+        GLOBAL_UART.update(|u| {
+            byte = u.as_mut().unwrap().read();
+        });
+    }
+    // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxfe().bit_is_set(){
+    //     hprint!("fifo empty");
+    // }
+    // if u.as_mut().unwrap().uart.fr.read().uart_fr_rxff().bit_is_set(){
+    //     hprint!("fifo full");
+    // }
+    loop {
+        //hprint!(" board fail 1");
+        let byte_inner = byte.unwrap();
+        //hprint!("0x{:x}", byte_inner);
+        rx_vec.push(byte_inner);
+        if byte_inner == 0x00 {
+            let data = deserialise(rx_vec.as_mut_slice());
+            if data != None {
+                return_val = data.unwrap();
+                rx_vec.clear();
+                break;
+            } else {
+                hprint!("message failed");
+                rx_vec.clear();
+                //break;
+            }
+        }
+        byte = None;
+        while byte == None {
+            GLOBAL_UART.update(|u| {
+                byte = u.as_mut().unwrap().read();
+            });
+        }
+    }
+    return_val
+}

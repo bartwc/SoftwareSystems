@@ -16,7 +16,15 @@ fn main() -> color_eyre::Result<()> {
     // receive up to 256 bytes
     let mut buf = [0u8; 256];
 
+    loop{
+        //sleep(Duration::from_millis(10));
+        let a :u32 = 456765456;
+        let serialised = serialise(a);
+        runner.stream.write_all(serialised.as_slice())?;
+    }
+
     loop {
+        sleep(Duration::from_millis(20));
 
         let num_received = runner.stream.read(&mut buf)?;
         // get the portion we actually received
