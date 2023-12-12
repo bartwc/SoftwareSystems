@@ -119,8 +119,9 @@ fn main() -> ! {
                 is_map_view = true;
                 screen.reset_steps();
             }
-            PayLoad::Ack => {}
-            PayLoad::Init => {}
+
+            PayLoad::StepCountRequest => {}
+            PayLoad::StepCount(_) => {}
         }
     }
 }

@@ -22,8 +22,8 @@ pub enum PayLoad {
     TakeStep(Direction),
     ChangeView,
     Clear,
-    Ack,
-    Init,
+    StepCountRequest,
+    StepCount(u32),
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]

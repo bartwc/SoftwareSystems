@@ -7,7 +7,7 @@ pub struct Screen<'p> {
     ssi: &'p mut SSI0,
     gpio: &'p mut GPIO_PORTC,
     fb: [[u8; (Screen::WIDTH / 2) as usize]; Screen::HEIGHT as usize],
-    step_count: usize,
+    step_count: u32,
     dy: i16,
     dx: i16,
     origin_y: u8,
@@ -117,7 +117,7 @@ impl<'p> Screen<'p> {
         self.write_ssi(value as u16);
     }
 
-    pub fn draw_unsigned_int(&mut self, x: u8, y: u8, brightness: Brightness, number: usize) {
+    pub fn draw_unsigned_int(&mut self, x: u8, y: u8, brightness: Brightness, number: u32) {
         let mut number_left = number;
         let mut single_digit: u8;
         let mut x= x;
