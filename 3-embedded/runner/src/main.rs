@@ -25,12 +25,7 @@ fn main() -> color_eyre::Result<()> {
 
     runner.stream.write_all(serialised.as_slice())?;
 
-    loop{
-        // sleep(Duration::from_millis(10));
-        // let a :u32 = 456765456;
-        // let serialised = serialise(a);
-        // runner.stream.write_all(serialised.as_slice())?;
-    }
+
 
     loop {
         sleep(Duration::from_millis(20));

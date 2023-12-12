@@ -96,9 +96,7 @@ fn main() -> ! {
         let a: u32 = 456765456;
         let serialised = serialise(a);
 
-        // GLOBAL_UART.update(|u| {
-        //     u.as_mut().unwrap().write(serialised.as_slice())
-        // });
+        send_message(serialised.as_slice());
 
 
         //rx_vec.clear();
@@ -157,4 +155,10 @@ pub fn get_message() -> u32 {
         }
     }
     return_val
+}
+
+pub fn send_message(bytes: &[u8]){
+    GLOBAL_UART.update(|u| {
+        u.as_mut().unwrap().write(bytes)
+    });
 }
