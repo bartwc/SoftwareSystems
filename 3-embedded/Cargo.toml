@@ -1,5 +1,5 @@
 [workspace]
-members = ["embedded-code", "runner"]
+members = ["embedded-code", "runner", "common_lib"]
 default-members = ["embedded-code"]
 resolver = "2"
 

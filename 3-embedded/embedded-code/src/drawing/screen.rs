@@ -1,11 +1,18 @@
 use crate::drawing::brightness::Brightness;
-use crate::drawing::font::Character;
+use crate::drawing::font::NUMBERS;
 use tudelft_lm3s6965_pac::{GPIO_PORTC, SSI0};
+use common_lib::Direction;
 
 pub struct Screen<'p> {
     ssi: &'p mut SSI0,
     gpio: &'p mut GPIO_PORTC,
     fb: [[u8; (Screen::WIDTH / 2) as usize]; Screen::HEIGHT as usize],
+    step_count: usize,
+    dy: i16,
+    dx: i16,
+    origin_y: u8,
+    origin_x: u8,
+    map: [[bool; Screen::WIDTH as usize]; Screen::HEIGHT as usize],
 }
 
 impl<'p> Screen<'p> {
@@ -48,6 +55,12 @@ impl<'p> Screen<'p> {
             ssi,
             gpio,
             fb: [[0; (Self::WIDTH / 2) as usize]; Self::HEIGHT as usize],
+            step_count: 0,
+            dy: 0,
+            dx: 0,
+            origin_y: 0,
+            origin_x: 0,
+            map: [[false; Screen::WIDTH as usize]; Screen::HEIGHT as usize],
         }
     }
 
@@ -82,8 +95,8 @@ impl<'p> Screen<'p> {
     }
 
     pub fn draw_pixel(&mut self, x: u8, y: u8, brightness: Brightness) {
-        assert!(x < 128, "x larger than width");
-        assert!(y < 64, "y larger than height");
+        assert!(x < Screen::WIDTH, "x larger than width");
+        assert!(y < Screen::HEIGHT, "y larger than height");
 
         self.change_mode(Mode::Cmd);
         self.set_col(x / 2, Self::WIDTH - 1);
@@ -102,6 +115,86 @@ impl<'p> Screen<'p> {
 
         let value = *current;
         self.write_ssi(value as u16);
+    }
+
+    pub fn draw_unsigned_int(&mut self, x: u8, y: u8, brightness: Brightness, number: usize) {
+        let mut number_left = number;
+        let mut single_digit: u8;
+        let mut x= x;
+
+        if number_left == 0 {
+            self.draw_digit(x, y, brightness, 0);
+        }
+        while number_left > 0 {
+            single_digit = (number_left % 10) as u8;
+            self.draw_digit(x, y, brightness, single_digit);
+            number_left = number_left / 10;
+            x = x - 9;
+        }
+    }
+
+    fn draw_digit(&mut self, x: u8, y: u8, brightness: Brightness, digit: u8) {
+        let mut x_i: u8 = 0;
+        let mut y_i: u8 = 0;
+        while y_i <= 15 {
+            x_i = 0;
+            while x_i <= 7  {
+                if NUMBERS[digit as usize][y_i as usize][x_i as usize] {
+                    self.draw_pixel(x + x_i, y + y_i, brightness);
+                }
+                x_i = x_i + 1;
+            }
+            y_i = y_i + 1;
+        }
+    }
+
+    pub fn define_starting_point(&mut self, y: u8, x: u8){
+        self.origin_x = x;
+        self.origin_y = y;
+        self.map[y as usize][x as usize] = true;
+    }
+
+    pub fn take_step(&mut self, direction: Direction) {
+        match direction {
+            Direction::Left => if self.origin_x as i16 + self.dx >= 0 { self.dx =  self.dx - 1},
+            Direction::Right => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx =  self.dx + 1},
+            Direction::Down => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy =  self.dy + 1},
+            Direction::Up => if self.origin_y as i16 + self.dy >= 0 { self.dy =  self.dy - 1},
+        }
+        let x = self.origin_x as i16 + self.dx;
+        let y = self.origin_y as i16 + self.dy;
+        self.step_count = self.step_count + 1;
+        self.map[y as usize][x as usize] = true;
+    }
+
+    pub fn show_positions(&mut self) {
+        self.clear(Brightness::WHITE);
+        let mut x: u8 = 0;
+        let mut y: u8 = 0;
+        while y <= Screen::HEIGHT - 1 {
+            x = 0;
+            while x <= Screen::WIDTH - 1 {
+                if self.map[y as usize][x as usize] {
+                    self.draw_pixel(x, y, Brightness::BLACK);
+                }
+                x = x + 1;
+            }
+            y = y + 1;
+        }
+    }
+
+    pub fn show_step_count(&mut self) {
+        self.clear(Brightness::WHITE);
+        self.draw_unsigned_int(119, 1, Brightness::BLACK, self.step_count);
+    }
+
+    pub fn reset_steps(&mut self) {
+        self.step_count = 0;
+        self.dy = 0;
+        self.dx = 0;
+        self.map = [[false; Screen::WIDTH as usize]; Screen::HEIGHT as usize];
+        self.map[self.origin_y as usize][self.origin_x as usize] = true;
+        self.show_positions()
     }
 
     pub fn clear(&mut self, brightness: Brightness) {
