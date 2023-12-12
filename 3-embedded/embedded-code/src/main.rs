@@ -110,7 +110,7 @@ fn main() -> ! {
         } else {
             //hprint!(" board fail 0");
         }
-        asm::wfi();
+        //asm::wfi();
     }
 }
 
@@ -144,7 +144,7 @@ pub fn get_message() -> u32 {
                 rx_vec.clear();
                 break;
             } else {
-                hprint!("message failed");
+                //hprint!("message failed");
                 rx_vec.clear();
                 //break;
             }
