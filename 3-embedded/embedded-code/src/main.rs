@@ -4,7 +4,7 @@
 extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
 #[global_allocator]
-static ALLOCATOR: emballoc::Allocator<10240> = emballoc::Allocator::new();
+static ALLOCATOR: emballoc::Allocator<2048> = emballoc::Allocator::new();
 
 extern crate alloc;
 
@@ -92,6 +92,12 @@ fn main() -> ! {
     let mut rx_vec = Vec::new();
     let mut rx_data: u32 = 0;
     loop {
+        let a :u32 = 456765456;
+        let serialised = serialise(a);
+
+        GLOBAL_UART.update(|u| {
+            u.as_mut().unwrap().write(serialised.as_slice())
+        });
 
 
 

@@ -161,11 +161,13 @@ unsafe fn UART0() {
             if uart.as_mut().unwrap().read_buffer.space_remaining() > 0 {
                 let byte = uart.as_mut().unwrap().uart.dr.read().uart_dr_data().bits();
                 let result_push = uart.as_mut().unwrap().read_buffer.push_byte(byte);
-                if result_push == Err(()) {
-                    hprint!("read buffer full");
+                if uart.as_mut().unwrap().read_buffer.space_remaining() == 0 {
+                    //hprint!("read buffer full");
+                    uart.as_mut().unwrap().read_buffer.clear();
                 }
             } else {
-                hprint!("read buffer full");
+                //hprint!("read buffer full");
+                uart.as_mut().unwrap().read_buffer.clear();
             }
         }
     });
