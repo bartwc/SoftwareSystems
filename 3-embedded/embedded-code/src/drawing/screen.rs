@@ -305,7 +305,6 @@ impl<'p> Screen<'p> {
         self.dx = 0;
         self.map = [[false; Screen::WIDTH as usize]; Screen::HEIGHT as usize];
         self.map[self.origin_y as usize][self.origin_x as usize] = true;
-        self.show_positions()
     }
 
     /*
