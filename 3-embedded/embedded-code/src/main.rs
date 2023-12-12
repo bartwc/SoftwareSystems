@@ -120,7 +120,13 @@ fn main() -> ! {
                 screen.reset_steps();
             }
 
-            PayLoad::StepCountRequest => {}
+            PayLoad::StepCountRequest => {
+                let step_count = screen.get_step_count();
+                let message = DataFrame{
+                    payload: PayLoad::StepCount(step_count),
+                };
+                send_message(serialise(message).as_slice());
+            }
             PayLoad::StepCount(_) => {}
         }
     }

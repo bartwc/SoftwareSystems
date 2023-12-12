@@ -14,9 +14,7 @@ fn main()  {
 
     let binary = args().nth(1).unwrap();
     let mut runner: Runner = Runner::new(&binary, false).unwrap();
-    let mut recv_data = Vec::<u8>::new();
-    // receive up to 256 bytes
-    let mut buf = [0u8; 256];
+
 
     // sleep(Duration::from_millis(10));
     // let a :u32 = 456765456;
@@ -115,7 +113,39 @@ fn main()  {
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
                     },
-                    "-r" => {
+                    "-r" | "r" => {
+                        let msg = DataFrame{
+                            payload: PayLoad::StepCountRequest,
+                        };
+                        let serialised = serialise(msg);
+                        runner.stream.write_all(serialised.as_slice()).unwrap();
+
+                        let mut recv_data = Vec::<u8>::new();
+                        // receive up to 16 bytes
+                        let mut buf = [0u8; 16];
+                        let num_received = runner.stream.read(&mut buf).unwrap();
+                        // get the portion we actually received
+                        let received = & mut buf[0..num_received];
+                        let mut tried = false;
+                        for single_byte in received.iter().as_slice() {
+                            recv_data.push(*single_byte);
+                            if *single_byte == 0x00 {
+                                if let Some(data_frame) = deserialise(recv_data.as_mut_slice()){
+                                    if let PayLoad::StepCount(stepcount) = data_frame.payload {
+                                        println!("The current step count is: {}", stepcount);
+                                    }
+                                    else { println!("Error getting step count. Try again."); }
+                                }
+                                else { println!("Error getting step count. Try again."); }
+                                recv_data.clear();
+                                if tried == true {
+                                    break;
+                                }
+                                else {
+                                    tried = true;
+                                }
+                            }
+                        }
 
                     },
                     _ => {

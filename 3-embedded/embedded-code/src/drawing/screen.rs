@@ -214,6 +214,10 @@ impl<'p> Screen<'p> {
             }
         }
     }
+
+    pub fn get_step_count(&mut self) -> u32 {
+        self.step_count
+    }
 }
 
 enum Mode {
