@@ -58,7 +58,7 @@ fn main()  {
                                 -a:             Move - Left\n
                                 -s:             Move - Down\n
                                 -d:             Move - Right\n
-                                -t:             Transmit Message to Change Page View\n
+                                -t:             To Change Page View\n
                                 -r:             Receive Total Number of Steps\n
                                 -c:             Clear Step Count to Zero\n
                                 -quit:          Quit Program\n
@@ -120,6 +120,9 @@ fn main()  {
                         let serialised = serialise(msg);
                         runner.stream.write_all(serialised.as_slice()).unwrap();
 
+                        // wait for the message to get back.
+                        sleep(Duration::from_millis(5));
+
                         let mut recv_data = Vec::<u8>::new();
                         // receive up to 16 bytes
                         let mut buf = [0u8; 16];
@@ -146,7 +149,6 @@ fn main()  {
                                 }
                             }
                         }
-
                     },
                     _ => {
                         println!("Invalid Tasks. Enter -help for help!");
