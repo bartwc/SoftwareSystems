@@ -149,7 +149,7 @@ impl Write for Uart {
 }
 
 #[interrupt]
-unsafe fn UART0() {
+ fn UART0() {
     // todo_(completed)
     //hprint!("handler");
     GLOBAL_UART.update(|uart| {
