@@ -36,7 +36,7 @@ pub enum PayLoad {
 
 // The DataFrame struct, which includes a payload field of type PayLoad,
 // is used to encapsulate this request as part of a message that can be
-// serialized and sent over a communication stream.
+// serialised and sent over a communication stream.
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct DataFrame {
     pub payload: PayLoad,
@@ -76,20 +76,20 @@ pub fn serialise(data_frame: DataFrame) -> Vec<u8> {
 
 /*
 The deserialise function takes a mutable slice of bytes (&mut [u8]) as input
-and attempts to deserialize it into a DataFrame.
+and attempts to deserialise it into a DataFrame.
 
 It creates a new cyclic redundancy check (CRC) instance using the Crc type from
-the crc crate, with a specific configuration CRC_32_ISCSI. It deserializes the
+the crc crate, with a specific configuration CRC_32_ISCSI. It deserialises the
 input byte slice into a Packet using COBS (Consistent Overhead Byte Stuffing)
 decoding by invoking the from_bytes_cobs function. The result is pattern matched
 using if let to handle the successful case where a Packet is obtained from the
 byte slice.
 
 If deserialization is successful (i.e., if a Packet is obtained from the byte slice),
-it calculates the checksum for the deserialized Packet and compares it with the
-checksum included in the deserialized Packet. If the checksums match, it returns
+it calculates the checksum for the deserialised Packet and compares it with the
+checksum included in the deserialised Packet. If the checksums match, it returns
 Some(packet.dataframe) as an Option<DataFrame>, indicating that the deserialization
-was successful and providing the deserialized DataFrame. If the checksums do not match,
+was successful and providing the deserialised DataFrame. If the checksums do not match,
 it returns None, indicating that the deserialization failed due to a checksum mismatch.
 */
 pub fn deserialise(byte_slice: & mut [u8]) -> Option<DataFrame> {

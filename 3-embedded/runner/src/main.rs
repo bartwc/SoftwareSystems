@@ -207,7 +207,7 @@ fn main()  {
                     This suggests that the payload is a request to retrieve the current step
                     count from some service or device.
 
-                    The DataFrame object is then serialized using a serialise function. This
+                    The DataFrame object is then serialised using a serialise function. This
                     message i.e. entire slice of bytes is then sent to the expected recipient
                     over the stream connected to runner using the write_all method.
 
@@ -227,7 +227,7 @@ fn main()  {
                     If it encounters a byte with the value 0x00, this might indicate the end of
                     a message or data frame.
 
-                    Within the inner conditional block, it attempts to deserialize the received
+                    Within the inner conditional block, it attempts to deserialise the received
                     bytes back into a DataFrame using a function called deserialise. If
                     deserialization is successful and the payload is of type PayLoad::StepCount,
                     it prints out the current step count. If any errors occur during deserialization
