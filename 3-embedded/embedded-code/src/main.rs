@@ -4,8 +4,13 @@
 extern crate cortex_m_rt as rt;
 extern crate tudelft_lm3s6965_pac as _;
 
+// Though each packet can be up to 9 bytes, we set the size of the heap
+// to 1024 bytes to provide extra redundancy.
+// The program can recover when the buffer fills up,
+// but when the heap overflows, the program would crash.
+// We must ensure that a heap overflow does not happen.
 #[global_allocator]
-static ALLOCATOR: emballoc::Allocator<2048> = emballoc::Allocator::new();
+static ALLOCATOR: emballoc::Allocator<1024> = emballoc::Allocator::new();
 
 extern crate alloc;
 
