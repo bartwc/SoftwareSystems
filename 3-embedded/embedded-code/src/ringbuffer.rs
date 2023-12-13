@@ -7,7 +7,12 @@ You must provide buffering such that long messages can be sent and received.
     - If the buffer fills up, the program must not crash.
 */
 
-const SIZE_BUFFER: usize = 512;
+// The size of a packet can be up to 9 bytes.
+// Though the program can recover when the buffer fills up, when the
+// buffer actually fills up, the message would be drop.
+// The size of the buffer is set to 32 bytes to provide redundancy and to
+// reduce the chance of buffer filling up.
+const SIZE_BUFFER: usize = 32;
 
 pub struct RingBuffer {
     data: [u8; SIZE_BUFFER],

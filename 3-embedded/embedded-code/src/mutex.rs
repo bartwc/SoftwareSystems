@@ -20,11 +20,19 @@ pub struct Mutex<T> {
     data: UnsafeCell<T>,
 }
 
+/*
+It is unsafe because the Sync trait allows sharing references between threads.
+It is sound because mutual exclusion is ensured.
+SAFETY: As the interrupts are turned off, no context switching would happen,
+and there would not be undefined behaviour related to data racing. If we try
+to use the Mutex in an interrupt, it is already safe. Since it's already an
+interrupt, the data could not have been locked by anyone before the interrupt.
+*/
 unsafe impl<T> Sync for Mutex<T> {}
 
 impl<T> Mutex<T> {
     /// Make a new Mutex. UnsafeCell is a cell type that provides interior mutability through
-    /// unsafe operations. It means any data inside an UnsafeCell can be mutated at any time.
+    /// unsafe operations. It means data inside an UnsafeCell can be mutated at any time.
     pub const fn new(data: T) -> Self {
         // todo_(completed)
         Mutex { data: UnsafeCell::new(data) }
@@ -50,9 +58,13 @@ impl<T> Mutex<T> {
     pub fn update<U>(&self, v: impl FnOnce(&mut T) -> U) -> U {
         // todo_(completed)
         free(|_| {
-            // The soundness of the code is ensured by mutual exclusion.
-            // As the interrupt is turned off, no context switching will happen, and
-            // the data would not be edited by multiple parties.
+            // It is unsafe because using as_mut() allows mutating the data even
+            // when it is not explicitly declared as mutable.
+            // It is sound because mutual exclusion is ensured.
+            // SAFETY: As the interrupt is turned off, no context switching will
+            // happen. The reference pointer is exclusively accessed and the data
+            // would not be edited by multiple parties simultaneously, and no data
+            // racing would happen.
             v(unsafe { self.data.get().as_mut().unwrap() })
         })
     }

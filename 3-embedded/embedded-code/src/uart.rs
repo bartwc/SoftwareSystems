@@ -46,7 +46,7 @@ impl Uart {
             It is sound because the lcrh register is safe to write to
             when we initialise the uart driver for the first time.
             SAFETY: According to LM3S6965 Datasheet Page 439, UARTLCRH
-            was recommended to be 0x0000.0060 for UARTLCRH register.
+            can be set to 0x0000.0060 for UARTLCRH register.
             */
             w.bits(0x00000060)
         });
@@ -149,7 +149,7 @@ impl Write for Uart {
 }
 
 #[interrupt]
-unsafe fn UART0() {
+fn UART0() {
     // todo_(completed)
     //hprint!("handler");
     GLOBAL_UART.update(|uart| {

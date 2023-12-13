@@ -234,10 +234,10 @@ impl<'p> Screen<'p> {
      */
     pub fn take_step(&mut self, direction: Direction) {
         match direction {
-            Direction::Left => if self.origin_x as i16 + self.dx >= 0 { self.dx -= 1},
-            Direction::Right => if self.origin_x as i16 + self.dx <= Screen::WIDTH as i16 { self.dx += 1},
-            Direction::Down => if self.origin_y as i16 + self.dy <= Screen::HEIGHT as i16 { self.dy += 1},
-            Direction::Up => if self.origin_y as i16 + self.dy >= 0 { self.dy -= 1},
+            Direction::Left => if self.origin_x as i16 + self.dx > 0 { self.dx -= 1},
+            Direction::Right => if self.origin_x as i16 + self.dx < (Screen::WIDTH - 1) as i16 { self.dx += 1},
+            Direction::Down => if self.origin_y as i16 + self.dy < (Screen::HEIGHT - 1) as i16 { self.dy += 1},
+            Direction::Up => if self.origin_y as i16 + self.dy > 0 { self.dy -= 1},
         }
         let x = self.origin_x as i16 + self.dx;
         let y = self.origin_y as i16 + self.dy;
