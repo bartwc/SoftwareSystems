@@ -9,6 +9,10 @@ use serde::{Serialize, Deserialize};
 use crc::{Crc, CRC_32_ISCSI};
 use postcard::{from_bytes_cobs, to_allocvec, to_allocvec_cobs};
 
+// Given the provided Direction enum definition, the variant
+// Direction::Left is likely used to signify a request to
+// retrieve the Left Task. It also can have other request
+// like Right, Up, and Down.
 #[derive(Serialize, Deserialize, PartialEq)]
 pub enum Direction {
     Left,
