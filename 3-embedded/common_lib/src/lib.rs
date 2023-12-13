@@ -16,7 +16,11 @@ pub enum Direction {
     Up,
     Down,
 }
-
+// Given the provided PayLoad enum definition, the variant
+// PayLoad::StepCountRequest is likely used to signify a request to
+// retrieve the current step count. It also can have other request
+// like TakeStep (Direction), ChangeView (of Page), Clear (steps),
+// and StepCount.
 #[derive(Serialize, Deserialize, PartialEq)]
 pub enum PayLoad {
     TakeStep(Direction),
@@ -26,6 +30,9 @@ pub enum PayLoad {
     StepCount(u32),
 }
 
+// The DataFrame struct, which includes a payload field of type PayLoad,
+// is used to encapsulate this request as part of a message that can be
+// serialized and sent over a communication stream.
 #[derive(Serialize, Deserialize, PartialEq)]
 pub struct DataFrame {
     pub payload: PayLoad,
