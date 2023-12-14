@@ -1,0 +1,26 @@
+@startuml online_training_registration
+top to bottom direction
+
+actor Student
+
+rectangle "Browser-Based Training System" {
+    usecase "Pay Tuition Fee" as pay_fee
+    usecase "Verify Payment" as verify_payment
+    usecase "Handle Payment" as handle_payment
+    usecase "Register for Course" as register_course
+    usecase "Access Course" as access_course
+    usecase "Get Additional Help" as get_help
+    usecase "Choose Plans" as choose_plans
+
+
+}
+
+Student -- pay_fee
+pay_fee ..> verify_payment: <<include>>
+verify_payment ..> handle_payment: <<include>>
+handle_payment <.. register_course: <<extend>>
+register_course <.. get_help: <<extend>>
+register_course <.. choose_plans: <<extend>>
+register_course <.. access_course: <<extend>>
+
+@enduml
