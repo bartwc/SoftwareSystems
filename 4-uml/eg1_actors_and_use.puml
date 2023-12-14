@@ -1,0 +1,11 @@
+@startuml "actors and use cases"
+
+' Create two actors Alice and Bob with aliases A and B.
+:Alice: as A
+actor :Bob: as B
+
+' Create two use cases with aliases use1 and use2.
+(usecase1) as use1
+usecase usecase2 as use2
+
+@enduml
