@@ -1,0 +1,11 @@
+@startuml components-and-interfaces
+
+' Create two components
+[Component1] as c1
+component Component2 as c2
+
+' Create two interfaces
+() Interface1 as i1
+interface Interface2 as i2
+
+@enduml

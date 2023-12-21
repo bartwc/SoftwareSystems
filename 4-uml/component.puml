@@ -1,0 +1,76 @@
+@startuml component
+
+' Create three components for Pedal
+package "Pedal Board" {
+component [Low-Dose X-Ray] as comp_pedal_low
+component [High-Dose X-Ray] as comp_pedal_high
+component [Unknown Pedal] as comp_pedal_unknown
+}
+
+interface "Pedal Step" as intf_pedal_step
+component [Pedal Mapper] as comp_pedal_mapper
+interface "X-Ray Requests" as intf_xray_req
+component [Action Logic] as comp_act_log
+interface "X-Ray Commands" as intf_xray_commands
+component [Xray Controller] as comp_xray_control
+interface "X-Ray Images" as intf_xray_img
+component [Image Processor] as comp_image_proc
+interface "Readable \nVisual Images" as intf_visual_images
+component [Screen] as comp_screen
+interface "Configuration Settings" as intf_config_set
+component [System_Configurator] as comp_sys_config
+interface "Selected \nConfiguration \nand Procedure" as intf_sys_config_med_proc
+component [Tablet] as comp_tablet
+interface "All \nConfiguration \nand Procedure" as intf_sys_config_comp_set
+database "Procedure Database" as data_proc_data
+
+' Create two components for Pedal
+package "X-Ray Plane" {
+component [X-Ray Detector] as comp_xray_detector
+component [X-Ray Tube] as comp_xray_tube
+interface "X-Ray Transmitter" as intf_xray_transmit
+interface "X-Ray Receiver" as intf_xray_receive
+}
+component [Table] as comp_table
+
+interface "Activate/Deactivate \nCommand" as intf_act_deact_comm
+
+' Part 1 - Design
+    comp_pedal_low -- intf_pedal_step
+    comp_pedal_high -- intf_pedal_step
+    intf_pedal_step )-- comp_pedal_mapper
+
+    comp_pedal_mapper -right- intf_xray_req
+    intf_xray_req )-right- comp_act_log
+
+    comp_act_log -right- intf_xray_commands
+    intf_xray_commands )-right- comp_xray_control
+
+    comp_xray_control -right- intf_xray_img
+    intf_xray_img )-right- comp_image_proc
+
+    comp_image_proc -right- intf_visual_images
+    intf_visual_images )-right- comp_screen
+
+' Part 2 - Design
+    data_proc_data -left- intf_sys_config_comp_set
+    intf_sys_config_comp_set )-left- comp_tablet
+
+    comp_tablet -left- intf_sys_config_med_proc
+    intf_sys_config_med_proc )-left- comp_sys_config
+
+    comp_sys_config -down- intf_config_set
+    intf_config_set )-down- comp_xray_control
+    intf_config_set )-down- comp_image_proc
+
+' Part 3 - Design
+    comp_xray_tube -down- intf_xray_transmit
+    intf_xray_transmit )-down- comp_table
+
+    comp_table -up- intf_xray_receive
+    intf_xray_receive )-up- comp_xray_detector
+
+    comp_xray_tube -up- intf_act_deact_comm
+    comp_xray_detector -up- intf_act_deact_comm
+    intf_act_deact_comm )-up- comp_xray_control
+@enduml

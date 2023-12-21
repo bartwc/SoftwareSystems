@@ -1,0 +1,38 @@
+@startuml opt-loop-alt
+
+participant "User" as user
+participant "Website" as web
+participant "Course Database" as course
+participant "My Computer" as pc
+
+opt request help
+    user ->> web: request_help
+    activate web
+    web -->> user: give_tutorial
+    deactivate web
+end
+
+loop for each subject in the course
+    user ->> web: get_course_description
+    activate web
+    web ->> course: get_description
+    activate course
+    course -->> web
+    deactivate course
+    web -->> user
+    deactivate web
+end
+
+alt print description document
+    user->Printer: get_print
+    activate Printer
+    Printer-->user: print_document
+    deactivate Printer
+else download description document
+    user -> pc: download_document
+    activate pc
+    pc --> user: open_document
+    deactivate pc
+end
+
+@enduml

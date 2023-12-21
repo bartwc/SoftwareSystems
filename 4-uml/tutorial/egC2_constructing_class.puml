@@ -1,0 +1,15 @@
+@startuml constructing-class
+
+class Box {
+    ' fields
+    Float width
+    Float height
+    Float depth
+    ' methods
+    void open()
+    void close()
+    ' method with a return type
+    Integer countItems(ItemKind)
+}
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml activation
+participant A
+participant B
+participant C
+
+A ->> B: do something
+activate B
+B ->> C: ask for help
+activate C
+C -->> B
+deactivate C
+B -->> A
+deactivate B
+@enduml

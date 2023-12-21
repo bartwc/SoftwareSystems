@@ -1,0 +1,31 @@
+@startuml rust-to-class-2
+
+class Student {
+    + String name
+    + String netId
+    - Integer studentNumber
+
+    - void changeName(String)
+    + Integer completedEcts()
+}
+
+class Course {
+    - Integer courseCode
+    - Integer ects
+}
+
+class Faculty <<enumeration>> {
+    ARCHITECTURE
+    CIVIL_ENGINEERING_AND_GEOSCIENCES
+    ELECTRICAL_ENGINEERING_MATHEMATICS_AND_COMPUTER_SCIENCE
+    INDUSTRIAL_DESIGN_ENGINEERING
+    AEROSPACE_ENGINEERING
+    TECHNOLOGY_POLICY_AND_MANAGEMENT
+    APPLIED_SCIENCES
+    MECHANICAL_ENGINEERING
+}
+
+Student "1" *- "*" Course
+Student "*" *-- "1" Faculty
+
+@enduml
