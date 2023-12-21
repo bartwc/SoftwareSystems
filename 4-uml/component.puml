@@ -53,11 +53,11 @@ interface "Activate/Deactivate \nCommand" as intf_act_deact_comm
     intf_visual_images )-right- comp_screen
 
 ' Part 2 - Design
-    data_proc_data -left- intf_sys_config_comp_set
-    intf_sys_config_comp_set )-left- comp_tablet
+    data_proc_data -right- intf_sys_config_comp_set
+    intf_sys_config_comp_set )-right- comp_tablet
 
-    comp_tablet -left- intf_sys_config_med_proc
-    intf_sys_config_med_proc )-left- comp_sys_config
+    comp_tablet -right- intf_sys_config_med_proc
+    intf_sys_config_med_proc )-down- comp_sys_config
 
     comp_sys_config -down- intf_config_set
     intf_config_set )-down- comp_xray_control
