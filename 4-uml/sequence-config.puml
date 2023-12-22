@@ -8,10 +8,10 @@ participant "System Configurator" as participant_sys_config
 participant "X-Ray Controller" as participant_xray_control
 participant "Image Processor" as participant_image_proc
 
-
 participant "X-Ray Tube" as participant_xray_tube
 participant "X-Ray Detector" as participant_xray_detector
 
+' Design Part 1 - Start from Surgeon to Database
 actor_surgeon ->> participant_tablet: Access Settings Page
 activate participant_tablet
 participant_tablet ->> data_sys_config_comp_set: Access All System Configurations \nand Component Settings
@@ -20,7 +20,10 @@ participant_tablet <-- data_sys_config_comp_set: Return All System Configuration
 deactivate data_sys_config_comp_set
 actor_surgeon <-- participant_tablet: Return Settings Page
 
+' Design Part 2 - Start from Tablet
 participant_tablet ->> participant_sys_config: Selected System Configurations \nand Medical Procedure
+
+' Design Part 3 - System Configurator Onwards
 activate participant_sys_config
 participant_sys_config ->> participant_xray_control: Configuration Commands
 activate participant_xray_control
@@ -42,11 +45,13 @@ participant_sys_config ->> participant_image_proc: Configuration Commands
 activate participant_image_proc
 participant_sys_config <<- participant_image_proc: Return Configuration State
 deactivate participant_image_proc
+' Design Part 3 - End to System Configurator
 
-
+' Design Part 2 - End to Tablet
 participant_tablet <<- participant_sys_config: Return Selected System Configurations \nand Medical Procedure State
 deactivate participant_sys_config
 
+' Design Part 1 - End to Surgeon
 actor_surgeon <-- participant_tablet: Return Settings State
 deactivate participant_tablet
 
