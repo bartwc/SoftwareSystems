@@ -72,12 +72,14 @@ interface "X-Ray \nData" as intf_act_xray_info
     comp_table -up- intf_xray_receive
     intf_xray_receive )-up- comp_xray_detector
 
-    comp_xray_detector -up- intf_act_xray_info
-    intf_act_xray_info )-up- comp_xray_control
-
     comp_xray_tube -up- intf_act_deact_comm
     comp_xray_detector -left- intf_act_deact_comm
     intf_act_deact_comm )-up- comp_xray_control
+
+    comp_xray_detector -up- intf_act_xray_info
+    intf_act_xray_info )-up- comp_xray_control
+
+
 
 
 @enduml
