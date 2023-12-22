@@ -16,9 +16,9 @@ participant "X-Ray Module" as participant_xray_module
 'participant "Screen" as participant_screen
 
 ' Design Part 1A - Start from Surgeon to Pedal Mapper
-actor_surgeon -> participant_pedal_low: Step On \nLow Dose Pedal
+actor_surgeon -\ participant_pedal_low: Step On \nLow Dose Pedal
 activate participant_pedal_low
-participant_pedal_low -> participant_pedal_mapper: Trigger Low Dose X-Ray \nLatch On Step into Signal
+participant_pedal_low -\ participant_pedal_mapper: Trigger Low Dose X-Ray \nLatch On Step into Signal
 activate participant_pedal_mapper
 participant_pedal_mapper -> participant_act_log: Trigger Low Dose X-Ray \nLatch On Signal into Requests
 deactivate participant_pedal_mapper
@@ -59,9 +59,9 @@ end
 ' Design Part 2A - End of Activation Commands
 
 ' Design Part 1B - Start from Surgeon to Pedal Mapper
-actor_surgeon -> participant_pedal_high: Step On \nHigh Dose Pedal
+actor_surgeon -\ participant_pedal_high: Step On \nHigh Dose Pedal
 activate participant_pedal_high
-participant_pedal_high -> participant_pedal_mapper: Trigger High Dose X-Ray \nLatch On Step into Signal
+participant_pedal_high -\ participant_pedal_mapper: Trigger High Dose X-Ray \nLatch On Step into Signal
 activate participant_pedal_mapper
 participant_pedal_mapper -> participant_act_log: Trigger High Dose X-Ray \nLatch On Signal into Requests
 deactivate participant_pedal_mapper
@@ -102,8 +102,8 @@ end
 ' Design Part 2B - End of Activation Commands
 
 ' Design Part 3B - Start from Surgeon to Pedal Mapper
-actor_surgeon -> participant_pedal_high: Release \nHigh Dose Pedal
-participant_pedal_high -> participant_pedal_mapper: Trigger High Dose X-Ray \nUnlatch Step into Signal
+actor_surgeon -\ participant_pedal_high: Release \nHigh Dose Pedal
+participant_pedal_high -\ participant_pedal_mapper: Trigger High Dose X-Ray \nUnlatch Step into Signal
 deactivate participant_pedal_high
 activate participant_pedal_mapper
 participant_pedal_mapper -> participant_act_log: Trigger High Dose X-Ray \nUnlatch Signal into Requests
@@ -132,8 +132,8 @@ participant_xray_control <- participant_xray_module: Return State of Deactivatio
 'activate participant_xray_control
 
 ' Design Part 3A - Start from Surgeon to Pedal Mapper
-actor_surgeon -> participant_pedal_low: Release \nLow Dose Pedal
-participant_pedal_low -> participant_pedal_mapper: Trigger Low Dose X-Ray \nUnlatch Step into Signal
+actor_surgeon -\ participant_pedal_low: Release \nLow Dose Pedal
+participant_pedal_low -\ participant_pedal_mapper: Trigger Low Dose X-Ray \nUnlatch Step into Signal
 deactivate participant_pedal_low
 activate participant_pedal_mapper
 participant_pedal_mapper -> participant_act_log: Trigger Low Dose X-Ray \nUnlatch Signal into Requests
