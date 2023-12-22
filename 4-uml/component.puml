@@ -12,13 +12,13 @@ component [Pedal Mapper] as comp_pedal_mapper
 interface "X-Ray Requests" as intf_xray_req
 component [Action Logic] as comp_act_log
 interface "X-Ray Commands" as intf_xray_commands
-component [Xray Controller] as comp_xray_control
+component [X-Ray Controller] as comp_xray_control
 interface "X-Ray Images" as intf_xray_img
 component [Image Processor] as comp_image_proc
 interface "Readable \nVisual Images" as intf_visual_images
 component [Screen] as comp_screen
 interface "Configuration Settings" as intf_config_set
-component [System_Configurator] as comp_sys_config
+component [System Configurator] as comp_sys_config
 interface "Selected \nConfiguration \nand Procedure" as intf_sys_config_med_proc
 component [Tablet] as comp_tablet
 interface "All \nConfiguration \nand Procedure" as intf_sys_config_comp_set
@@ -26,8 +26,8 @@ database "Procedure Database" as data_proc_data
 
 ' Create two components for Pedal
 package "X-Ray Plane" {
-component [X-Ray Detector] as comp_xray_detector
 component [X-Ray Tube] as comp_xray_tube
+component [X-Ray Detector] as comp_xray_detector
 interface "X-Ray Transmitter" as intf_xray_transmit
 interface "X-Ray Receiver" as intf_xray_receive
 }

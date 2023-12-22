@@ -1,0 +1,53 @@
+@startuml sequence-config
+
+actor "Surgeon" as actor_surgeon
+participant "Tablet" as participant_tablet
+database "All Configuration and Procedure" as data_sys_config_comp_set
+
+participant "System Configurator" as participant_sys_config
+participant "X-Ray Controller" as participant_xray_control
+participant "Image Processor" as participant_image_proc
+
+
+participant "X-Ray Tube" as participant_xray_tube
+participant "X-Ray Detector" as participant_xray_detector
+
+actor_surgeon ->> participant_tablet: Access Settings Page
+activate participant_tablet
+participant_tablet ->> data_sys_config_comp_set: Access All System Configurations \nand Component Settings
+activate data_sys_config_comp_set
+participant_tablet <-- data_sys_config_comp_set: Return All System Configurations \nand Component Settings
+deactivate data_sys_config_comp_set
+actor_surgeon <-- participant_tablet: Return Settings Page
+
+participant_tablet ->> participant_sys_config: Selected System Configurations \nand Medical Procedure
+activate participant_sys_config
+participant_sys_config ->> participant_xray_control: Configuration Commands
+activate participant_xray_control
+
+participant_xray_control ->> participant_xray_tube: Activation/Deactivation Commands
+activate participant_xray_tube
+participant_xray_control ->> participant_xray_detector: Activation/Deactivation Commands
+activate participant_xray_detector
+
+participant_xray_control <<- participant_xray_tube: Return Activation/Deactivation State
+deactivate participant_xray_tube
+participant_xray_control <<- participant_xray_detector: Return Activation/Deactivation State
+deactivate participant_xray_detector
+
+participant_sys_config <<- participant_xray_control: Return Configuration State
+deactivate participant_xray_control
+
+participant_sys_config ->> participant_image_proc: Configuration Commands
+activate participant_image_proc
+participant_sys_config <<- participant_image_proc: Return Configuration State
+deactivate participant_image_proc
+
+
+participant_tablet <<- participant_sys_config: Return Selected System Configurations \nand Medical Procedure State
+deactivate participant_sys_config
+
+actor_surgeon <-- participant_tablet: Return Settings State
+deactivate participant_tablet
+
+@enduml
