@@ -160,6 +160,6 @@ deactivate participant_xray_module
 'participant_xray_control /- participant_screen: Return State of Deactivation
 'deactivate participant_screen
 deactivate participant_xray_control
-' Design Part 4 - End of Deactivation Commands
+' Design Part 4A - End of Deactivation Commands
 
 @enduml
