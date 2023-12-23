@@ -168,7 +168,7 @@ stepped on. XXX - More Information Needed
 <p align="center">Figure 4. sequence-pedal-2.png</p>
 
 ### Modelling Decisions
-1. XXX - More Information Needed
+1. XXX - More Information Needed too
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
