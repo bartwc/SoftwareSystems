@@ -79,7 +79,4 @@ interface "X-Ray \nData" as intf_act_xray_info
     comp_xray_detector -up- intf_act_xray_info
     intf_act_xray_info )-up- comp_xray_control
 
-
-
-
 @enduml

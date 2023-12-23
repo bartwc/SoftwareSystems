@@ -12,6 +12,7 @@ participant "X-Ray Detector" as participant_xray_detector
 participant "Image Processor" as participant_image_proc
 
 ' Design Part 1 - Start from Surgeon to Database
+activate actor_surgeon
 actor_surgeon -> participant_tablet: Access \nSettings Page
 activate participant_tablet
 participant_tablet -> data_sys_config_comp_set: Access All System Configurations \nand Component Settings
