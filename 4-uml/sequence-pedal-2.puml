@@ -1,6 +1,7 @@
 @startuml sequence-pedal-2
 
 actor "Surgeon" as actor_surgeon
+activate actor_surgeon
 participant "Pedal \nLow Dose X-Ray" as participant_pedal_low
 participant "Pedal \nHigh Dose X-Ray" as participant_pedal_high
 participant "Pedal Mapper" as participant_pedal_mapper

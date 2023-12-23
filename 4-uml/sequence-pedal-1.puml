@@ -14,6 +14,7 @@ participant "Image Processor" as participant_image_proc
 participant "Screen" as participant_screen
 
 ' Design Part 1 - Start from Surgeon to Pedal Mapper
+activate actor_surgeon
 actor_surgeon -> participant_pedal_low: Step On Pedal
 activate participant_pedal_low
 participant_pedal_low -> participant_pedal_mapper: Trigger Low Dose X-Ray \nLatch On Step into Signal
