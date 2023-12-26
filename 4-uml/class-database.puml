@@ -1,4 +1,4 @@
-@startuml class-diagram
+@startuml class-database
 
 ' Aggregation example
 class ProcedureDatabase {
@@ -32,7 +32,7 @@ class ImageProcessorSettings {
     -Integer image_resolution_x_ray
     -Integer image_size_visual
     -Integer image_resolution_visual
-    -Integer image_type_visual
+    -String image_type_visual
 
     -(None)
 }

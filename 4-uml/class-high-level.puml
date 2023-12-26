@@ -1,0 +1,131 @@
+@startuml class-high-level
+class System {
+    -String system_brand
+    -String system_model
+    -Integer power_rating
+    +get_brand(String)
+    +get_model(String)
+    +get_power_rating(Integer)
+}
+
+class Software {
+    -String software_brand
+    -String software_name
+    -String software_version
+    +get_brand(String)
+    +get_name(String)
+    +get_version(String)
+}
+
+class PedalMapper {
+    -String dose_type
+    +set_dose_type(String)
+}
+
+class ActionLogic {
+    -Integer frequency
+    -String dose_type
+    +set_frequency(Integer)
+    +set_dose_type(String)
+}
+
+class XRayController {
+    - Boolean state_low_dose_x_ray
+    - Boolean state_high_dose_x_ray
+    - Integer frequency_x_ray
+
+    +get_low_state(Boolean)
+    +get_high_state(Boolean)
+    +get_frequency_logic(Integer)
+
+    -set_low_dose(Boolean)
+    -set_high_dose(Boolean)
+    -set_frequency_from_logic(Integer)
+}
+
+class ImageProcessor {
+    -Integer image_size_x_ray
+    -Integer image_resolution_x_ray
+    -Integer image_size_visual
+    -Integer image_resolution_visual
+    -String image_type_visual
+
+    +get_image_size_x_ray(Integer)
+    +get_image_resolution_x_ray(Integer)
+    +get_image_size_visual(Integer)
+    +get_image_resolution_visual(Integer)
+    +get_image_type_visual(String)
+
+    -set_image_size_x_ray(Integer)
+    -set_image_resolution_x_ray(Integer)
+    -set_image_size_visual(Integer)
+    -set_image_resolution_visual(Integer)
+    -set_image_type_visual(String)
+}
+
+class Database {
+   +String procedure_type
+   +String procedure_surgeon
+   +get_procedure_type(String)
+   +get_procedure_surgeon(String)
+}
+
+class Hardware {
+    -String hardware_type
+    -String hardware_brand
+    -String hardware_model
+    +get_hardware_type(String)
+    +get_hardware_brand(String)
+    +get_hardware_model(String)
+}
+
+class XRayComponents {
+    - Integer power_rating
+    - Boolean state_low_dose_x_ray
+    - Boolean state_high_dose_x_ray
+    - Integer frequency_x_ray
+
+    +get_power_rating(Integer)
+    +get_low_state(Boolean)
+    +get_high_state(Boolean)
+    +get_frequency_logic(Integer)
+
+    +set_low_dose_from_controller(Boolean)
+    +set_high_dose_from_controller(Boolean)
+    +set_frequency_from_controller(Integer)
+}
+
+class Table {
+    -Float thickness
+    -String material
+    +get_thickness(Float)
+    +get_material(String)
+}
+
+class Screen {
+    -Integer power_rating
+    -Integer refresh_rate
+    -Integer screen_resolution
+    +get_power_rating(Integer)
+    +get_refresh_rate(Integer)
+    +get_screen_resolution(Integer)
+}
+
+System "1" *-up- "1..*" Software
+System "1" *-right- "1..*" Hardware
+Software <|-down- Database
+Software <|-left- PedalMapper
+Software <|-right- ActionLogic
+Software <|-down- XRayController
+Software <|-down- ImageProcessor
+
+Hardware <|-left- XRayComponents
+Hardware <|-down- Table
+Hardware <|-right- Screen
+
+Database "1" -left- "1"XRayController : configure \nsettings
+Database "1" -right- "1"ImageProcessor : configure \nsettings
+XRayController "1" -- "1"XRayComponents : control and \nsynchronise
+ImageProcessor "1" -- "1..*"Screen : display readable \nvisual image
+
+@enduml

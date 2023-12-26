@@ -11,6 +11,9 @@ Your PlantUML diagrams should follow this naming scheme:
 Exported images are named the same as the diagrams (expect for the file extension).
 The report below is a Markdown document that covers the team's modeling decisions for each diagram.
 
+Project is for Interventional X-Ray System at Philips Healthcare
+https://link.springer.com/chapter/10.1007/978-3-642-30729-4_19
+
 ## Component Diagram
 ### *Description* 
 Use PlantUML to create 1 component diagram that shows the hardware and software/electronic components for a system 
@@ -203,6 +206,16 @@ Diagram for the data model of the procedure database, which describes the requir
 ImageProcessor components for each medical procedure. The settings for these system components contain different 
 attributes. These classes do not have any methods.
 
+### *Requirements*
+* Use each relationship type at least once:
+  - Association is used correctly.
+  - Aggregation/Composition is used correctly.
+  - Generalization is used correctly.
+* Multiplicities of all relationships are correct.
+* The classes should match the components in the component diagram.
+* The methods should match the interfaces in the component diagram and the events in the sequence diagrams.
+* The diagrams model the system (up to modeling decisions).
+
 ### Introduction
 Figure 5 shows the Class Diagram for the data model of the Procedure Database. The central class in this diagram is
 the ProcedureDatabase class, which represents the database itself. It contains attributes such as procedure_type and
@@ -223,7 +236,7 @@ such as state_low_dose_x_ray, state_high_dose_x_ray, frequency_x_ray, and intens
 class represents the settings for an Image Processor component. It includes attributes like image_size_x_ray,
 image_resolution_x_ray, image_size_visual, image_resolution_visual, and image_type_visual.
 
-![class-database.png](sequence-pedal-2.png)
+![class-database.png](class-database.png)
 <p align="center">Figure 5. class-database.png</p>
 
 ### Modelling Decisions
@@ -245,6 +258,20 @@ intensity_x_ray in the XRayControllerSettings class to capture the specific sett
 9. The decision to define the attributes image_size_x_ray, image_resolution_x_ray, image_size_visual, 
 image_resolution_visual, and image_type_visual in the ImageProcessorSettings class to capture the specific settings 
 for the Image Processor component.
+
+## Class Diagram for High-Level Components
+### *Description*
+Diagram containing the high-level components, including support for the sequence diagrams you have made before. 
+Include all the components from your component diagram, except for the PedalBoard and Tablet.
+
+### Introduction
+Figure 6 shows the Class Diagram for the High-Level Components for the X-Ray System.
+
+![class-high-level.png](class-high-level.png)
+<p align="center">Figure 6. class-high-level.png</p>
+
+### Modelling Decisions
+XXX
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
