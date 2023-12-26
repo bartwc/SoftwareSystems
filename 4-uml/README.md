@@ -181,7 +181,6 @@ sequence.
 
 ![sequence-pedal-2.png](sequence-pedal-2.png)
 <p align="center">Figure 4. sequence-pedal-2.png</p>
-</div>
 
 ### Modelling Decisions
 1. As per the hint given, the team followed it by omitting the X-Ray Tube, X-Ray Detector, Image Processor and Screen 
@@ -204,6 +203,48 @@ Diagram for the data model of the procedure database, which describes the requir
 ImageProcessor components for each medical procedure. The settings for these system components contain different 
 attributes. These classes do not have any methods.
 
+### Introduction
+Figure 5 shows the Class Diagram for the data model of the Procedure Database. The central class in this diagram is
+the ProcedureDatabase class, which represents the database itself. It contains attributes such as procedure_type and
+procedure_number to store information about different procedures.
+
+The ProcedureDatabase class has an aggregation relationship with the SelectedMedicalProcedure class, indicated by the
+diamond notation and the multiplicity of "1" to "0..*". This relationship signifies that the database can offer multiple
+selected medical procedures, while each selected medical procedure belongs to the database.
+
+The SelectedMedicalProcedure class represents a selected medical procedure. It has attributes like procedure_type and
+procedure_surgeon to store information about the type of procedure and the name of the Surgeon performing it. The
+SelectedMedicalProcedure class has composition relationships with the XRayControllerSettings class and the
+ImageProcessorSettings class, indicated by the multiplicity of "1" to "1". This composition relationship implies that
+each selected medical procedure has its own set of X-Ray Controller settings and Image Processor settings.
+
+The XRayControllerSettings class represents the settings for an X-Ray Controller component. It includes attributes
+such as state_low_dose_x_ray, state_high_dose_x_ray, frequency_x_ray, and intensity_x_ray. The ImageProcessorSettings
+class represents the settings for an Image Processor component. It includes attributes like image_size_x_ray,
+image_resolution_x_ray, image_size_visual, image_resolution_visual, and image_type_visual.
+
+![class-database.png](sequence-pedal-2.png)
+<p align="center">Figure 5. class-database.png</p>
+
+### Modelling Decisions
+1. As per the hint given, the classes implemented do not have any methods and are indicated by NA.
+2. The decision to use the class ProcedureDatabase as the central class to represent the database itself, allowing it 
+to store information about all the configurations and medical procedures.
+3. The decision to define the attributes procedure_type and procedure_number in the ProcedureDatabase class to capture 
+relevant information about each procedure.
+4. The decision to represent the relationship between ProcedureDatabase and SelectedMedicalProcedure as an aggregation, 
+indicating that the database can offer multiple selected medical procedures.
+5. The decision to define the attributes procedure_type and procedure_surgeon in the SelectedMedicalProcedure class to 
+store information about the type of procedure and the name of the Surgeon performing it.
+6. The decision to represent the relationship between SelectedMedicalProcedure and XRayControllerSettings as a 
+composition, indicating that each selected medical procedure has its own set of X-Ray Controller settings.
+7. The decision to represent the relationship between SelectedMedicalProcedure and ImageProcessorSettings as a 
+composition, indicating that each selected medical procedure has its own set of Image Processor settings.
+8. The decision to define the attributes state_low_dose_x_ray, state_high_dose_x_ray, frequency_x_ray, and 
+intensity_x_ray in the XRayControllerSettings class to capture the specific settings for the X-Ray Controller component.
+9. The decision to define the attributes image_size_x_ray, image_resolution_x_ray, image_size_visual, 
+image_resolution_visual, and image_type_visual in the ImageProcessorSettings class to capture the specific settings 
+for the Image Processor component.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
@@ -211,3 +252,4 @@ attributes. These classes do not have any methods.
 
 ## Acknowledgments
 * [Part 2 Assignment 1 - UML](https://cese.pages.ewi.tudelft.nl/software-systems/part-2/assignments/uml.html)
+</div>
