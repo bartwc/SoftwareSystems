@@ -37,10 +37,12 @@ with the system configuration branch.
 <p align="center">Figure 1. component.png</p>
 
 ### Modelling Decisions
+<div style='text-align: justify;'>
+
 1. As per the hint given, the team followed it by introducing packages to group two types of components. The first
-package is the Pedal Board with 3 different pedal options to control the system. This grouping is necessary to indicate 
-the options provided for the Surgeon to step on. It is also necessary to show the option to step on 1 or 2 of the 
-pedals will convert the physical step(s) into send the respective signal(s) into the Pedal Mapper. The unused pedal is
+package is the Pedal Board with three different pedal options to control the system. This grouping is necessary to indicate 
+the options provided for the Surgeon to step on. It is also necessary to show the option to step on one or two of the 
+pedals to convert the physical step(s) and send the respective signal(s) into the Pedal Mapper. The unused pedal is
 shown but not connected with the Pedal Step Interface due to it being outside the scope of this assignment.
 
 2. The second grouping of the X-Ray Tube and X-Ray Detector with their respective interface is necessary to represent
@@ -55,13 +57,13 @@ software designer have some level of assurance to begin testing when a sample Pa
 X-Ray results.
 
 3. The team made a decision for the model to be horizontally aligned. Starting from the left in the top section, the
-software designer can understand the need for the Database to load all system configurations and component settings
-for the Surgeon to select. After selecting the necessary configurations and settings, they will be loaded to the X-Ray
-Controller and Image Processor. Only then the Surgeon can proceed to the Pedal Board area and conduct the surgery while 
-stepping on the necessary pedals he needs. Upon stepping on the pedal, it will trigger the logic flow of the X-Ray
-system from left to right. The left-to-right logic flow for the configuration branch is modeled to assist the reader 
-to understand the Sequence-Configuration Diagram. The left-to-right logic flow for the main branch is modeled to assist
-the reader to understand the Sequence-Pedal-1 Diagram and the Sequence-Pedal-2 Diagram.
+software designer can understand the need for the Database to load all system configurations and component settings into
+the Tablet for the Surgeon to select. After selecting the necessary configurations and settings, they will be loaded to
+the X-Ray Controller and Image Processor. Only then the Surgeon can proceed to the Pedal Board area and conduct the 
+surgery while stepping on the necessary pedals he needs. Upon stepping on the pedal, it will trigger the logic flow of 
+the X-Ray system from left to right. The left-to-right logic flow for the configuration branch is modeled to assist the
+reader to understand the Sequence-Configuration Diagram. The left-to-right logic flow for the main branch is modeled to
+assist the reader to understand the Sequence-Pedal-1 Diagram and the Sequence-Pedal-2 Diagram.
 
 4. The grouping of the hardware at the bottom section is for personnel surrounding the Surgeon or X-Ray System to be 
 aware. They are to not obstruct the Pedal Board, the space between the X-Ray Tube and Detector, and the visual view of 
@@ -69,7 +71,7 @@ the Screen during software testing or actual surgery. This is especially so when
 Tube can be unknowingly harmful during long periods.
 
 ## Sequence Diagram for Configuration
-Use PlantUML to create 3 sequence diagrams for the following workflows in a system with 1 plane:
+Use PlantUML to create three sequence diagrams for the following workflows in a system with one plane:
 
 ### *Description*
 Before a medical procedure:
@@ -109,7 +111,7 @@ Surgeon's continuous engagement in the operation.
 2. The Tablet remains activated as long as key components (System Configurator, X-Ray Controller, X-Ray Tube, X-Ray 
 Detector, and Image Processor) are active. The activation of the Tablet follows the First-In, Last-Out concept, serving 
 as a safety feature. The brightly-lit screen indicates the ongoing operation of the X-Ray System, enhancing awareness 
-alertness.
+and alertness.
 3. The process of obtaining and selecting settings for the medical procedure is designed to be quick and accurate. This 
 decision aims to guide the software designer in creating a user-friendly interface for the Surgeon, ensuring no mistakes 
 in configuration before the surgery. The emphasis is on preventing technical difficulties, allowing the Surgeon to focus
@@ -120,6 +122,12 @@ repairs or inspections during regular maintenance. It aims to prevent breakdowns
 5. Messages exchanged between System Configurator, X-Ray Controller, X-Ray Tube, X-Ray Detector, and Image Processor 
 are asynchronous. This decision acknowledges that the sequence of actions for these components may not be predetermined, 
 allowing for flexibility in their interactions.
+6. The return path from System Configurator to Tablet was not made optional as it is an essential message to indicate
+a successful configuration state prior to the start of the surgery. However, whether the surgeon chooses to have visual
+confirmation of the confirmed configuration settings is optional as the surgeon can choose not to look at it. However,
+in the case of any medical mishap, one of the aspects that will be inspected by the Board of Inquiry (BOI) will be the 
+log of the Tablet. The BOI will check any anomaly in the system based on the selected and confirmed configuration 
+settings.
 
 ## Sequence Diagram for Pedal Scenario 1
 ### *Description*
@@ -146,29 +154,56 @@ safety feature that ensures X-Ray Tube and X-Ray Detector are safely deactivated
 long as the Screen is not deactivated, it can display pixels of the Readable Image or Return Activation State message  
 to indicate that the X-Ray Tube and X-Ray Detector are still live.
 2. The continuous emission of low-dose X-Ray happens because of a loop that executes multiple times as the pedal is 
-continuously pressed and not released. The surgeon needs to take note of the relatively short lifeline of the Table 
-as it indicates that the Patient is undergoing continuous X-Ray radiation in the loop when the pedal has not been
-released by the surgeon.
+continuously pressed and not released. The surgeon needs to take note that although the lifeline of the Table is 
+relatively short, the process of the Patient undergoing continuous X-Ray radiation can be long. This is due to the loop 
+being repeated without stopping when the pedal has not been released by the surgeon.
 
 ## Sequence Diagram for Pedal Scenario 2
 ### *Description*
 During a medical procedure:
-1. Pressing the pedal for low-dose video.
-2. Releasing the pedal for low-dose video.
 
-You must include the X-ray tube, X-ray detector, ImageProcessor, and Screen components in this particular scenario.
-Include pedal actions and the displaying images on the screen.
+1. Pressing the pedal for low-dose video.
+2. Pressing the pedal for high-dose video.
+3. Releasing the pedal for high-dose video.
+4. Releasing the pedal for low-dose video.
+
+You may (and are even advised to) omit the X-ray tube, X-ray detector, ImageProcessor and Screen components in this 
+particular scenario. The diagram should still show that images are displayed on the screen.
 
 ### Introduction
-Figure 4 shows the Sequence Pedal Scenario 2 Diagram of an Interventional X-Ray System. It illustrates the sequence
-of interactions in an Interventional X-Ray System's process when the pedal for low-dose X-Ray and high-dose X-Ray are
-stepped on. XXX - More Information Needed
+Figure 4 shows the Sequence Pedal Scenario 2 Diagram of an Interventional X-Ray System. It illustrates the sequence 
+of interactions in an Interventional X-Ray System's process when the pedal for low-dose X-Ray and high-dose X-Ray are 
+stepped on. The Surgeon initiates the imaging process by engaging either pedal, which sends a signal through the Pedal 
+Mapper to the Action Logic. This component interprets the signal and instructs the X-Ray Controller to act accordingly. 
+The X-Ray Controller then directs the X-Ray Module to activate or deactivate X-ray emissions based on the pedal used. 
+Continuous pressure on the pedal sustains the X-ray output, while releasing it triggers a cessation of the imaging 
+sequence. 
 
 ![sequence-pedal-2.png](sequence-pedal-2.png)
 <p align="center">Figure 4. sequence-pedal-2.png</p>
+</div>
 
 ### Modelling Decisions
-1. XXX - More Information Needed too
+1. As per the hint given, the team followed it by omitting the X-Ray Tube, X-Ray Detector, Image Processor and Screen 
+components. They have now been grouped as one X-Ray Module. This reduces the complexity of the diagram and provides  
+space for the newly added High-Dose X-Ray Pedal.
+2. The difference between the Sequence Diagram for Pedal Scenario 2 compared to Scenario 1 is that the inputs of the 
+Surgeon now become asynchronous. The Surgeon has the option to choose Low-Dose X-Ray or High-Dose X-Ray based on the 
+pedal he chooses to step. 
+3. To address the requirement, "While using low-dose streaming video, surgeons need to be able to temporarily switch 
+to high-dose streaming video, without releasing the low-dose streaming video pedal.", the team implemented a two-loop
+design. The first sequence starts with stepping on the Low-Dose X-Ray Pedal and returns the first readable visual image.
+When the image is not visually clear enough, the Surgeon can proceed to take a step on the High-Dose X-Ray Pedal. By 
+doing so, the Action Logic differs from Sequence Diagram for Low-Dose X-Ray by sending a command for High-Dose X-Ray 
+release to the X-Ray Controller.
+
+## Class Diagram for Database Data Model
+Use PlantUML to create the following two class diagrams for systems with one or two planes:
+### *Description*
+Diagram for the data model of the procedure database, which describes the required settings of the XrayController and 
+ImageProcessor components for each medical procedure. The settings for these system components contain different 
+attributes. These classes do not have any methods.
+
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
