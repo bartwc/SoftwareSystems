@@ -265,13 +265,44 @@ Diagram containing the high-level components, including support for the sequence
 Include all the components from your component diagram, except for the PedalBoard and Tablet.
 
 ### Introduction
-Figure 6 shows the Class Diagram for the High-Level Components for the X-Ray System.
+Figure 6 shows the Class Diagram for the High-Level Components for the X-Ray System. This diagram provides a 
+structured visual representation of the system's classes and the relationships between them. It outlines the 
+internal structure of the system by detailing classes, their attributes, methods, and the interactions amongst 
+them. The diagram displays a variety of components such as System, Software, and Hardware, and their respective 
+specialisations like XRayController, ImageProcessor, and XRayComponents. Associations between classes are depicted 
+with lines indicating how instances of these classes interoperate. For instance, the System class is associated 
+with multiple Software and Hardware components, indicating a composition relationship. The diagram serves as a 
+blueprint for understanding the X-Ray System's architecture and is instrumental in guiding its software development 
+and maintenance.
 
 ![class-high-level.png](class-high-level.png)
 <p align="center">Figure 6. class-high-level.png</p>
 
 ### Modelling Decisions
-XXX
+1. The Database class is associated with the XRayController and ImageProcessor classes to configured settings. 
+This association represents a bidirectional relationship indicating that the Database can influence settings in 
+both the XRayController and ImageProcessor, while these components may also query or update the Database.
+2. The System class uses composition to indicate a strong ownership over Software and Hardware components, as 
+shown by the filled diamond. This suggests that Software and Hardware exist as part of the System.
+3. The multiplicity "1..*" indicates that there can be one or many instances of Software and Hardware for each 
+instance of System, supporting different configurations of Software and Hardware within the X-Ray System.
+4. The diagram shows generalisation relationships where Software is a parent class to Database, PedalMapper, 
+ActionLogic, XRayController, and ImageProcessor. This implies that all these subclasses inherit common properties 
+and behaviors from the Software class.
+5. Similarly, Hardware is a generalized class for XRayComponents, Table, and Screen, which means these classes 
+share common attributes of the Hardware class.
+6. The multiplicity between the Database and the XRayController as well as between the Database and the 
+ImageProcessor is defined as "1" on both ends of the relationships. This indicates that each instance of these 
+classes is associated with exactly one instance of the other.
+7. The association between ImageProcessor and Screen is defined with multiplicities "1" and "1..*", indicating that 
+one instance of ImageProcessor can be associated with one or more instances of Screen.
+8. The classes represented in the class diagram correspond directly to the components identified in the component 
+diagram, maintaining consistency with the system's specified structure.
+9. Methods specified in classes such as getters and setters correspond to interfaces defined in the component 
+diagram and are consistent with the events described in the sequence diagrams. This ensures that the interactions 
+captured in the sequence diagrams can be facilitated by the methods in this class diagram.
+10. The diagram models show cardinality such as control signals between the XRayController and XRayComponents, 
+and data flow between the ImageProcessor and the Screen.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
