@@ -1,0 +1,51 @@
+@startuml class-diagram
+
+' Aggregation example
+class ProcedureDatabase {
+    +String procedure_type
+    +Integer procedure_number
+
+    -(None)
+}
+
+ProcedureDatabase "1" o-- "0..*" SelectedMedicalProcedure : offers >
+
+' Definition of classes
+class SelectedMedicalProcedure {
+    - String procedure_type
+    - String procedure_surgeon
+
+    -(None)
+}
+
+class XRayControllerSettings {
+    - Boolean state_low_dose_x_ray
+    - Boolean state_high_dose_x_ray
+    - Integer frequency_x_ray
+    - Integer intensity_x_ray
+
+    -(None)
+}
+
+class ImageProcessorSettings {
+    -Integer image_size_x_ray
+    -Integer image_resolution_x_ray
+    -Integer image_size_visual
+    -Integer image_resolution_visual
+    -Integer image_type_visual
+
+    -(None)
+}
+
+' Definition of relationships
+SelectedMedicalProcedure "1" *-- "1" XRayControllerSettings : settings >
+SelectedMedicalProcedure "1" *-- "1" ImageProcessorSettings : settings >
+
+'' Generalization example (assuming some shared attributes or behavior among different types of procedures)
+'class SpecialProcedure {
+'    +String specialEquipmentRequired
+'}
+'
+'SpecialProcedure -|> SelectedMedicalProcedure
+
+@enduml
