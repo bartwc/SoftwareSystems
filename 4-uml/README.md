@@ -1,4 +1,5 @@
 # UML
+
 Your PlantUML diagrams should follow this naming scheme:
 - Component diagram = `component.puml`
 - Sequence diagrams
@@ -28,6 +29,7 @@ Hint: It may be useful to introduce packages to group some components.*
 * The diagram models the system (up to modeling decisions).
 
 ### Introduction
+<div style='text-align: justify;'>
 Figure 1 shows the Component Diagram of an Interventional X-Ray System that provides real-time visual images based 
 on X-Rays. As per assignment's description, it shows the hardware, electronic and software components of 1 X-Ray Plane. 
 All hardware components except the Tablet are grouped and aligned at the bottom section of the diagram. This is in 
@@ -40,7 +42,6 @@ with the system configuration branch.
 <p align="center">Figure 1. component.png</p>
 
 ### Modelling Decisions
-<div style='text-align: justify;'>
 
 1. As per the hint given, the team followed it by introducing packages to group two types of components. The first
 package is the Pedal Board with three different pedal options to control the system. This grouping is necessary to indicate 
