@@ -29,6 +29,7 @@ Hint: It may be useful to introduce packages to group some components.*
 * The diagram models the system (up to modeling decisions).
 
 ### Introduction
+<!--suppress ALL -->
 <div style='text-align: justify;'>
 Figure 1 shows the Component Diagram of an Interventional X-Ray System that provides real-time visual images based 
 on X-Rays. As per assignment's description, it shows the hardware, electronic and software components of 1 X-Ray Plane. 
@@ -155,7 +156,7 @@ low-dose X-Ray, and the subsequent deactivation process.
 ### Modelling Decisions
 1. Although the Screen does not follow the First-In concept as the Tablet, it follows the Last-Out concept. This is a 
 safety feature that ensures X-Ray Tube and X-Ray Detector are safely deactivated before the Screen is deactivated. As
-long as the Screen is not deactivated, it can display pixels of the Readable Image or Return Activation State message  
+long as the Screen is not deactivated, it can display pixels of the Readable Image or Return Activation State message 
 to indicate that the X-Ray Tube and X-Ray Detector are still live.
 2. The continuous emission of low-dose X-Ray happens because of a loop that executes multiple times as the pedal is 
 continuously pressed and not released. The surgeon needs to take note that although the lifeline of the Table is 
@@ -179,9 +180,9 @@ Figure 4 shows the Sequence Pedal Scenario 2 Diagram of an Interventional X-Ray 
 of interactions in an Interventional X-Ray System's process when the pedal for low-dose X-Ray and high-dose X-Ray are 
 stepped on. The Surgeon initiates the imaging process by engaging either pedal, which sends a signal through the Pedal 
 Mapper to the Action Logic. This component interprets the signal and instructs the X-Ray Controller to act accordingly. 
-The X-Ray Controller then directs the X-Ray Module to activate or deactivate X-ray emissions based on the pedal used. 
-Continuous pressure on the pedal sustains the X-ray output, while releasing it triggers a cessation of the imaging 
-sequence. 
+The X-Ray Controller then directs the X-Ray Module to activate or deactivate X-Ray emissions based on the pedal used. 
+Continuous pressure on the pedal sustains the X-Ray output, while releasing it triggers an unlatch signal of the 
+imaging sequence. 
 
 ![sequence-pedal-2.png](sequence-pedal-2.png)
 <p align="center">Figure 4. sequence-pedal-2.png</p>
@@ -198,7 +199,7 @@ to high-dose streaming video, without releasing the low-dose streaming video ped
 design. The first sequence starts with stepping on the Low-Dose X-Ray Pedal and returns the first readable visual image.
 When the image is not visually clear enough, the Surgeon can proceed to take a step on the High-Dose X-Ray Pedal. By 
 doing so, the Action Logic differs from Sequence Diagram for Low-Dose X-Ray by sending a command for High-Dose X-Ray 
-release to the X-Ray Controller.
+command to the X-Ray Controller.
 
 ## Class Diagram for Database Data Model
 Use PlantUML to create the following two class diagrams for systems with one or two planes:
@@ -223,8 +224,8 @@ the ProcedureDatabase class, which represents the database itself. It contains a
 procedure_number to store information about different procedures.
 
 The ProcedureDatabase class has an aggregation relationship with the SelectedMedicalProcedure class, indicated by the
-diamond notation and the multiplicity of "1" to "0..*". This relationship signifies that the database can offer multiple
-selected medical procedures, while each selected medical procedure belongs to the database.
+diamond notation and the multiplicity of "1" to "0..*". This relationship signifies that the database can offer 
+multiple selected medical procedures, while each selected medical procedure belongs to the database.
 
 The SelectedMedicalProcedure class represents a selected medical procedure. It has attributes like procedure_type and
 procedure_surgeon to store information about the type of procedure and the name of the Surgeon performing it. The
@@ -246,7 +247,7 @@ image_resolution_x_ray, image_size_visual, image_resolution_visual, and image_ty
 to store information about all the configurations and medical procedures.
 3. The decision to define the attributes procedure_type and procedure_number in the ProcedureDatabase class to capture 
 relevant information about each procedure.
-4. The decision to represent the relationship between ProcedureDatabase and SelectedMedicalProcedure as an aggregation, 
+4. The decision to represent the relationship between ProcedureDatabase and SelectedMedicalProcedure as a composition, 
 indicating that the database can offer multiple selected medical procedures.
 5. The decision to define the attributes procedure_type and procedure_surgeon in the SelectedMedicalProcedure class to 
 store information about the type of procedure and the name of the Surgeon performing it.
@@ -270,19 +271,16 @@ Figure 6 shows the Class Diagram for the High-Level Components for the X-Ray Sys
 structured visual representation of the system's classes and the relationships between them. It outlines the 
 internal structure of the system by detailing classes, their attributes, methods, and the interactions amongst 
 them. The diagram displays a variety of components such as System, Software, and Hardware, and their respective 
-specialisations like XRayController, ImageProcessor, and XRayComponents. Associations between classes are depicted 
-with lines indicating how instances of these classes interoperate. For instance, the System class is associated 
-with multiple Software and Hardware components, indicating a composition relationship. The diagram serves as a 
-blueprint for understanding the X-Ray System's architecture and is instrumental in guiding its software development 
-and maintenance.
+specialisations like XRayController, ImageProcessor, and XRayComponents etc. Associations between classes are depicted 
+with lines indicating how instances of these classes interoperate. The diagram serves as a blueprint for understanding 
+the X-Ray System's architecture and is instrumental in guiding its software development and maintenance.
 
 ![class-high-level.png](class-high-level.png)
 <p align="center">Figure 6. class-high-level.png</p>
 
 ### Modelling Decisions
-1. The Database class is associated with the XRayController and ImageProcessor classes to configured settings. 
-This association represents a bidirectional relationship indicating that the Database can influence settings in 
-both the XRayController and ImageProcessor, while these components may also query or update the Database.
+1. The diagram models show cardinality such as control signals between the XRayController and XRayComponents, and data 
+flow between the ImageProcessor and the Screen..
 2. The System class uses composition to indicate a strong ownership over Software and Hardware components, as 
 shown by the filled diamond. This suggests that Software and Hardware exist as part of the System.
 3. The multiplicity "1..*" indicates that there can be one or many instances of Software and Hardware for each 
@@ -298,12 +296,11 @@ classes is associated with exactly one instance of the other.
 7. The association between ImageProcessor and Screen is defined with multiplicities "1" and "1..*", indicating that 
 one instance of ImageProcessor can be associated with one or more instances of Screen.
 8. The classes represented in the class diagram correspond directly to the components identified in the component 
-diagram, maintaining consistency with the system's specified structure.
+diagram, maintaining consistency with the system's specified structure. However, instructions has been followed
+to not include the PedalBoard and Tablet.
 9. Methods specified in classes such as getters and setters correspond to interfaces defined in the component 
 diagram and are consistent with the events described in the sequence diagrams. This ensures that the interactions 
 captured in the sequence diagrams can be facilitated by the methods in this class diagram.
-10. The diagram models show cardinality such as control signals between the XRayController and XRayComponents, 
-and data flow between the ImageProcessor and the Screen.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
