@@ -17,13 +17,16 @@ actor_surgeon -> participant_tablet: Access \nSettings Page
 activate participant_tablet
 participant_tablet -> data_sys_config_comp_set: Access All System Configurations \nand Component Settings
 activate data_sys_config_comp_set
-participant_tablet <-- data_sys_config_comp_set: Return All System Configurations \nand Component Settings
+participant_tablet <- data_sys_config_comp_set: Return All System Configurations \nand Component Settings
 deactivate data_sys_config_comp_set
-actor_surgeon <-- participant_tablet: Return \nSettings Page
+actor_surgeon <- participant_tablet: Return \nSettings Page
 ' Design Part 1 - End of Surgeon
 
+' Modification
+actor_surgeon -> participant_tablet: Select \nSettings
+
 ' Design Part 2 - Start from Tablet
-participant_tablet -\ participant_sys_config: Selected System Configurations \nand Medical Procedure
+participant_tablet -> participant_sys_config: Selected System Configurations \nand Medical Procedure
 
 ' Design Part 3 - System Configurator Onwards
 activate participant_sys_config
@@ -54,7 +57,7 @@ participant_tablet <- participant_sys_config: Return Selected System Configurati
 deactivate participant_sys_config
 
 ' Design Part 1 - End of Surgeon
-actor_surgeon <-- participant_tablet: Return \nSettings State
+actor_surgeon <- participant_tablet: Return \nSettings State
 deactivate participant_tablet
 
 @enduml
