@@ -17,9 +17,9 @@ actor_surgeon -> participant_tablet: Access \nSettings Page
 activate participant_tablet
 participant_tablet -> data_sys_config_comp_set: Access All System Configurations \nand Component Settings
 activate data_sys_config_comp_set
-participant_tablet <- data_sys_config_comp_set: Return All System Configurations \nand Component Settings
+participant_tablet <-- data_sys_config_comp_set: Return All System Configurations \nand Component Settings
 deactivate data_sys_config_comp_set
-actor_surgeon <- participant_tablet: Return \nSettings Page
+actor_surgeon <-- participant_tablet: Return \nSettings Page
 ' Design Part 1 - End of Surgeon
 
 ' Modification
@@ -30,7 +30,7 @@ participant_tablet -> participant_sys_config: Selected System Configurations \na
 
 ' Design Part 3 - System Configurator Onwards
 activate participant_sys_config
-participant_sys_config -\ participant_xray_control: Configuration \nCommands
+participant_sys_config -> participant_xray_control: Configuration \nCommands
 activate participant_xray_control
 
 participant_xray_control -\ participant_xray_tube: Activation/Deactivation Commands
@@ -43,7 +43,7 @@ deactivate participant_xray_tube
 participant_xray_control /- participant_xray_detector: Return State of Activation/Deactivation
 deactivate participant_xray_detector
 
-participant_sys_config /- participant_xray_control: Return State of \nConfiguration
+participant_sys_config <-- participant_xray_control: Return State of \nConfiguration
 deactivate participant_xray_control
 
 participant_sys_config -\ participant_image_proc: Configuration \nCommands
@@ -53,11 +53,11 @@ deactivate participant_image_proc
 ' Design Part 3 - End of System Configurator
 
 ' Design Part 2 - End of Tablet
-participant_tablet <- participant_sys_config: Return Selected System Configurations \nand Medical Procedure State
+participant_tablet <-- participant_sys_config: Return Selected System Configurations \nand Medical Procedure State
 deactivate participant_sys_config
 
 ' Design Part 1 - End of Surgeon
-actor_surgeon <- participant_tablet: Return \nSettings State
+actor_surgeon <-- participant_tablet: Return \nSettings State
 deactivate participant_tablet
 
 @enduml

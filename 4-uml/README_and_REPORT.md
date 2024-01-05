@@ -127,9 +127,9 @@ repairs or inspections during regular maintenance. It aims to prevent breakdowns
 5. Messages exchanged between System Configurator, X-Ray Controller, X-Ray Tube, X-Ray Detector, and Image Processor 
 are asynchronous. This decision acknowledges that the sequence of actions for these components may not be predetermined, 
 allowing for flexibility in their interactions.
-6. The return path from System Configurator to Tablet was not made optional as it is an essential message to indicate
-a successful configuration state prior to the start of the surgery. However, whether the surgeon chooses to have visual
-confirmation of the confirmed configuration settings is optional as the surgeon can choose not to look at it. However,
+6. The messages between System Configurator and Tablet were made synchronous as the return message is essential to indicate
+a successful configuration state prior to the start of the surgery. However, whether the surgeon chooses to have visual 
+confirmation of the confirmed configuration settings is optional as the surgeon can choose not to look at it. However, 
 in the case of any medical mishap, one of the aspects that will be inspected by the Board of Inquiry (BOI) will be the 
 log of the Tablet. The BOI will check any anomaly in the system based on the selected and confirmed configuration 
 settings.

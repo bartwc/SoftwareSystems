@@ -21,13 +21,13 @@ actor_surgeon -\ participant_pedal_low: Step On \nLow Dose Pedal
 activate participant_pedal_low
 participant_pedal_low -\ participant_pedal_mapper: Trigger Low Dose X-Ray \nLatch On Step into Signal
 activate participant_pedal_mapper
-participant_pedal_mapper -> participant_act_log: Trigger Low Dose X-Ray \nLatch On Signal into Requests
+participant_pedal_mapper -\ participant_act_log: Trigger Low Dose X-Ray \nLatch On Signal into Requests
 deactivate participant_pedal_mapper
 ' Design Part 1A - End of Pedal Mapper
 
 ' Design Part 2A - Activation Commands Onwards
 activate participant_act_log
-participant_act_log -> participant_xray_control: Start Low Dose \nX-Ray Commands
+participant_act_log -\ participant_xray_control: Start Low Dose \nX-Ray Commands
 deactivate participant_act_log
 activate participant_xray_control
 
@@ -42,7 +42,7 @@ activate participant_xray_module
 ''deactivate participant_screen
 'participant_xray_control /- participant_xray_detector: Return State of Activation
 ''deactivate participant_xray_detector
-participant_xray_control <- participant_xray_module: Return State of Activation
+participant_xray_control <-- participant_xray_module: Return State of Activation
 ''deactivate participant_xray_tube
 
 loop [[loop only when pedal is continuously stepped on]]
@@ -50,12 +50,12 @@ loop [[loop only when pedal is continuously stepped on]]
 'activate participant_table
 'participant_table -> participant_xray_detector: Receive Beamed \nLow-Dose X-Ray
 'deactivate participant_table
-participant_xray_control <- participant_xray_module: Receive X-Ray Data
-participant_xray_control -> participant_xray_module: Send X-Ray Image
+participant_xray_control /- participant_xray_module: Receive X-Ray Data
+participant_xray_control -\ participant_xray_module: Send X-Ray Image
 'activate participant_image_proc
 'participant_image_proc -> participant_screen: Send Readable \nVisual Image
 'deactivate participant_image_proc
-actor_surgeon <- participant_xray_module: Return Readable \nVisual Image
+actor_surgeon /- participant_xray_module: Return Readable \nVisual Image
 end
 ' Design Part 2A - End of Activation Commands
 
@@ -64,13 +64,13 @@ actor_surgeon -\ participant_pedal_high: Step On \nHigh Dose Pedal
 activate participant_pedal_high
 participant_pedal_high -\ participant_pedal_mapper: Trigger High Dose X-Ray \nLatch On Step into Signal
 activate participant_pedal_mapper
-participant_pedal_mapper -> participant_act_log: Trigger High Dose X-Ray \nLatch On Signal into Requests
+participant_pedal_mapper -\ participant_act_log: Trigger High Dose X-Ray \nLatch On Signal into Requests
 deactivate participant_pedal_mapper
 ' Design Part 1B - End of Pedal Mapper
 
 ' Design Part 2B - Activation Commands Onwards
 activate participant_act_log
-participant_act_log -> participant_xray_control: Start High Dose \nX-Ray Commands
+participant_act_log -\ participant_xray_control: Start High Dose \nX-Ray Commands
 deactivate participant_act_log
 'activate participant_xray_control
 
@@ -85,7 +85,7 @@ participant_xray_control -> participant_xray_module: Activation Commands
 ''deactivate participant_screen
 'participant_xray_control /- participant_xray_detector: Return State of Activation
 ''deactivate participant_xray_detector
-participant_xray_control <- participant_xray_module: Return State of Activation
+participant_xray_control <-- participant_xray_module: Return State of Activation
 ''deactivate participant_xray_tube
 
 loop [[loop only when pedal is continuously stepped on]]
@@ -93,12 +93,12 @@ loop [[loop only when pedal is continuously stepped on]]
 'activate participant_table
 'participant_table -> participant_xray_detector: Receive Beamed \nLow-Dose X-Ray
 'deactivate participant_table
-participant_xray_control <- participant_xray_module: Receive X-Ray Data
-participant_xray_control -> participant_xray_module: Send X-Ray Image
+participant_xray_control /- participant_xray_module: Receive X-Ray Data
+participant_xray_control -\ participant_xray_module: Send X-Ray Image
 'activate participant_image_proc
 'participant_image_proc -> participant_screen: Send Readable \nVisual Image
 'deactivate participant_image_proc
-actor_surgeon <- participant_xray_module: Return Readable \nVisual Image
+actor_surgeon /- participant_xray_module: Return Readable \nVisual Image
 end
 ' Design Part 2B - End of Activation Commands
 
@@ -107,13 +107,13 @@ actor_surgeon -\ participant_pedal_high: Release \nHigh Dose Pedal
 participant_pedal_high -\ participant_pedal_mapper: Trigger High Dose X-Ray \nUnlatch Step into Signal
 deactivate participant_pedal_high
 activate participant_pedal_mapper
-participant_pedal_mapper -> participant_act_log: Trigger High Dose X-Ray \nUnlatch Signal into Requests
+participant_pedal_mapper -\ participant_act_log: Trigger High Dose X-Ray \nUnlatch Signal into Requests
 deactivate participant_pedal_mapper
 ' Design Part 3B - End of Pedal Mapper
 
 ' Design Part 4B - Deactivation Commands Onwards
 activate participant_act_log
-participant_act_log -> participant_xray_control: Stop High Dose \nX-Ray Commands
+participant_act_log -\ participant_xray_control: Stop High Dose \nX-Ray Commands
 deactivate participant_act_log
 
 participant_xray_control -> participant_xray_module: Deactivation Commands
@@ -123,7 +123,7 @@ participant_xray_control -> participant_xray_module: Deactivation Commands
 'participant_xray_control -\ participant_screen: Deactivation Commands
 ''activate participant_screen
 
-participant_xray_control <- participant_xray_module: Return State of Deactivation
+participant_xray_control <-- participant_xray_module: Return State of Deactivation
 'deactivate participant_xray_module
 'participant_xray_control /- participant_xray_detector: Return State of Deactivation
 'deactivate participant_xray_detector
@@ -137,13 +137,13 @@ actor_surgeon -\ participant_pedal_low: Release \nLow Dose Pedal
 participant_pedal_low -\ participant_pedal_mapper: Trigger Low Dose X-Ray \nUnlatch Step into Signal
 deactivate participant_pedal_low
 activate participant_pedal_mapper
-participant_pedal_mapper -> participant_act_log: Trigger Low Dose X-Ray \nUnlatch Signal into Requests
+participant_pedal_mapper -\ participant_act_log: Trigger Low Dose X-Ray \nUnlatch Signal into Requests
 deactivate participant_pedal_mapper
 ' Design Part 3A - End of Pedal Mapper
 
 ' Design Part 4A - Deactivation Commands Onwards
 activate participant_act_log
-participant_act_log -> participant_xray_control: Stop Low Dose \nX-Ray Commands
+participant_act_log -\ participant_xray_control: Stop Low Dose \nX-Ray Commands
 deactivate participant_act_log
 'activate participant_xray_control
 
@@ -154,7 +154,7 @@ participant_xray_control -> participant_xray_module: Deactivation Commands
 'participant_xray_control -\ participant_screen: Deactivation Commands
 ''activate participant_screen
 
-participant_xray_control <- participant_xray_module: Return State of Deactivation
+participant_xray_control <-- participant_xray_module: Return State of Deactivation
 deactivate participant_xray_module
 'participant_xray_control /- participant_xray_detector: Return State of Deactivation
 'deactivate participant_xray_detector
