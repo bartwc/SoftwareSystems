@@ -162,6 +162,8 @@ to indicate that the X-Ray Tube and X-Ray Detector are still live.
 continuously pressed and not released. The surgeon needs to take note that although the lifeline of the Table is 
 relatively short, the process of the Patient undergoing continuous X-Ray radiation can be long. This is due to the loop 
 being repeated without stopping when the pedal has not been released by the surgeon.
+3. The messages between Pedal Low Dose X-Ray and Pedal Mapper are made asynchronous given that there are no return
+messages intended. Likewise for the chain process to Action Logic and X-Ray Controller.
 
 ## Sequence Diagram for Pedal Scenario 2
 ### *Description*
@@ -200,6 +202,9 @@ design. The first sequence starts with stepping on the Low-Dose X-Ray Pedal and 
 When the image is not visually clear enough, the Surgeon can proceed to take a step on the High-Dose X-Ray Pedal. By 
 doing so, the Action Logic differs from Sequence Diagram for Low-Dose X-Ray by sending a command for High-Dose X-Ray 
 command to the X-Ray Controller.
+4. The messages between Pedal Low Dose X-Ray and Pedal Mapper are made asynchronous given that there are no return
+messages intended. Likewise for the chain process to Action Logic and X-Ray Controller. The same applies for Pedal High
+Dose X-Ray to Pedal Mapper.
 
 ## Class Diagram for Database Data Model
 Use PlantUML to create the following two class diagrams for systems with one or two planes:
