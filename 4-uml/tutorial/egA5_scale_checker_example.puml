@@ -1,0 +1,36 @@
+@startuml scale-checker
+left to right direction
+
+actor Technician
+
+rectangle "Scale Checker" {
+    usecase "Plug machine in" as plug_in
+    usecase "Turn machine on" as turn_on
+    usecase "Self-test" as self_test
+    usecase "Lock/unlock door" as lock
+    usecase "Configure procedure" as configure
+    usecase "Position scale" as position_scale
+    usecase "Start machine" as start
+    usecase "Check door closed" as check_door
+    usecase "Check scale inside" as check_scale
+    usecase "Safety stop" as stop
+    usecase "View results" as view
+    usecase "Download results" as download
+}
+
+Technician -- plug_in
+Technician -- turn_on
+turn_on ..> self_test: <<include>>
+self_test ..> lock: <<include>>
+Technician -- configure
+Technician -- position_scale
+Technician -- start
+start ..> check_door: <<include>>
+check_door ..> lock: <<include>>
+start ..> check_scale: <<include>>
+Technician -- stop
+stop ..> lock: <<include>>
+Technician -- view
+Technician -- download
+
+@enduml

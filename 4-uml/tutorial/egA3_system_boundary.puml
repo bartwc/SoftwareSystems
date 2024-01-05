@@ -1,0 +1,21 @@
+@startuml system-boundary
+left to right direction
+
+:Alice: as alice
+
+' Create a system boundary
+rectangle "System" {
+    ' Define use cases within the boundary
+    (Use case 1) as uc1
+    (Use case 2) as uc2
+    usecase "Use case 3" as uc3
+    usecase "Use case 4" as uc4
+}
+
+' Connect Alice to the use cases
+alice -- uc1
+alice -- uc2
+alice -- uc3
+alice -- uc4
+
+@enduml

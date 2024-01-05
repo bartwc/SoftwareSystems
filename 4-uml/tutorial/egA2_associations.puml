@@ -1,0 +1,21 @@
+@startuml associations
+
+' Create an actor and several use cases
+actor Admin as admin
+usecase "Add Users" as add
+usecase "Remove Users" as remove
+usecase "Edit Users" as edit
+(Authenticate) as authenticate
+
+' simple association
+admin -- add
+admin -- remove
+
+' generalization
+add --|> edit
+remove --|> edit
+
+' include
+edit ..> authenticate: <<include>>
+
+@enduml

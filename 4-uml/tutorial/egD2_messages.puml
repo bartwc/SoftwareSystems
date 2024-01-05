@@ -1,0 +1,16 @@
+@startuml messages
+' Define participants
+participant Source
+participant Target
+
+' Simple message which can be either synchronous or asynchronous
+Source ->> Target: Simple (sync or async)
+Source <<-- Target: Simple return (optional)
+
+' synchronous message does not use a return
+Source -> Target: Synchronous
+
+' asynchronous (other variants exist)
+Source -\ Target: Asynchronous
+Source \- Target: Asynchronous return
+@enduml

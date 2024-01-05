@@ -1,0 +1,15 @@
+@startuml checkout
+left to right direction
+
+' Create two actors
+actor Customer
+actor Clerk
+
+rectangle Checkout(Counter) {
+    ' We can make the associations inside the system
+    Customer -- (Checkout)
+    (Checkout) .> (Payment) : <<include>>
+    (Help) .> (Checkout) : <<extend>>
+    (Checkout) -- Clerk
+}
+@enduml

@@ -1,0 +1,10 @@
+@startuml class-relations
+
+' a dog is a kind of animal
+Animal <|-- Dog: Generalization
+' the tail is a part of the dog
+Dog "1" *-left- "1" Tail: Composition
+' the favourite food exists even if the dog does not
+Dog "*" o-right- "1" Food: Aggregation
+
+@enduml

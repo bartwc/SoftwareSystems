@@ -1,0 +1,10 @@
+@startuml public-private
+
+class Example {
+    - SomeType privateField
+    + OtherType publicField
+    - ReturnType privateMethod()
+    + void publicMethod()
+}
+
+@enduml

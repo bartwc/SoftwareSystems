@@ -1,0 +1,35 @@
+@startuml browser-based_training_system
+top to bottom direction
+
+actor Student
+actor Tutor
+actor Examiner
+
+rectangle "Browser-Based Training System" {
+    usecase "Request Generation of Quiz" as request_quiz
+    usecase "Select Questions" as select_questions
+    usecase "Compose Quiz" as compose_quiz
+    usecase "Attempt Quiz" as attempt_quiz
+    usecase "Request Hints" as request_hints
+    usecase "Grade Answers Automatically" as grade_automatically
+    usecase "Provide Questions" as provide_questions
+    usecase "Provide Hints" as provide_hints
+    usecase "Certify Questions" as certify_questions
+    usecase "Certify Hints" as certify_hints
+    usecase "Make Questions" as make_questions
+}
+
+Student -- request_quiz
+request_quiz ..> select_questions: <<include>>
+select_questions ..> compose_quiz: <<include>>
+Student -- attempt_quiz
+attempt_quiz <... request_hints: <<extend>>
+attempt_quiz ...> grade_automatically: <<include>>
+Tutor -- provide_questions
+provide_questions ..> make_questions
+Tutor -- provide_hints
+Examiner -- certify_questions
+certify_questions ..> make_questions
+Examiner -- certify_hints
+
+@enduml

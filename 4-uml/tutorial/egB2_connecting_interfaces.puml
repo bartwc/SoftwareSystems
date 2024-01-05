@@ -1,0 +1,6 @@
+@startuml connecting-interfaces
+
+[Provider] -- Something
+[Receiver] --( Something
+
+@enduml

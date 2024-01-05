@@ -1,0 +1,27 @@
+@startuml packages-and-databases
+
+package "Student Management Subsystem" {
+    component "Student Profile Finder" as SPF
+    component "Study Report Generator" as SRG
+    interface "Student Profile" as SP
+
+    SRG -right-( SP
+    SPF -left- SP
+}
+
+
+database "Student Database" {
+    component "Bachelor Student Database" as BSD
+    component "Master Student Database" as MSD
+}
+
+' We create two interfaces because
+interface "Student ID" as SID1
+interface "Student ID" as SID2
+
+MSD -up- SID1
+BSD -up- SID2
+SPF --( SID1
+SPF --( SID2
+
+@enduml

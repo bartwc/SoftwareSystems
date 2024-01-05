@@ -1,0 +1,34 @@
+@startuml rust-to-class-1
+
+struct Student {
+    + name: String
+    + net_id: String
+    - student_number: u32
+    ' the fields below are shown in the diagram as their own classes
+    ' - courses: Vec<Course>
+    ' - faculty: Faculty
+
+    - change_name(String)
+    + completed_ects(): u32
+}
+
+struct Course {
+    - course_code: u32
+    - ects: u32
+}
+
+enum Faculty {
+    Architecture
+    CivilEngineeringAndGeoSciences
+    ElectricalEngineeringMathematicsAndComputerScience
+    IndustrialDesignEngineering
+    AerospaceEngineering
+    TechnologyPolicyAndManagement
+    AppliedSciences
+    MechanicalEngineering
+}
+
+Student "1" *- "*" Course
+Student "*" *-- "1" Faculty
+
+@enduml
