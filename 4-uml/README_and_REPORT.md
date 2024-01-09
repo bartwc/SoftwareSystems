@@ -285,14 +285,21 @@ the X-Ray System's architecture and is instrumental in guiding its software deve
 
 ### Modelling Decisions
 1. The diagram models show cardinality such as control signals between the XRayController and XRayComponents, and data 
-flow between the ImageProcessor and the Screen..
-2. The System class uses composition to indicate a strong ownership over Software and Hardware components, as 
-shown by the filled diamond. This suggests that Software and Hardware exist as part of the System.
+flow between the ImageProcessor and the Screen.
+2. By having "Software" as a parent class, common software attributes and methods such as software brand, name, and 
+version are centralized. Subclasses can inherit these properties and avoid the need to define them separately in each 
+class, ensuring consistency across different software components that are part of a larger system. Likewise for 
+"Hardware" as a parent class. Furthermore, various components can have checksums to check compatibility with their 
+parent class. This can be implemented as a mechanism to ensure that subclasses are compatible with the parent class's 
+properties. A checksum could be a pre-calculated value based on certain class characteristics that need to match a 
+corresponding value in the parent class. This can help identify issues where a subclass might not adhere to the expected 
+structure or conventions defined by the parent class, acting as a form of integrity and compatibility check during 
+development or deployment.
 3. The multiplicity "1..*" indicates that there can be one or many instances of Software and Hardware for each 
 instance of System, supporting different configurations of Software and Hardware within the X-Ray System.
-4. The diagram shows generalisation relationships where Software is a parent class to Database, PedalMapper, 
+4. The diagram shows generalization relationships where Software is a parent class to Database, PedalMapper, 
 ActionLogic, XRayController, and ImageProcessor. This implies that all these subclasses inherit common properties 
-and behaviors from the Software class.
+and behaviours from the Software class.
 5. Similarly, Hardware is a generalized class for XRayComponents, Table, and Screen, which means these classes 
 share common attributes of the Hardware class.
 6. The multiplicity between the Database and the XRayController as well as between the Database and the 
@@ -301,7 +308,7 @@ classes is associated with exactly one instance of the other.
 7. The association between ImageProcessor and Screen is defined with multiplicities "1" and "1..*", indicating that 
 one instance of ImageProcessor can be associated with one or more instances of Screen.
 8. The classes represented in the class diagram correspond directly to the components identified in the component 
-diagram, maintaining consistency with the system's specified structure. However, instructions has been followed
+diagram, maintaining consistency with the system's specified structure. However, instructions have been followed
 to not include the PedalBoard and Tablet.
 9. Methods specified in classes such as getters and setters correspond to interfaces defined in the component 
 diagram and are consistent with the events described in the sequence diagrams. This ensures that the interactions 
