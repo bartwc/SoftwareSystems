@@ -97,6 +97,7 @@ streaming video pedal."
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
    are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state i.e.
    able to return to start state (ActionLogic).
+2. Modelling decision for toggle pedals in round robin fashion to be added subsequently.
 
 
 ## Authors
