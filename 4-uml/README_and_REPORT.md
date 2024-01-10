@@ -191,8 +191,8 @@ imaging sequence.
 
 ### Modelling Decisions
 1. As per the hint given, the team followed it by omitting the X-Ray Tube, X-Ray Detector, Image Processor and Screen 
-components. They have now been grouped as one X-Ray Module. This reduces the complexity of the diagram and provides  
-space for the newly added High-Dose X-Ray Pedal.
+components. They have now been grouped as one X-Ray Module. This reduces the complexity of the diagram and provides space 
+for the newly added High-Dose X-Ray Pedal.
 2. The difference between the Sequence Diagram for Pedal Scenario 2 compared to Scenario 1 is that the inputs of the 
 Surgeon now become asynchronous. The Surgeon has the option to choose Low-Dose X-Ray or High-Dose X-Ray based on the 
 pedal he chooses to step. 
