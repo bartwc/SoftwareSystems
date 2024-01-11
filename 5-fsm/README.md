@@ -16,11 +16,10 @@ Project is for Interventional X-Ray System at Philips Healthcare
 https://link.springer.com/chapter/10.1007/978-3-642-30729-4_19
 
 ### Hints
-<div style='text-align: justify;'>
-Make sure your diagram gives an insightful overview of the system.
-Start by modelling the situation in which, at most, one pedal is pressed at the same time before modelling combinations
+- Make sure your diagram gives an insightful overview of the system.
+- Start by modelling the situation in which, at most, one pedal is pressed at the same time before modelling combinations
 of pedal presses.
-The assignment leaves some degrees of freedom in the logic to be modelled. If your model tends to get very complicated,
+- The assignment leaves some degrees of freedom in the logic to be modelled. If your model tends to get very complicated,
 then please revisit the modelling decisions that you have made.
 
 ## FSM Model - 1-Plane System
@@ -38,6 +37,7 @@ Upload your models to the 5-fsm directory. Both models have their own subdirecto
 the itemis CREATE projects can be found in the README.md file in the repository.
 
 ### Introduction
+<div style='text-align: justify;'>
 Figure 1 shows the FSM Model for a 1-Plane Interventional X-Ray System that provides real-time visual images based 
 on X-Rays. As per assignment's description, Figure 1 aims to provide an insightful overview of the states that exist
 within the 1-Plane System. 
@@ -85,7 +85,7 @@ As compared to the 1-Plane System, there are three pedals for Low-Dose X-Ray str
 projection, which are "Frontal", "Lateral", and "Biplane" respectively. For readability purposes, "Frontal", "Lateral",
 and "Biplane" are labelled with "p1", "p2", and "p3" respectively in the interface request list.
 
-As compared to the 1-Plane System, there are five states, 3 "LowDose" and 2 "HighDose", which relate to the 3 Low-Dose 
+As compared to the 1-Plane System, there are five pedals, 3 "LowDose" and 2 "HighDose", which relate to the 3 Low-Dose 
 X-Ray pedals - p1, p2, p3, and 2 High-Dose X-Ray pedals - one for high dose projection and the other for high dose 
 streaming video respectively. When the Low-Dose X-Ray pedal is pressed, The ActionLogic block will initiate a 
 request.startLowVideo and the controller.activateLowVideo will be raised to the value of request.startLowVideo. The 
