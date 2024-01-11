@@ -61,14 +61,10 @@ streaming video pedal."
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
    are also carefully designed to ensure transition between states is smooth with no deadlock in a certain state. The
    state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic).
-2. Since it was mentioned in the assignment description that values of the events can be ignored, "HighDose" state can
-   only transit to "LowDose" state before returning to start state(ActionLogic). This is because without the usage of 
-   values, the transition event "request.stopHighVideo" cannot repeat in the region. Initially, there was a transition
-   from "HighDose" to "ActionLogic" which could not be triggered when the transition event "request.stopHighVideo" was
-   the same. Furthermore, transition priority was also explored and deemed not suitable as "HighDose" leading back to
-   "LowDose" or "ActionLogic" did not have prioritisation. Hence, the transition from "HighDose" to "ActionLogic" was
-   removed as transiting from "HighDose" to "LowDose" was a necessary feature, which is similar to Pedal Scenario 2 in
-   the UML assignment and the FSM Model for 2-Plane System.
+2. Since it was mentioned in the assignment description that values of the events can be ignored, there needs to be a
+   solution for "HighDose" state to either transit to "LowDose" and "ActionLogic" without using the same event transition.
+   After consulting with the lecturer, it is permitted for request.startLowVideo to transit from "HighDose" state to
+   "LowDose" state while request.stopHighVideo transits "HighDose" state to "ActionLogic" state.
 
 ## FSM Model - 2-Plane System
 ### *Description*
@@ -119,12 +115,6 @@ streaming video pedal."
 4. In the system description for the 2-Plane System, the pedal for High-Dose projection is meant to select the next 
    projection in a round-robin fashion. Hence, the sub-region shows the three projections being toggled in a round-robin 
    fashion.
-
-## Question for Application Domain Expert
-1. For FSM 1-Plane, is there a need for "HighDose" state to return to start state(ActionLogic)?
-   If yes: the solution is to not ignore the value of events. Create a variable low_dose_pedal. If it equals 1, then 
-   "HighDose" state transits to "LowDose" state. If it equals to 0, then "HighDose" state transits to "ActionLogic"
-   state.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
