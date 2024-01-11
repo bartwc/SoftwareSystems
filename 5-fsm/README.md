@@ -107,18 +107,24 @@ streaming video pedal."
    able to return to start state (ActionLogic). This was tested more extensively as there exists more states as compared
    to FSM - 1-Plane System
 2. Given the requirement that the value of the events needs to be considered in FSM - 2-Plane System, the
-   "chosen_low_dose_pedal" variable was created to indicated whether pedal 1 (p1), pedal 2 (p2), or pedal 3 (p3) was 
+   "chosen_low_dose_pedal" variable was created to indicate whether pedal 1 (p1), pedal 2 (p2), or pedal 3 (p3) was 
    chosen. Once again, p1, p2, p3 relates to the respective planes "Frontal", "Lateral", and "Biplane". This enables a 
    feature where each of the Low-Dose states can transit to the "HighDose" state. When "stopHighVideo" request is sent, 
    it can transit back to the correct "Low-Dose" state based on the "chosen_low_dose_pedal" integer value that was last
    recorded. 
 3. Another critical detail in the design is that transition priority from "HighDose" to any of the Low-Dose states need
-   to be 1, 2, or 3. This is so that any of these 3 priorities are more important than the 4th priority transition where
+   to be 1, 2, or 3. This is so that any of these three priorities are more important than the 4th priority transition where
    "HighDose" can return to "ActionLogic". If this is not adhered to, itemis software will have the simulation run and 
    cause "HighDose" to return to "ActionLogic" despite "chosen_low_dose_pedal" integer not being 0.
 4. In the system description for the 2-Plane System, the pedal for High-Dose projection is meant to select the next 
-   projection in a round-robin fashion. Hence, the sub-region shows the 3 projections being toggled in a round-robin 
+   projection in a round-robin fashion. Hence, the sub-region shows the three projections being toggled in a round-robin 
    fashion.
+
+## Question for Application Domain Expert
+1. For FSM 1-Plane, is there a need for "HighDose" state to return to start state(ActionLogic)?
+   If yes: the solution is to not ignore the value of events. Create a variable low_dose_pedal. If it equals 1, then 
+   "HighDose" state transits to "LowDose" state. If it equals to 0, then "HighDose" state transits to "ActionLogic"
+   state.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
