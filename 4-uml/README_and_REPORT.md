@@ -294,7 +294,11 @@ parent class. This can be implemented as a mechanism to ensure that subclasses a
 properties. A checksum could be a pre-calculated value based on certain class characteristics that need to match a 
 corresponding value in the parent class. This can help identify issues where a subclass might not adhere to the expected 
 structure or conventions defined by the parent class, acting as a form of integrity and compatibility check during 
-development or deployment.
+development or deployment. 
+After consult with the lecturer, an example the team would like to highlight would be the X-Ray components like the
+the Tube and the Detector are safety critical and the "XRayComponents" subclass would need to ensure the hardware_model
+from the parent class "Hardware" is compatible before turning them on with the rated power and ensure it is safe for
+testing. 
 3. The multiplicity "1..*" indicates that there can be one or many instances of Software and Hardware for each 
 instance of System, supporting different configurations of Software and Hardware within the X-Ray System.
 4. The diagram shows generalization relationships where Software is a parent class to Database, PedalMapper, 
