@@ -93,22 +93,26 @@ streaming video pedal."
 1. As per the hints given, the team set the goal for the FSM - 2-Plane System to be insightful and not complicated.
    Hence, the team ensured that the number of states is minimal, yet sufficient. This also took into account the
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
-   are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state i.e.
-   able to return to start state (ActionLogic). This was tested more extensively as there exists values which was absent
-   in FSM - 1-Plane System.
+   are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state. The
+   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic). 
+   This was tested more extensively as there exist values which were absent in the FSM - 1-Plane System.
 2. Given the requirement that the value of the events needs to be considered in FSM - 2-Plane System, the
    "lowDosePedal" variable was created to indicate whether pedal 1 ("1"), pedal 2 ("2"), or pedal 3 ("3") was 
    chosen. Once again, p1, p2, p3 relates to the respective planes "Frontal", "Lateral", and "Biplane". This enables a 
-   feature when "stopHighVideo" request is sent, it can transit back to the "Low-Dose" state with the correct projection
-   based on the last recorded "lowDosePedal" integer value .
+   feature when "startLowVideo" request is sent, it can transit back to the "Low-Dose" state with the correct projection
+   based on the last recorded "lowDosePedal" integer value.
 3. In the assignment instructions for the 2-Plane System, the teaching team indicated that "You can assume that the 
    startLowVideo and stopLowVideo requests alternate for each specific projection, similarly for the startHighVideo and 
    stopHighVideo". Hence, there is an alternation of projection value for Low-Dose projection when startLowVideo and
    stopLowVideo requests alternate. As the requests alternate, Low-Dose projection value can ascend from one to three 
    before returning to zero and repeating the same pattern. 
 4. However, although the High-Dose X-Ray projection also alternates in a round-robin fashion when startHighVideo and 
-   stopHighVideo requests alternate. The only difference for High-Dose is that unlike Low-Dose, the integer value for 
-   High-Dose ascends from one to three but always returns to one and not zero.
+   stopHighVideo request alternate. The only difference for High-Dose is that unlike Low-Dose, the integer value for 
+   High-Dose ascends from "1" to "3" but always returns to "1" and not "0".
+5. "HighDose" state can also transit either to "LowDose" and "ActionLogic" while ensuring the event transitions are not
+   the same. After consulting with the lecturer, it is permitted for request.startLowVideo to transit from "HighDose"
+   state to "LowDose" state when "lowDosePedal" integer is not "0" while request.stopHighVideo transits "HighDose" state
+   to "ActionLogic" state when "lowDosePedal" integer is "0".
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
