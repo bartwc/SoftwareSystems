@@ -99,22 +99,19 @@ streaming video pedal."
 1. As per the hints given, the team set the goal for the FSM - 2-Plane System to be insightful and not complicated.
    Hence, the team ensured that the number of states is minimal, yet sufficient. This also took into account the
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
-   are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state i.e.
-   able to return to start state (ActionLogic). This was tested more extensively as there exists more states as compared
-   to FSM - 1-Plane System
+   are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state. The
+   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic). 
+   This was tested more extensively as there exists more states as compared to FSM - 1-Plane System.
 2. Given the requirement that the value of the events needs to be considered in FSM - 2-Plane System, the
-   "chosen_low_dose_pedal" variable was created to indicate whether pedal 1 (p1), pedal 2 (p2), or pedal 3 (p3) was 
-   chosen. Once again, p1, p2, p3 relates to the respective planes "Frontal", "Lateral", and "Biplane". This enables a 
-   feature where each of the Low-Dose states can transit to the "HighDose" state. When "stopHighVideo" request is sent, 
-   it can transit back to the correct "Low-Dose" state based on the "chosen_low_dose_pedal" integer value that was last
-   recorded. 
-3. Another critical detail in the design is that transition priority from "HighDose" to any of the Low-Dose states need
-   to be 1, 2, or 3. This is so that any of these three priorities are more important than the 4th priority transition where
-   "HighDose" can return to "ActionLogic". If this is not adhered to, itemis software will have the simulation run and 
-   cause "HighDose" to return to "ActionLogic" despite "chosen_low_dose_pedal" integer not being 0.
-4. In the system description for the 2-Plane System, the pedal for High-Dose projection is meant to select the next 
-   projection in a round-robin fashion. Hence, the sub-region shows the three projections being toggled in a round-robin 
-   fashion.
+   "lowDosePedal" variable was created to indicate whether no pedal ("0"), pedal 1 ("1"), pedal 2 ("2"), or pedal 3 ('3") 
+   was chosen. Once again, "1", "2", "3" relates to the respective planes "Frontal", "Lateral", and "Biplane". This enables 
+   a feature where each of the Low-Dose states can transit to the "HighDose" state. When "stopHighVideo" request is sent, 
+   it can transit back to the correct "Low-Dose" state based on the "lowDosePedal" integer value that was last
+   recorded.
+3. "HighDose" state can also transit either to "LowDose" and "ActionLogic" while ensuring the event transitions are not
+   the same. After consulting with the lecturer, it is permitted for request.startLowVideo to transit from "HighDose"
+   state to "LowDose" state when "lowDosePedal" integer is not "0" while request.stopHighVideo transits "HighDose" state 
+   to "ActionLogic" state when "lowDosePedal" integer is "0".
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
