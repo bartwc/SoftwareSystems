@@ -81,8 +81,8 @@ Figure 2 shows the FSM Model for a 2-Plane Interventional X-Ray System that prov
 on X-Rays. As per assignment's description, Figure 2 aims to provide an insightful overview of the states that exist
 within the 2-Plane System.
 
-As compared to the 1-Plane System, the value of the events are considered and introduced in the 2-Plane System. Having
-confirmed with the teaching team, the values "0", "1", and "2" correspond to "Frontal", "Lateral", and "Biplane" 
+As compared to the 1-Plane System, the value of the events is considered and introduced in the 2-Plane System.
+Having confirmed with the teaching team, the values "0", "1", and "2" correspond to "Frontal", "Lateral", and "Biplane" 
 respectively for both the Low-Dose X-Ray projection and the High-Dose X-Ray projection.
 
 The "LowDose" state can also progress to the "HighDose" state to address the requirement, "While using low-dose streaming
@@ -120,7 +120,7 @@ streaming video pedal."
    a "startHighVideo" request, but the value of "startHighVideo" request must be the same value as "activateLowVideo" 
    controller. This represents the Surgeon made a concerted move to increase the X-Ray dose from "LowDose" to "HighDose"
    for the particular plane.
-5. In any case when the Surgeon wants to change the plane during "HighDose", the Surgeon can send a "startLowVideo" 
+5. In any case, when the Surgeon wants to change the plane during "HighDose", the Surgeon can send a "startLowVideo" 
    request with the newly chosen number. This means the value "activateHighVideo" would not reset while transiting to
    "LowDose" state with the newly chosen plane. The Surgeon can then send a "StartHighVideo" request to increase the
    X-Ray dosage for the newly chosen plane.
