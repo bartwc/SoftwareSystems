@@ -60,11 +60,15 @@ streaming video pedal."
    Hence, the team ensured that the number of states is minimal, yet sufficient. This also took into account the
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
    are also carefully designed to ensure transition between states is smooth with no deadlock in a certain state. The
-   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic).
+   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic). 
+   This meant that there were safety design considerations to ensure X-Ray Controller can be deactivated when the operation 
+   has finally ended.
 2. Since it was mentioned in the assignment description that values of the events can be ignored, there needs to be a
    solution for "HighDose" state to either transit to "LowDose" and "ActionLogic" without using the same event transition.
    After consulting with the lecturer, it is permitted for request.startLowVideo to transit from "HighDose" state to
    "LowDose" state while request.stopHighVideo transits "HighDose" state to "ActionLogic" state.
+3. The Transition from "HighDose" state to "ActionLogic" state is to enable a safety feature where the Surgeon can 
+   deactivate the controller quickly in case of any emergency while using the X-Ray Controller in "HighDose" state.
 
 ## FSM Model - 2-Plane System
 ### *Description*
@@ -77,9 +81,9 @@ Figure 2 shows the FSM Model for a 2-Plane Interventional X-Ray System that prov
 on X-Rays. As per assignment's description, Figure 2 aims to provide an insightful overview of the states that exist
 within the 2-Plane System.
 
-As compared to the 1-Plane System, the value of the events are considered and introduced in the 2-Plane System. The 
-values "1", "2", and "3" correspond to "Frontal", "Lateral", and "Biplane" respectively for both the Low-Dose X-Ray
-projection and the High-Dose X-Ray projection.
+As compared to the 1-Plane System, the value of the events are considered and introduced in the 2-Plane System. Having
+confirmed with the teaching team, the values "0", "1", and "2" correspond to "Frontal", "Lateral", and "Biplane" 
+respectively for both the Low-Dose X-Ray projection and the High-Dose X-Ray projection.
 
 The "LowDose" state can also progress to the "HighDose" state to address the requirement, "While using low-dose streaming
 video; surgeons need to be able to temporarily switch to high-dose streaming video, without releasing the low-dose
@@ -94,25 +98,37 @@ streaming video pedal."
    Hence, the team ensured that the number of states is minimal, yet sufficient. This also took into account the
    requirement that the "LowDose" state can still progress to the "HighDose" state. Transitions from one state to another
    are also carefully designed to ensure that transition between states is smooth with no deadlock in a certain state. The
-   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic). 
-   This was tested more extensively as there exist values which were absent in the FSM - 1-Plane System.
+   state machine loop is also designed to be complete for the path to start and return to the start state(ActionLogic).
+   This meant that there were safety design considerations to ensure X-Ray Controller can be deactivated when the operation
+   has finally ended. FSM - 2-Plane System was tested more extensively as there exist values which were absent in the 
+   FSM - 1-Plane System.
 2. Given the requirement that the value of the events needs to be considered in FSM - 2-Plane System, the
-   "lowDosePedal" variable was created to indicate whether pedal 1 ("1"), pedal 2 ("2"), or pedal 3 ("3") was 
-   chosen. Once again, p1, p2, p3 relates to the respective planes "Frontal", "Lateral", and "Biplane". This enables a 
-   feature when "startLowVideo" request is sent, it can transit back to the "Low-Dose" state with the correct projection
-   based on the last recorded "lowDosePedal" integer value.
+   variables commented out are indicators for pedal 1 (integer "0"), pedal 2 (integer "1"), or pedal 3 (integer "2") was 
+   chosen. Once again, pedal 1, pedal 2, pedal 3 relates to the respective planes "Frontal", "Lateral", and "Biplane" 
+   for the "LowDose" projections.
 3. In the assignment instructions for the 2-Plane System, the teaching team indicated that "You can assume that the 
    startLowVideo and stopLowVideo requests alternate for each specific projection, similarly for the startHighVideo and 
-   stopHighVideo". Hence, there is an alternation of projection value for Low-Dose projection when startLowVideo and
-   stopLowVideo requests alternate. As the requests alternate, Low-Dose projection value can ascend from one to three 
-   before returning to zero and repeating the same pattern. 
-4. However, although the High-Dose X-Ray projection also alternates in a round-robin fashion when startHighVideo and 
-   stopHighVideo request alternate. The only difference for High-Dose is that unlike Low-Dose, the integer value for 
-   High-Dose ascends from "1" to "3" but always returns to "1" and not "0".
-5. "HighDose" state can also transit either to "LowDose" and "ActionLogic" while ensuring the event transitions are not
+   stopHighVideo". This was clarified extensively with the TA who informed the team that it is indeed not a toggle back 
+   and forth from "LowDose" state to "ActionLogic" state just to alternate projection. Rather, it is a key piece of 
+   information to check what happens to the designed state diagram logic flow when various "startLowVideo" events are
+   sent continuously with different values. With this key piece of information, the following points below would indicate
+   the design flow to achieve the requirement.
+4. It must be noted in the design that when "startLowVideo" request is sent, a value larger than "2" cannot be sent as 
+   it is an illogical value that does not map to any projection. When "activateLowVideo" integer is set after reaching
+   the "LowDose" sate, it can return to "ActionLogic" state with deactivation of the controller, without resetting the 
+   value of "activateLowVideo". However, if the Surgeon does not want to send a "stopLowVideo" request, then he can send 
+   a "startHighVideo" request, but the value of "startHighVideo" request must be the same value as "activateLowVideo" 
+   controller. This represents the Surgeon made a concerted move to increase the X-Ray dose from "LowDose" to "HighDose"
+   for the particular plane.
+5. In any case when the Surgeon wants to change the plane during "HighDose", the Surgeon can send a "startLowVideo" 
+   request with the newly chosen number. This means the value "activateHighVideo" would not reset while transiting to
+   "LowDose" state with the newly chosen plane. The Surgeon can then send a "StartHighVideo" request to increase the
+   X-Ray dosage for the newly chosen plane.
+6. "HighDose" state can also transit either to "LowDose" and "ActionLogic" while ensuring the event transitions are not
    the same. After consulting with the lecturer, it is permitted for request.startLowVideo to transit from "HighDose"
-   state to "LowDose" state when "lowDosePedal" integer is not "0" while request.stopHighVideo transits "HighDose" state
-   to "ActionLogic" state when "lowDosePedal" integer is "0".
+   state to "LowDose" state while request.stopHighVideo transits "HighDose" state to "ActionLogic" state. 
+7. The Transition from "HighDose" state to "ActionLogic" state is to enable a safety feature where the Surgeon can
+   deactivate the controller quickly in case of any emergency while using the X-Ray Controller in "HighDose" state.
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
