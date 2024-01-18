@@ -1,0 +1,63 @@
+grammar xray.XRayDSL with org.eclipse.xtext.common.Terminals
+
+generate xRayDSL "http://www.XRayDSL.xray"
+SystemType: 'Static_Configuration:' configuration = Static_Configuration
+            'Dynamic_Logic:' logic = Dynamic_Logic
+;
+
+Dynamic_Logic:
+	('Selection_Pedal_Behaviour:' samepedal = Behaviours)?
+	('Same_Dose_Behaviour:' samedosebehaviour = Behaviours)?
+	('Different_Dose_Behaviour:' differentdosebehaviour = Behaviours)
+;
+
+
+Static_Configuration: ThreePedals | SixPedals
+;
+
+ThreePedals:'ThreePedal1:' pedal1 = Pedal 
+            'ThreePedal2:' pedal2 = Pedal 
+            'ThreePedal3:' pedal3 = Pedal 
+;
+SixPedals:  'SixPedal1:' pedal1 = Pedal 
+            'SixPedal2:' pedal2 = Pedal 
+            'SixPedal3:' pedal3 = Pedal 
+            'SixPedal4:' pedal4 = Pedal 
+            'SixPedal5:' pedal5 = Pedal 
+            'SixPedal6:' pedal6 = Pedal 
+;
+Pedal: 'Dose:' dose = Dose
+        ('Projection:' projection = Projection)?
+        'Function:' function = Function
+;
+
+Behaviours: 'Behaviour:' behaviour= Behaviour
+;
+
+enum Projection:
+	ProjFrontal = 'Frontal' |
+	ProjLateral = 'Lateral' |
+	ProjBiplane = 'Biplane' 
+;
+
+enum Dose:
+	DoseLow = 'Low'   |
+	DoseHigh = 'High' |
+	DoseUnused = 'Unused'
+;
+
+enum Mode:
+	ModeVideo = 'Video' |
+	ModeImage = 'Image' 
+;
+
+enum Behaviour:
+	HighCombine = 'high_combine' |
+	HighOverride = 'high_override' |
+	LowCombine = 'low_combine' |
+	LowOverride = 'low_override'
+;
+
+enum Order:
+	RoundRobin = 'round_robin'
+;
