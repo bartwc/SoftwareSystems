@@ -25,15 +25,15 @@ encode the following cases:
 
 1. One plane, default configuration
    - Pedal mapping:
-   1. low dose
-   2. high dose
-   3. unused
+         1. low dose
+         2. high dose
+         3. unused
    - High dose should override low dose
 2. One plane, special configuration
    - Pedal mapping:
-   1. unused
-   2. low dose
-   3. high dose
+         1. unused
+         2. low dose
+         3. high dose
    - Earliest pressed pedal has priority.
 3. Two plane, default configuration 
    - Pedal mapping:
