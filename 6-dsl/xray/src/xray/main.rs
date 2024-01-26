@@ -20,6 +20,14 @@ fn main() {
 struct Logic {
     /// keep track of the selected projection
     selected: Projection,
+    selected_dose: Dose,
+    selected_mode: Mode,
+    p1_on: bool,
+    p2_on: bool,
+    p3_on: bool,
+    //p4_on: bool,
+    p5_on: bool,
+    // p6_on: bool,
     // you can have whatever other information that you want here
 }
 
@@ -79,10 +87,56 @@ impl ActionLogic<true> for Logic {
                 dose,
                 mode,
             } => {
-                controller.activate_xray(projection, dose, mode);
+                if projection == Frontal {
+                    self.p1_on = true;
+                    if self.p3_on == false {
+                        controller.activate_xray(projection, dose, mode);
+                    }
+                } else if projection == Lateral {
+                    self.p2_on = true;
+                    if self.p3_on == false {
+                        controller.activate_xray(projection, dose, mode);
+                    }
+                }
+                if projection == Biplane {
+                    self.p3_on = true;
+                    if self.p1_on == false && self.p2_on == true {
+                        controller.activate_xray(Frontal, dose, mode);
+                    } else if self.p1_on == true && self.p2_on == false {
+                        controller.activate_xray(Lateral, dose, mode);
+                    } else if self.p1_on == false && self.p2_on == false {
+                        controller.activate_xray(Biplane, dose, mode);
+                    }
+                }
+                self.selected = projection;
+                self.selected_dose = dose;
+                self.selected_mode = mode;
             }
 
-            Request::Stop { .. } => controller.deactivate_xray(),
+            Request::Stop { projection,
+                dose,
+                mode, } => {
+                if projection == Frontal {
+                    self.p1_on = false;
+                } else if projection == Lateral {
+                    self.p2_on = false;
+                } else if projection == Biplane {
+                    self.p3_on = false;
+                }
+                controller.deactivate_xray();
+                if projection != Biplane && self.p3_on == true {
+                    controller.activate_xray(Biplane, dose, mode);
+                }
+                if projection != Frontal && self.p1_on == true && self.p3_on == false {
+                    self.selected = Frontal;
+                    controller.activate_xray(Frontal, dose, mode);
+                }
+                if projection != Lateral && self.p2_on == true && self.p3_on == false {
+                    self.selected = Lateral;
+                    controller.activate_xray(Lateral, dose, mode);
+                }
+
+            }
 
             Request::ToggleSelectedProjection => {
                 self.selected = match self.selected {
