@@ -156,6 +156,9 @@ impl ActionLogic<true> for Logic {
             Request::StopSelectedProjection { dose, mode  } => {
                 if self.p1_on == true || self.p2_on == true || self.p3_on == true {
                     controller.deactivate_xray();
+                    controller.activate_xray(self.selected, Low, mode);
+                } else if self.p1_on == false || self.p2_on == false || self.p3_on == false {
+                    controller.deactivate_xray();
                     controller.activate_xray(self.selected, dose, mode);
                 }
             }
