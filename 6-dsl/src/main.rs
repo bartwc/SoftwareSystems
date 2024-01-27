@@ -27,6 +27,7 @@ struct Logic {
     p3_on: bool,
     //p4_on: bool,
     p5_on: bool,
+    p6_on: bool,
     // p6_on: bool,
     // you can have whatever other information that you want here
 }
@@ -149,12 +150,22 @@ impl ActionLogic<true> for Logic {
             }
 
             Request::StartSelectedProjection { dose, mode } => {
-                self.p5_on = true;
+                if mode == Video {
+                    self.p5_on = true;
+                } else if mode == Image {
+                    self.p6_on = true;
+                }
                 controller.deactivate_xray();
                 controller.activate_xray(self.selected, dose, mode)
             }
 
             Request::StopSelectedProjection { dose, mode  } => {
+                if mode == Video {
+                    self.p5_on = false;
+                } else if mode == Image {
+                    self.p6_on = false;
+                }
+
                 if self.p1_on == true || self.p2_on == true || self.p3_on == true {
                     controller.deactivate_xray();
                     controller.activate_xray(self.selected, Low, Video);
@@ -162,9 +173,14 @@ impl ActionLogic<true> for Logic {
                     controller.deactivate_xray();
                     // controller.activate_xray(self.selected, dose, mode);
                 }
+
                 if self.p5_on == true {
                     controller.deactivate_xray();
-                    controller.activate_xray(self.selected, dose, Video);
+                    controller.activate_xray(self.selected, High, Video);
+                }
+                if self.p6_on == true {
+                    controller.deactivate_xray();
+                    controller.activate_xray(self.selected, High, Image);
                 }
             }
         }
