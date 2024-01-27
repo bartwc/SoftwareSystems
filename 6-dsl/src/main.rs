@@ -135,23 +135,30 @@ impl ActionLogic<true> for Logic {
                     self.selected = Lateral;
                     controller.activate_xray(Lateral, dose, mode);
                 }
-
             }
 
             Request::ToggleSelectedProjection => {
-                self.selected = match self.selected {
-                    Frontal => Lateral,
-                    Lateral => Biplane,
-                    Biplane => Frontal,
+                if self.p1_on == false && self.p2_on == false && self.p3_on == false {
+                    self.selected = match self.selected {
+                        Frontal => Lateral,
+                        Lateral => Biplane,
+                        Biplane => Frontal,
+                    }
                 };
                 info!("Selected: {:?}", self.selected);
             }
 
             Request::StartSelectedProjection { dose, mode } => {
+                controller.deactivate_xray();
                 controller.activate_xray(self.selected, dose, mode)
             }
 
-            Request::StopSelectedProjection { .. } => controller.deactivate_xray(),
+            Request::StopSelectedProjection { dose, mode  } => {
+                if self.p1_on == true || self.p2_on == true || self.p3_on == true {
+                    controller.deactivate_xray();
+                    controller.activate_xray(self.selected, dose, mode);
+                }
+            }
         }
     }
 }
