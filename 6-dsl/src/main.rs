@@ -90,27 +90,31 @@ impl ActionLogic<true> for Logic {
             } => {
                 if projection == Frontal {
                     self.p1_on = true;
-                    if self.p3_on == false {
-                        controller.deactivate_xray();
+                    if self.p3_on == false && self.p2_on == false {
                         controller.activate_xray(projection, dose, mode);
+                    } else if self.p3_on == false && self.p2_on == true {
+                        controller.activate_xray(Frontal, dose, mode);
+                        self.selected = Biplane;
                     }
                 } else if projection == Lateral {
                     self.p2_on = true;
-                    if self.p3_on == false {
-                        controller.deactivate_xray();
+                    if self.p3_on == false && self.p1_on == false  {
                         controller.activate_xray(projection, dose, mode);
+                    } else if self.p3_on == false && self.p1_on == true {
+                        controller.activate_xray(Lateral, dose, mode);
+                        self.selected = Biplane;
                     }
                 }
                 if projection == Biplane {
                     self.p3_on = true;
+                    controller.deactivate_xray();
                     if self.p1_on == false && self.p2_on == true {
-                        controller.deactivate_xray();
-                        controller.activate_xray(Frontal, dose, mode);
+                        controller.activate_xray(Biplane, dose, mode);
                     } else if self.p1_on == true && self.p2_on == false {
-                        controller.deactivate_xray();
-                        controller.activate_xray(Lateral, dose, mode);
+                        controller.activate_xray(Biplane, dose, mode);
                     } else if self.p1_on == false && self.p2_on == false {
-                        controller.deactivate_xray();
+                        controller.activate_xray(Biplane, dose, mode);
+                    } else if self.p1_on == true && self.p2_on == true {
                         controller.activate_xray(Biplane, dose, mode);
                     }
                 }
@@ -132,21 +136,27 @@ impl ActionLogic<true> for Logic {
                 if self.p5_on == false && self.p6_on == false {
                     controller.deactivate_xray();
                 }
-                if projection != Biplane && self.p3_on == true {
+                if projection != Biplane && self.p3_on == true { // Projection is Frontal or Lateral
                     controller.activate_xray(Biplane, dose, mode);
                 }
-                if projection != Frontal && self.p1_on == true && self.p3_on == false {
+                if projection != Frontal && self.p1_on == true && self.p2_on == false && self.p3_on == false { // Projection is Lateral or Biplane
                     self.selected = Frontal;
                     controller.activate_xray(Frontal, dose, mode);
+                } else if projection != Frontal && self.p1_on == true && self.p2_on == true && self.p3_on == false {
+                    self.selected = Biplane;
+                    controller.activate_xray(Biplane, dose, mode);
                 }
-                if projection != Lateral && self.p2_on == true && self.p3_on == false {
+                if projection != Lateral && self.p1_on == false && self.p2_on == true && self.p3_on == false { // Projection is Frontal or Biplane
                     self.selected = Lateral;
                     controller.activate_xray(Lateral, dose, mode);
+                } else if projection != Lateral && self.p1_on == true && self.p2_on == true && self.p3_on == false {
+                    self.selected = Biplane;
+                    controller.activate_xray(Biplane, dose, mode);
                 }
             }
 
             Request::ToggleSelectedProjection => {
-                if self.p1_on == false && self.p2_on == false && self.p3_on == false {
+                if self.p1_on == false && self.p2_on == false && self.p3_on == false && self.p5_on == false && self.p6_on == false {
                     self.selected = match self.selected {
                         Frontal => Lateral,
                         Lateral => Biplane,
