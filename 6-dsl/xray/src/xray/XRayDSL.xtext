@@ -6,7 +6,7 @@ SystemType: 'Static_Configuration:' configuration = Static_Configuration
 ;
 
 Dynamic_Logic:
-	('Selection_Pedal_Behaviour:' samepedal = Behaviours)?
+	('Combined_Pedal_Behaviour:' combinedpedal = Behaviours)?
 	('Same_Dose_Behaviour:' samedosebehaviour = Behaviours)?
 	('Different_Dose_Behaviour:' differentdosebehaviour = Behaviours)
 ;
