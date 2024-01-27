@@ -124,7 +124,9 @@ impl ActionLogic<true> for Logic {
                 } else if projection == Biplane {
                     self.p3_on = false;
                 }
-                controller.deactivate_xray();
+                if self.p5_on == false && self.p6_on == false {
+                    controller.deactivate_xray();
+                }
                 if projection != Biplane && self.p3_on == true {
                     controller.activate_xray(Biplane, dose, mode);
                 }
