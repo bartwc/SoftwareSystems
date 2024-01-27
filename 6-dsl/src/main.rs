@@ -91,21 +91,26 @@ impl ActionLogic<true> for Logic {
                 if projection == Frontal {
                     self.p1_on = true;
                     if self.p3_on == false {
+                        controller.deactivate_xray();
                         controller.activate_xray(projection, dose, mode);
                     }
                 } else if projection == Lateral {
                     self.p2_on = true;
                     if self.p3_on == false {
+                        controller.deactivate_xray();
                         controller.activate_xray(projection, dose, mode);
                     }
                 }
                 if projection == Biplane {
                     self.p3_on = true;
                     if self.p1_on == false && self.p2_on == true {
+                        controller.deactivate_xray();
                         controller.activate_xray(Frontal, dose, mode);
                     } else if self.p1_on == true && self.p2_on == false {
+                        controller.deactivate_xray();
                         controller.activate_xray(Lateral, dose, mode);
                     } else if self.p1_on == false && self.p2_on == false {
+                        controller.deactivate_xray();
                         controller.activate_xray(Biplane, dose, mode);
                     }
                 }
