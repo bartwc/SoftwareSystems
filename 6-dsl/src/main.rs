@@ -6,15 +6,21 @@ use Mode::*;
 use Projection::*;
 
 use log::info;
+use tudelft_xray_sim::ThreePedals::{Pedal1, Pedal2, Pedal3};
+use crate::PedalUsage::{Unused, Used};
 use crate::UserPreference::{EarlyOverride, HighOverride, LowOverride};
 
-const DESIGN_CHOICE: UserPreference = HighOverride;
+const DESIGN_CHOICE: UserPreference = LowOverride;
+const PEDAL1_USAGE: PedalUsage = Used;
+const PEDAL2_USAGE: PedalUsage = Used;
+const PEDAL3_USAGE: PedalUsage = Unused;
 
 fn main() {
     // Initialize logger.
     simple_logger::init().unwrap();
     // Run simulation with your own implementation of the control logic.
-    run_single_plane_sim(Logic::default())
+    //run_double_plane_sim(Logic::default());
+    run_single_plane_sim(Logic::default());
 }
 
 /// Example control logic for a two plane system.
@@ -29,12 +35,16 @@ struct Logic {
 }
 
 #[derive(PartialEq)]
-enum UserPreference {
+enum UserPreference{
     HighOverride,
     LowOverride,
     EarlyOverride,
 }
-
+#[derive(PartialEq)]
+enum PedalUsage{
+    Used,
+    Unused,
+}
 impl PedalMapper for Logic {
     /// We use an associated type to determine which pedal enum is used.
     /// Single-plane systems use the `ThreePedals` enum, while
@@ -42,23 +52,59 @@ impl PedalMapper for Logic {
     /// Whether you used the correct type is checked at compile time.
     type Pedals = ThreePedals;
 
-
     fn on_press(&self, pedal: Self::Pedals) -> Option<Request> {
         use ThreePedals::*;
-        Some(match pedal {
-            Pedal1 => Request::start(Frontal,Low,Video),
-            Pedal2 => Request::start(Frontal,High,Video),
-            Pedal3 => Request::start(Frontal,Unused,Video),
-        })
+        match pedal {
+            // 3 pedals for low dose X-ray streaming video (one for each projection)
+            Pedal1 => {
+                if PEDAL1_USAGE == Used {
+                    Some(Request::start(Frontal, Low, Video))
+                } else {
+                    None
+                }
+            },
+            Pedal2 => {
+                if PEDAL2_USAGE == Used {
+                    Some(Request::start(Frontal, High, Video))
+                } else {
+                    None
+                }
+            },
+            Pedal3 => {
+                if PEDAL3_USAGE == Used {
+                    Some(Request::start(Frontal, Low, Video))
+                } else {
+                    None
+                }
+            }
+        }
     }
 
     fn on_release(&self, pedal: Self::Pedals) -> Option<Request> {
         use ThreePedals::*;
-        Some(match pedal {
-            Pedal1 => Request::stop(Frontal,Low,Video),
-            Pedal2 => Request::stop(Frontal,High,Video),
-            Pedal3 => Request::stop(Frontal,Unused,Video),
-        })
+        match pedal {
+            Pedal1 => {
+                if PEDAL1_USAGE == Used {
+                    Some(Request::stop(Frontal, Low, Video))
+                } else {
+                    None
+                }
+            },
+            Pedal2 => {
+                if PEDAL2_USAGE == Used {
+                    Some(Request::stop(Frontal, High, Video))
+                } else {
+                    None
+                }
+            },
+            Pedal3 => {
+                if PEDAL3_USAGE == Used {
+                    Some(Request::stop(Frontal, Low, Video))
+                } else {
+                    None
+                }
+            }
+        }
     }
 }
 
