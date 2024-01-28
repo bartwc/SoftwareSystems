@@ -22,42 +22,42 @@ class XRayDSLValidator extends AbstractXRayDSLValidator {
 	def checkThreeOrSixPedals(System system) {
 	    if (system.configuration instanceof ThreePedals){
 	        switch (system.configuration.pedal1.projection){
-	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
+	            case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+   	            case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal2.projection){
-	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
+	            case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+   	            case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal3.projection){
-	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
+	            case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+   	            case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal1.mode){
-	            case Mode::ModeImage: {error("Only Video Allowed",null)}
+	            case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal2.mode){
-	            case Mode::ModeImage: {error("Only Video Allowed",null)}
+	            case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal3.mode){
-	            case Mode::ModeImage: {error("Only Video Allowed",null)}
+	            case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	    }
 	    if (system.configuration instanceof SixPedals){
 	        switch (system.logic.differentdosebehaviour.behaviour){
-	            case Behaviour::EarlyOverride: {error("Only HighOverride or LowOverride Allowed",null)}
+	            case Behaviour::EARLY_OVERRIDE: {error("Only HighOverride or LowOverride Allowed",null)}
 	            default: {
 	            }
 	        }
