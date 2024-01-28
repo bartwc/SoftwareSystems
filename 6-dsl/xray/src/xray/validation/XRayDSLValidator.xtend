@@ -3,6 +3,13 @@
  */
 package xray.validation
 
+import org.eclipse.xtext.validation.Check
+import xray.xRayDSL.Mode
+import xray.xRayDSL.Projection
+import xray.xRayDSL.SixPedals
+import xray.xRayDSL.ThreePedals
+import xray.xRayDSL.System
+import xray.xRayDSL.Behaviour
 
 /**
  * This class contains custom validation rules. 
@@ -12,55 +19,50 @@ package xray.validation
 class XRayDSLValidator extends AbstractXRayDSLValidator {
 
 	@Check
-	def checkThreePedals(System system) {
-	    if (system.configuration instance of ThreePedals){
+	def checkThreeOrSixPedals(System system) {
+	    if (system.configuration instanceof ThreePedals){
 	        switch (system.configuration.pedal1.projection){
-	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal2.projection){
-	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal3.projection){
-	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
-   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            case Projection::ProjLateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::ProjBiplane: {error("Only Frontal Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal1.mode){
-	            case Mode::Image: {error("Only Video Allowed",null)}
+	            case Mode::ModeImage: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal2.mode){
-	            case Mode::Image: {error("Only Video Allowed",null)}
+	            case Mode::ModeImage: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	        switch (system.configuration.pedal3.mode){
-	            case Mode::Image: {error("Only Video Allowed",null)}
+	            case Mode::ModeImage: {error("Only Video Allowed",null)}
 	            default: {
 	            }
 	        }
 	    }
-	}
-
-	@Check
-	def checkSixPedals(System system) {
-	    if (system.configuration instance of SixPedals){
+	    if (system.configuration instanceof SixPedals){
 	        switch (system.logic.differentdosebehaviour.behaviour){
 	            case Behaviour::EarlyOverride: {error("Only HighOverride or LowOverride Allowed",null)}
 	            default: {
 	            }
 	        }
-	    }
+	    }	    
 	}
-
 //	public static val INVALID_NAME = 'invalidName'
 //
 //	@Check

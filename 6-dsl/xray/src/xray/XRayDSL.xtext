@@ -66,5 +66,10 @@ enum Behaviour:
 ;
 
 enum Order:
-	RoundRobin = 'round_robin'
+	FLB = 'FLB' |
+	FBL = 'FBL' |
+	BFL = 'BFL' |
+	BLF = 'BLF' |
+	LBF = 'LBF' |
+	LFB = 'LFB'
 ;

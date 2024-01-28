@@ -106,9 +106,14 @@ based on X-Rays.
     LowOverride = 'LowOverride' |
     EarlyOverride = 'EarlyOverride'
     ;
-    
+
     enum Order:
-    RoundRobin = 'round_robin'
+    FLB = 'FLB' |
+    FBL = 'FBL' |
+    BFL = 'BFL' |
+    BLF = 'BLF' |
+    LBF = 'LBF' |
+    LFB = 'LFB'
     ;
 
 ### Modelling Decisions
