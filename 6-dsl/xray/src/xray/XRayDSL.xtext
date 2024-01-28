@@ -28,7 +28,8 @@ SixPedals:  'SixPedal1:' pedal1 = Pedal
 ;
 Pedal: 'Dose:' dose = Dose
         ('Projection:' projection = Projection)?
-        'Mode:' mode = Mode
+        ('Mode:' mode = Mode)?
+        'Usage:' usage = Usage
 ;
 
 Behaviours: 'Behaviour:' behaviour= Behaviour
@@ -51,11 +52,17 @@ enum Mode:
 	ModeImage = 'Image'
 ;
 
+enum Usage:
+	Used = 'Used' |
+	Unused = 'Unused'
+;
+
 enum Behaviour:
-	HighCombine = 'high_combine' |
-	HighOverride = 'high_override' |
-	LowCombine = 'low_combine' |
-	LowOverride = 'low_override'
+	HighCombine = 'HighCombine' |
+	HighOverride = 'HighOverride' |
+	LowCombine = 'LowCombine' |
+	LowOverride = 'LowOverride' |
+	EarlyOverride = 'EarlyOverride'
 ;
 
 enum Order:

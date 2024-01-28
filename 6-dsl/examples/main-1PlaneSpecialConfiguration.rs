@@ -10,17 +10,17 @@ use tudelft_xray_sim::ThreePedals::{Pedal1, Pedal2, Pedal3};
 use crate::PedalUsage::{Unused, Used};
 use crate::UserPreference::{EarlyOverride, HighOverride, LowOverride};
 
-const DESIGN_CHOICE: UserPreference = LowOverride;
-const PEDAL1_USAGE: PedalUsage = Used;
+const DESIGN_CHOICE: UserPreference = EarlyOverride;
+const PEDAL1_USAGE: PedalUsage = Unused;
 const PEDAL2_USAGE: PedalUsage = Used;
-const PEDAL3_USAGE: PedalUsage = Unused;
+const PEDAL3_USAGE: PedalUsage = Used;
+
 
 fn main() {
     // Initialize logger.
     simple_logger::init().unwrap();
     // Run simulation with your own implementation of the control logic.
-    //run_double_plane_sim(Logic::default());
-    run_single_plane_sim(Logic::default());
+    run_single_plane_sim(Logic::default())
 }
 
 /// Example control logic for a two plane system.
@@ -35,16 +35,18 @@ struct Logic {
 }
 
 #[derive(PartialEq)]
-enum UserPreference{
+enum UserPreference {
     HighOverride,
     LowOverride,
     EarlyOverride,
 }
+
 #[derive(PartialEq)]
 enum PedalUsage{
     Used,
     Unused,
 }
+
 impl PedalMapper for Logic {
     /// We use an associated type to determine which pedal enum is used.
     /// Single-plane systems use the `ThreePedals` enum, while
@@ -58,21 +60,21 @@ impl PedalMapper for Logic {
             // 3 pedals for low dose X-ray streaming video (one for each projection)
             Pedal1 => {
                 if PEDAL1_USAGE == Used {
-                    Some(Request::start(Frontal, Low, Video))
+                    Some(Request::start(Frontal,Low,Video))
                 } else {
                     None
                 }
             },
             Pedal2 => {
                 if PEDAL2_USAGE == Used {
-                    Some(Request::start(Frontal, High, Video))
+                    Some(Request::start(Frontal,Low,Video))
                 } else {
                     None
                 }
             },
             Pedal3 => {
                 if PEDAL3_USAGE == Used {
-                    Some(Request::start(Frontal, Low, Video))
+                    Some(Request::start(Frontal,High,Video))
                 } else {
                     None
                 }
@@ -85,21 +87,21 @@ impl PedalMapper for Logic {
         match pedal {
             Pedal1 => {
                 if PEDAL1_USAGE == Used {
-                    Some(Request::stop(Frontal, Low, Video))
+                    Some(Request::stop(Frontal,Low,Video))
                 } else {
                     None
                 }
             },
             Pedal2 => {
                 if PEDAL2_USAGE == Used {
-                    Some(Request::stop(Frontal, High, Video))
+                    Some(Request::stop(Frontal,Low,Video))
                 } else {
                     None
                 }
             },
             Pedal3 => {
                 if PEDAL3_USAGE == Used {
-                    Some(Request::stop(Frontal, Low, Video))
+                    Some(Request::stop(Frontal,High,Video))
                 } else {
                     None
                 }
