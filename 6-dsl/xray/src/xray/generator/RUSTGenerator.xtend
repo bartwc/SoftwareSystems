@@ -3,7 +3,7 @@
  */
 package xray.generator
 
-import xray.xRayDSL.SystemType
+import xray.xRayDSL.System
 import xray.xRayDSL.ThreePedals
 import xray.xRayDSL.SixPedals
 
@@ -24,7 +24,7 @@ abstract class RUSTGenerator {
 	log = "0.4"
 	'''
 
-	def static CharSequence toRust(SystemType root)'''«»
+	def static CharSequence toRUST(xray.xRayDSL.System root)'''«»
 	// Import types from the simulation library.
 	use tudelft_xray_sim::*;
 	// Import enum variants to make this example a bit easier to read.
@@ -74,9 +74,9 @@ abstract class RUSTGenerator {
 	        use «type2Code(root.configuration)»::*;
 	        Some(match pedal {
 	            «IF root.configuration instanceof ThreePedals»
-	             Pedal1 => Request::start(«root.configuration.pedal1.projection»,«root.configuration.pedal1.dosetype»,«root.configuration.pedal1.function»),
-	             Pedal2 => Request::start(«root.configuration.pedal2.projection»,«root.configuration.pedal2.dosetype»,«root.configuration.pedal2.function»),
-	             Pedal3 => Request::start(«root.configuration.pedal3.projection»,«root.configuration.pedal3.dosetype»,«root.configuration.pedal3.function»),
+	             Pedal1 => Request::start(«root.configuration.pedal1.projection»,«root.configuration.pedal1.dose»,«root.configuration.pedal1.mode»),
+	             Pedal2 => Request::start(«root.configuration.pedal2.projection»,«root.configuration.pedal2.dose»,«root.configuration.pedal2.mode»),
+	             Pedal3 => Request::start(«root.configuration.pedal3.projection»,«root.configuration.pedal3.dose»,«root.configuration.pedal3.mode»),
 	            «ENDIF»
 	        })
 	    }
@@ -85,9 +85,9 @@ abstract class RUSTGenerator {
 	        use «type2Code(root.configuration)»::*;
 	        Some(match pedal {
 	            «IF root.configuration instanceof ThreePedals»
-	             Pedal1 => Request::stop(«root.configuration.pedal1.projection»,«root.configuration.pedal1.dosetype»,«root.configuration.pedal1.function»),
-	             Pedal2 => Request::stop(«root.configuration.pedal2.projection»,«root.configuration.pedal2.dosetype»,«root.configuration.pedal2.function»),
-	             Pedal3 => Request::stop(«root.configuration.pedal3.projection»,«root.configuration.pedal3.dosetype»,«root.configuration.pedal3.function»),
+	             Pedal1 => Request::stop(«root.configuration.pedal1.projection»,«root.configuration.pedal1.dose»,«root.configuration.pedal1.mode»),
+	             Pedal2 => Request::stop(«root.configuration.pedal2.projection»,«root.configuration.pedal2.dose»,«root.configuration.pedal2.mode»),
+	             Pedal3 => Request::stop(«root.configuration.pedal3.projection»,«root.configuration.pedal3.dose»,«root.configuration.pedal3.mode»),
 	            «ENDIF»
 	        })
 	    }
@@ -174,8 +174,8 @@ abstract class RUSTGenerator {
                     }
                 }
                 _ => {}
-            }
-        }
+	}
+}
         '''
 
         def static dispatch type2Code(ThreePedals pedal)'''
@@ -183,5 +183,5 @@ abstract class RUSTGenerator {
 
         def static dispatch type2Code(SixPedals pedal)'''
             SixPedals'''
-    }
 }
+

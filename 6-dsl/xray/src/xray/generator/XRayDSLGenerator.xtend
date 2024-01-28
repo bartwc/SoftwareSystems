@@ -7,6 +7,11 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.generator.AbstractGenerator
+import org.eclipse.xtext.generator.IFileSystemAccess2
+import org.eclipse.xtext.generator.IGeneratorContext
+import xray.xRayDSL.System
 
 /**
  * Generates code from your model files on save.
@@ -16,14 +21,16 @@ import org.eclipse.xtext.generator.IGeneratorContext
 class XRayDSLGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-	    val root = resource.allContents.head as Planning;
+	    val root = resource.allContents.head as System;
 	    if (root !== null) {
 	        var path = "generated/" + resource.getURI().lastSegment + "/"
 	        fsa.generateFile(path+"main.rs", RUSTGenerator.toRUST(root))
+	        
+	    }
 	    if (root !== null) {
-	        var path = "generated/" + resource.getURI().lastSegment + "/"
-	        fsa.generateFile(path+"Cargo.toml", RUSTGenerator.toToml(root))
-	}
+	        var path1 = "generated/" + resource.getURI().lastSegment + "/"
+	        fsa.generateFile(path1+"Cargo.toml", RUSTGenerator.toToml())
+		}
 //		fsa.generateFile('greetings.txt', 'People to greet: ' +
 //			resource.allContents
 //				.filter(Greeting)

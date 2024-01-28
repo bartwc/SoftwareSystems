@@ -1,7 +1,7 @@
 grammar xray.XRayDSL with org.eclipse.xtext.common.Terminals
 
 generate xRayDSL "http://www.XRayDSL.xray"
-SystemType: 'Static_Configuration:' configuration = Static_Configuration
+System: 'Static_Configuration:' configuration = Static_Configuration
             'Dynamic_Logic:' logic = Dynamic_Logic
 ;
 
