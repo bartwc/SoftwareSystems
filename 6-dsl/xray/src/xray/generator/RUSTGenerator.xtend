@@ -41,21 +41,22 @@ abstract class RUSTGenerator {
 	    run_single_plane_sim(Logic::default())
 	}
 
-	/// Example control logic for a two plane system.
-	/// The pedal mapping is based on the example mapping given in the DSL assignment.
+    /// Example control logic for a two plane system.
+    /// The pedal mapping is based on the example mapping given in the DSL assignment.
     #[derive(Default)]
     struct Logic {
-        /// keep track of the selected projection
-        selected: Projection,
         selected_dose: Dose,
         selected_mode: Mode,
-        p1_on: bool,
-        p2_on: bool,
-        p3_on: bool,
-        //p4_on: bool,
-        p5_on: bool,
-        // p6_on: bool,
+        high_on: bool,
+        low_on: bool,
         // you can have whatever other information that you want here
+    }
+
+    #[derive(PartialEq)]
+    enum UserPreference{
+        HighOverride,
+        LowOverride,
+        EarlyOverride,
     }
 
     impl PedalMapper for Logic {
@@ -89,13 +90,11 @@ abstract class RUSTGenerator {
 	    }
 	}
 
-    impl ActionLogic<true> for Logic {
+    impl ActionLogic<false> for Logic {
         /// Naive implementation of request handling which does not handle
         /// multiple pedals being pressed at once.
-        fn handle_request(&mut self, request: Request, controller: &mut Controller<true>) {
+        fn handle_request(&mut self, request: Request, controller: &mut Controller<false>) {
             // This is how you can get access to the planes in case you want to inspect their status.
-            let _frontal = controller.frontal();
-            let _lateral = controller.lateral();
 
             // Custom logging of requests.
             info!("Processing request: {request:?}");
@@ -109,84 +108,77 @@ abstract class RUSTGenerator {
                     dose,
                     mode,
                 } => {
-                    if projection == Frontal {
-                        self.p1_on = true;
-                        if self.p3_on == false {
-                            controller.activate_xray(projection, dose, mode);
+                    if dose == High {
+                        if DESIGN_CHOICE == HighOverride {
+                            self.selected_dose = dose;
+                            self.selected_mode = mode;
+                            self.high_on = true;
+                            if self.low_on == false {
+                                controller.activate_frontal(dose, mode);
+                            } else {
+                                controller.deactivate_xray();
+                                controller.activate_frontal(dose, mode);
+                            }
+                        } else if DESIGN_CHOICE == LowOverride || DESIGN_CHOICE == EarlyOverride {
+                            self.high_on = true;
+                            if self.low_on == false {
+                                self.selected_dose = dose;
+                                self.selected_mode = mode;
+                                controller.activate_frontal(dose, mode);
+                            }
                         }
-                    } else if projection == Lateral {
-                        self.p2_on = true;
-                        if self.p3_on == false {
-                            controller.activate_xray(projection, dose, mode);
+                    } else if dose == Low {
+                        if DESIGN_CHOICE == LowOverride {
+                            self.selected_dose = dose;
+                            self.selected_mode = mode;
+                            self.low_on = true;
+                            if self.high_on == false {
+                                controller.activate_frontal(dose, mode);
+                            } else {
+                                controller.deactivate_xray();
+                                controller.activate_frontal(dose, mode);
+                            }
+                        } else if DESIGN_CHOICE == HighOverride || DESIGN_CHOICE == EarlyOverride {
+                            self.low_on = true;
+                            if self.high_on == false {
+                                self.selected_dose = dose;
+                                self.selected_mode = mode;
+                                controller.activate_frontal(dose, mode);
+                            }
                         }
                     }
-                    if projection == Biplane {
-                        self.p3_on = true;
-                        if self.p1_on == false && self.p2_on == true {
-                            controller.activate_xray(Frontal, dose, mode);
-                        } else if self.p1_on == true && self.p2_on == false {
-                            controller.activate_xray(Lateral, dose, mode);
-                        } else if self.p1_on == false && self.p2_on == false {
-                            controller.activate_xray(Biplane, dose, mode);
-                        }
-                    }
-                    self.selected = projection;
-                    self.selected_dose = dose;
-                    self.selected_mode = mode;
                 }
-
-                Request::Stop { projection,
+                Request::Stop {
+                    projection,
                     dose,
                     mode, } => {
-                    if projection == Frontal {
-                        self.p1_on = false;
-                    } else if projection == Lateral {
-                        self.p2_on = false;
-                    } else if projection == Biplane {
-                        self.p3_on = false;
-                    }
-                    controller.deactivate_xray();
-                    if projection != Biplane && self.p3_on == true {
-                        controller.activate_xray(Biplane, dose, mode);
-                    }
-                    if projection != Frontal && self.p1_on == true && self.p3_on == false {
-                        self.selected = Frontal;
-                        controller.activate_xray(Frontal, dose, mode);
-                    }
-                    if projection != Lateral && self.p2_on == true && self.p3_on == false {
-                        self.selected = Lateral;
-                        controller.activate_xray(Lateral, dose, mode);
+                    if dose == High {
+                        self.high_on = false;
+                        if self.low_on {
+                            controller.deactivate_xray();
+                            controller.activate_frontal(Low, Video);
+                        } else {
+                            controller.deactivate_xray();
+                        }
+                    } else {
+                        self.low_on = false;
+                        if self.high_on {
+                            controller.deactivate_xray();
+                            controller.activate_frontal(High, Video);
+                        } else {
+                            controller.deactivate_xray();
+                        }
                     }
                 }
-
-            Request::ToggleSelectedProjection => {
-                if self.p1_on == false && self.p2_on == false && self.p3_on == false {
-                    self.selected = match self.selected {
-                        Frontal => Lateral,
-                        Lateral => Biplane,
-                        Biplane => Frontal,
-                    }
-                };
-                info!("Selected: {:?}", self.selected);
+                _ => {}
             }
+        }
+        '''
 
-            Request::StartSelectedProjection { dose, mode } => {
-                controller.deactivate_xray();
-                controller.activate_xray(self.selected, dose, mode)
-            }
+        def static dispatch type2Code(ThreePedals pedal)'''
+            ThreePedals'''
 
-            Request::StopSelectedProjection { dose, mode  } => {
-                if self.p1_on == true || self.p2_on == true || self.p3_on == true {
-                    controller.deactivate_xray();
-                    controller.activate_xray(self.selected, dose, mode);
-	        }
-	    }
-	}
-	'''
-
-	def static dispatch type2Code(ThreePedals pedal)'''
-		ThreePedals'''
-
-	def static dispatch type2Code(SixPedals pedal)'''
-		SixPedals'''
+        def static dispatch type2Code(SixPedals pedal)'''
+            SixPedals'''
+    }
 }

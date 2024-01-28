@@ -52,8 +52,7 @@ based on X-Rays.
     ('Same_Dose_Behaviour:' samedosebehaviour = Behaviours)?
     ('Different_Dose_Behaviour:' differentdosebehaviour = Behaviours)
     ;
-    
-    
+
     Static_Configuration: ThreePedals | SixPedals
     ;
     
@@ -136,6 +135,13 @@ For example, your grammar might allow something for which it would be impossible
 validator should report this to the user and prevent code generation.
 
 ### Introduction
+Modelling Validation is meant to check for errors for both the Static Configuration and the Dynamic Logic. For example
+in the Static Configuration, ThreePedals configurations must have exactly three pedals while SixPedals configurations 
+have exactly six pedals.
+
+Next for the Dynamic Logic. For the ThreePedals Configurations, the requirement of either High Dose Overrides or 
+Earliest Pedal Overrides needs to be checked. For the SixPedal Configurations, the requirement of either High or Low 
+Dose Overrides or Projection Toggle Order and Toggle Criteria needs to be checked.
 
 ![statechart_1-Plane.png](statechart_1-Plane.png)
 <p align="center">Figure 1. Statechart_1-Plane.png</p>
@@ -213,7 +219,7 @@ XRayDSLGenerator.xtend and RUSTGenerator.xtend code shown below.
 
 ### Modelling Decisions
 
-1.
+1. 
 
 ## Authors
 [@Zhengtao Huang (5833469, zhengtaohuang)]()<br>
