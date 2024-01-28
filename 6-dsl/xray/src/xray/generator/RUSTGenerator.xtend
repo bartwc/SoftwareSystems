@@ -33,6 +33,9 @@ abstract class RUSTGenerator {
 	use Projection::*;
 
 	use log::info;
+    use crate::UserPreference::{EarlyOverride, HighOverride, LowOverride};
+
+    const DESIGN_CHOICE: UserPreference = HighOverride;
 
 	fn main() {
 	    // Initialize logger.

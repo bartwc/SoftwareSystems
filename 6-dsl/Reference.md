@@ -41,7 +41,7 @@ encode the following cases:
    2. low dose, lateral projection
    3. low dose, biplane projection
    4. high dose on the selected projection
-   5. toggle selected projection (round robin)
+   5. toggle selected projection (round-robin)
    6. unused
    - High dose overrides low dose
    - Selection pedal should toggle between frontal, lateral and biplane projection in that order
@@ -52,13 +52,13 @@ encode the following cases:
    2. high dose, frontal projection
    3. high dose, lateral projection
    4. low dose on the selected projection
-   5. toggle selected projection (round robin)
+   5. toggle selected projection (round-robin)
    6. high dose, biplane projection
    - Low dose overrides everything except high dose biplane
    - Selection pedal should toggle between frontal, biplane and lateral projection in that order
    - Selection pedal should only toggle when low dose pedal is pressed
 If your DSL cannot model some of the examples then provide an alternative example of your DSL with an explanation of 
-how you change the static configuration and the dynamic logic. In total you should still have 2 one plane examples 
+how you change the static configuration and the dynamic logic. In total, you should still have 2 one plane examples 
 (with generated code), and 2 two plane examples.
 
 ## Example Use of Simulator
