@@ -43,7 +43,7 @@ enum Projection:
 enum Dose:
 	DoseLow = 'Low'   |
 	DoseHigh = 'High' |
-	DoseUnused = 'Unused'
+    DoseUnused = 'Unused'
 ;
 
 enum Mode:
