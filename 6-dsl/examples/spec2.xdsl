@@ -1,0 +1,7 @@
+Static_Configuration:
+ThreePedal1: Dose: Low Projection: Frontal Mode: Video Usage: Unused
+ThreePedal2: Dose: Low Projection: Frontal Mode: Video Usage: Used
+ThreePedal3: Dose: High Projection: Frontal Mode: Video Usage: Used
+
+Dynamic_Logic:
+Different_Dose_Behaviour: Behaviour: EarlyOverride

@@ -1,0 +1,11 @@
+Static_Configuration:
+SixPedal1: Dose: Low Projection: Frontal Mode: Video Usage: Used
+SixPedal2: Dose: Low Projection: Lateral Mode: Video Usage: Used
+SixPedal3: Dose: Low Projection: Biplane Mode: Video Usage: Used
+SixPedal4: Dose: High Usage: Used
+SixPedal5: RoundRobin: round_robin Usage: Used
+SixPedal6: Dose: Unused
+
+Dynamic_Logic:
+Combined_Pedal_Behaviour: LowCombine
+Different_Dose_Behaviour: Behaviour: HighOverride
