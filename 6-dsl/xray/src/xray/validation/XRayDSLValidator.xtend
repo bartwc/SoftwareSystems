@@ -10,7 +10,57 @@ package xray.validation
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class XRayDSLValidator extends AbstractXRayDSLValidator {
-	
+
+	@Check
+	def checkThreePedals(System system) {
+	    if (system.configuration instance of ThreePedals){
+	        switch (system.configuration.pedal1.projection){
+	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            default: {
+	            }
+	        }
+	        switch (system.configuration.pedal2.projection){
+	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            default: {
+	            }
+	        }
+	        switch (system.configuration.pedal3.projection){
+	            case Projection::Lateral: {error("Only Frontal Allowed",null)}
+   	            case Projection::Biplane: {error("Only Frontal Allowed",null)}
+	            default: {
+	            }
+	        }
+	        switch (system.configuration.pedal1.mode){
+	            case Mode::Image: {error("Only Video Allowed",null)}
+	            default: {
+	            }
+	        }
+	        switch (system.configuration.pedal2.mode){
+	            case Mode::Image: {error("Only Video Allowed",null)}
+	            default: {
+	            }
+	        }
+	        switch (system.configuration.pedal3.mode){
+	            case Mode::Image: {error("Only Video Allowed",null)}
+	            default: {
+	            }
+	        }
+	    }
+	}
+
+	@Check
+	def checkSixPedals(System system) {
+	    if (system.configuration instance of SixPedals){
+	        switch (system.logic.differentdosebehaviour.behaviour){
+	            case Behaviour::EarlyOverride: {error("Only HighOverride or LowOverride Allowed",null)}
+	            default: {
+	            }
+	        }
+	    }
+	}
+
 //	public static val INVALID_NAME = 'invalidName'
 //
 //	@Check
