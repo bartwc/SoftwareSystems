@@ -1,5 +1,4 @@
-Static_Configuration: 
-
+Static_Configuration:
 ThreePedal1: Dose: Low Mode: Video
 ThreePedal2: Dose: High Mode: Video
 ThreePedal3: Dose: Unused Mode: Video

@@ -1,9 +1,7 @@
-Static_Configuration: 
-
-ThreePedal1: Dose: Low | Function: Video
-ThreePedal2: Dose: High | Function: Video
-ThreePedal3: Dose: Unused | Function: Video
+Static_Configuration:
+ThreePedal1: Dose: Low Mode: Video
+ThreePedal2: Dose: High Mode: Video
+ThreePedal3: Dose: Unused Mode: Video
 
 Dynamic_Logic:
-
-Different_Dose_Behavior: Behaviour: high_override
+Different_Dose_Behaviour: Behaviour: high_override
