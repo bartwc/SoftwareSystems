@@ -180,48 +180,48 @@ Configuration.
 
     @Check
     def checkThreeOrSixPedals(System system) {
-    if (system.configuration instanceof ThreePedals){
-    switch (system.configuration.pedal1.projection){
-    case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
-    case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
-    default: {
+        if (system.configuration instanceof ThreePedals){
+            switch (system.configuration.pedal1.projection){
+                case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+                case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
+                default: {
+                }
+        }
+            switch (system.configuration.pedal2.projection){
+                case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+                case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
+                default: {
+                }
+        }
+            switch (system.configuration.pedal3.projection){
+                case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
+                case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
+                default: {
+                }
+        }
+            switch (system.configuration.pedal1.mode){
+                case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
+                default: {
+                }
+        }
+            switch (system.configuration.pedal2.mode){
+                case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
+                default: {
+                }
+        }
+            switch (system.configuration.pedal3.mode){
+                case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
+                default: {
+                }
+        }
     }
-    }
-    switch (system.configuration.pedal2.projection){
-    case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
-    case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
-    default: {
-    }
-    }
-    switch (system.configuration.pedal3.projection){
-    case Projection::PROJ_LATERAL: {error("Only Frontal Allowed",null)}
-    case Projection::PROJ_BIPLANE: {error("Only Frontal Allowed",null)}
-    default: {
-    }
-    }
-    switch (system.configuration.pedal1.mode){
-    case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
-    default: {
-    }
-    }
-    switch (system.configuration.pedal2.mode){
-    case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
-    default: {
-    }
-    }
-    switch (system.configuration.pedal3.mode){
-    case Mode::MODE_IMAGE: {error("Only Video Allowed",null)}
-    default: {
-    }
-    }
-    }
-    if (system.configuration instanceof SixPedals){
-    switch (system.logic.differentdosebehaviour.behaviour){
-    case Behaviour::EARLY_OVERRIDE: {error("Only HighOverride or LowOverride Allowed",null)}
-    default: {
-    }
-    }
-    }	    
+        if (system.configuration instanceof SixPedals){
+            switch (system.logic.differentdosebehaviour.behaviour){
+                case Behaviour::EARLY_OVERRIDE: {error("Only HighOverride or LowOverride Allowed",null)}
+                default: {
+                }
+            }
+        }	    
     }
     //	public static val INVALID_NAME = 'invalidName'
     //
@@ -234,10 +234,13 @@ Configuration.
     //		}
     //	}
 
-}
+    }
 
 ### Modelling Decisions
 1. As per the requirement given, the team conducted Modelling Validation for both ThreePedals and SixPedals Configuration.
+   The team tested the validator and switched the Projection for Pedal2 in One Plane to Lateral. The main.rs document
+   code generation process was alerted on the Runtime Instance Application. Modelling Validator indicated an error 
+   that only Frontal could be selected for One Plane, which meant the Validator worked.
 
 ## DSL Model - Code Generation
 ### *Description*
@@ -548,8 +551,11 @@ XRayDSLGenerator.xtend and RUSTGenerator.xtend code shown below.
    Pedal1 will trigger Low Dose and Pedal2 will trigger High Dose. When both Pedal1 and Pedal2 are pressed, High Dose 
    will override Low Dose.
 2. const PEDAL1_USAGE: PedalUsage = «root.configuration.pedal1.usage»;
+
    const PEDAL2_USAGE: PedalUsage = «root.configuration.pedal2.usage»;
+
    const PEDAL3_USAGE: PedalUsage = «root.configuration.pedal3.usage»;
+
    The three constants will allow the user to decide whether any of the pedal can be configured to be unused. Once set
    to unused, the pedal will be set to None and not have any effect.
  
